@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:hospital_app/Edit_Patient/EditNihss1.dart';
@@ -15,39 +17,43 @@ import 'package:hospital_app/Edit_Patient/EditNihss6.dart';
 import 'package:hospital_app/Edit_Patient/EditNihss7.dart';
 import 'package:hospital_app/Edit_Patient/EditNihss8.dart';
 import 'package:hospital_app/Edit_Patient/EditNihss9.dart';
-import 'package:hospital_app/sql_lite.dart';
+import 'package:hospital_app/share_pref.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class NihssDetail extends StatefulWidget {
-  final int patientID;
+  final int patientId;
 
-  const NihssDetail({Key? key, required this.patientID}) : super(key: key);
+  const NihssDetail({Key? key, required this.patientId}) : super(key: key);
 
   @override
   State<NihssDetail> createState() => _NihssDetailState();
 }
 
 class _NihssDetailState extends State<NihssDetail> {
-  Map<String, dynamic>? patient;
-  final SqllLiteManage _databaseManager = SqllLiteManage();
   int _totalScore = 0;
+
+  Patient? _patient;
 
   @override
   void initState() {
     super.initState();
-    _loadPatientData();
+    loadPatientData();
   }
 
-  Future<void> _loadPatientData() async {
-    await _databaseManager.openOrCreateDatabase();
-    List<Map<String, dynamic>> result = await _databaseManager.selectDatabase(
-      "SELECT * FROM Patient WHERE ID = ${widget.patientID}",
-    );
+  Future<void> loadPatientData() async {
+    final prefs = await SharedPreferences.getInstance();
+    List<String>? patientList = prefs.getStringList('patients') ?? [];
 
-    if (result.isNotEmpty) {
-      setState(() {
-        patient = result.first;
-        _totalScore = result.first['TotalScore'];
-      });
+    for (var patientData in patientList) {
+      Map<String, dynamic> map = Map.from(json.decode(patientData));
+      Patient patient = Patient.fromMap(map);
+      if (patient.id == widget.patientId) {
+        setState(() {
+          _patient = patient;
+          _totalScore = patient.totalScore;
+        });
+        break;
+      }
     }
   }
 
@@ -103,7 +109,7 @@ class _NihssDetailState extends State<NihssDetail> {
                       Column(
                         children: [
                           Text(
-                            'NIHSS ${patient?['TotalScore']} คะเเนน',
+                            'NIHSS ${_patient?.totalScore} คะเเนน',
                             style: TextStyle(
                               fontSize: height * 0.024,
                               fontWeight: FontWeight.bold,
@@ -122,10 +128,22 @@ class _NihssDetailState extends State<NihssDetail> {
                             ),
                           ),
                           Text(
-                            '${patient?['NIHSSLevel']}',
+                            '${_patient?.nihssLevel}',
                             style: TextStyle(
                               fontSize: height * 0.022,
                               fontWeight: FontWeight.bold,
+                              color: _totalScore == 0
+                                  ? Colors.green
+                                  : (_totalScore >= 1 && _totalScore <= 4)
+                                      ? Colors.yellow[600]
+                                      : (_totalScore >= 5 && _totalScore <= 15)
+                                          ? Colors.orange
+                                          : (_totalScore >= 16 &&
+                                                  _totalScore <= 20)
+                                              ? Colors.amber[900]
+                                              : (_totalScore >= 21)
+                                                  ? Colors.red
+                                                  : Colors.black,
                             ),
                           ),
                           Divider(
@@ -159,19 +177,19 @@ class _NihssDetailState extends State<NihssDetail> {
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => EditNihss1(
-                                    patientID: widget.patientID,
+                                    patientId: widget.patientId,
                                   ),
                                 ),
                               ).then((_) {
-                                _loadPatientData();
+                                loadPatientData();
                               });
                             },
                             child: buildRow(
                               height,
                               width,
                               'ข้อที่ 1a',
-                              '${patient?['SelectedText1']}',
-                              '${patient?['SelectedScore1']}',
+                              '${_patient?.selectedText1}',
+                              '${_patient?.selectedScore1}',
                             ),
                           ),
                           Divider(
@@ -183,19 +201,20 @@ class _NihssDetailState extends State<NihssDetail> {
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => EditNihss2(
-                                    patientID: widget.patientID,
+                                    patientId: widget.patientId,
                                   ),
                                 ),
                               ).then((_) {
-                                _loadPatientData();
+                                loadPatientData();
                               });
                             },
                             child: buildRow(
-                                height,
-                                width,
-                                'ข้อที่ 1b',
-                                '${patient?['SelectedText2']}',
-                                '${patient?['SelectedScore2']}'),
+                              height,
+                              width,
+                              'ข้อที่ 1b',
+                              '${_patient?.selectedText2}',
+                              '${_patient?.selectedScore2}',
+                            ),
                           ),
                           Divider(
                             color: Colors.black38,
@@ -206,19 +225,20 @@ class _NihssDetailState extends State<NihssDetail> {
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => EditNihss3(
-                                    patientID: widget.patientID,
+                                    patientId: widget.patientId,
                                   ),
                                 ),
                               ).then((_) {
-                                _loadPatientData();
+                                loadPatientData();
                               });
                             },
                             child: buildRow(
-                                height,
-                                width,
-                                'ข้อที่ 1c',
-                                '${patient?['SelectedText3']}',
-                                '${patient?['SelectedScore3']}'),
+                              height,
+                              width,
+                              'ข้อที่ 1c',
+                              '${_patient?.selectedText3}',
+                              '${_patient?.selectedScore3}',
+                            ),
                           ),
                           Divider(
                             color: Colors.black38,
@@ -229,19 +249,20 @@ class _NihssDetailState extends State<NihssDetail> {
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => EditNihss4(
-                                    patientID: widget.patientID,
+                                    patientId: widget.patientId,
                                   ),
                                 ),
                               ).then((_) {
-                                _loadPatientData();
+                                loadPatientData();
                               });
                             },
                             child: buildRow(
-                                height,
-                                width,
-                                'ข้อที่ 2 ',
-                                '${patient?['SelectedText4']}',
-                                '${patient?['SelectedScore4']}'),
+                              height,
+                              width,
+                              'ข้อที่ 2 ',
+                              '${_patient?.selectedText4}',
+                              '${_patient?.selectedScore4}',
+                            ),
                           ),
                           Divider(
                             color: Colors.black38,
@@ -252,19 +273,20 @@ class _NihssDetailState extends State<NihssDetail> {
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => EditNihss5(
-                                    patientID: widget.patientID,
+                                    patientId: widget.patientId,
                                   ),
                                 ),
                               ).then((_) {
-                                _loadPatientData();
+                                loadPatientData();
                               });
                             },
                             child: buildRow(
-                                height,
-                                width,
-                                'ข้อที่ 3 ',
-                                '${patient?['SelectedText5']}',
-                                '${patient?['SelectedScore5']}'),
+                              height,
+                              width,
+                              'ข้อที่ 3 ',
+                              '${_patient?.selectedText5}',
+                              '${_patient?.selectedScore5}',
+                            ),
                           ),
                           Divider(
                             color: Colors.black38,
@@ -275,19 +297,20 @@ class _NihssDetailState extends State<NihssDetail> {
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => EditNihss6(
-                                    patientID: widget.patientID,
+                                    patientId: widget.patientId,
                                   ),
                                 ),
                               ).then((_) {
-                                _loadPatientData();
+                                loadPatientData();
                               });
                             },
                             child: buildRow(
-                                height,
-                                width,
-                                'ข้อที่ 4 ',
-                                '${patient?['SelectedText6']}',
-                                '${patient?['SelectedScore6']}'),
+                              height,
+                              width,
+                              'ข้อที่ 4 ',
+                              '${_patient?.selectedText6}',
+                              '${_patient?.selectedScore6}',
+                            ),
                           ),
                           Divider(
                             color: Colors.black38,
@@ -298,19 +321,20 @@ class _NihssDetailState extends State<NihssDetail> {
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => EditNihss7(
-                                    patientID: widget.patientID,
+                                    patientId: widget.patientId,
                                   ),
                                 ),
                               ).then((_) {
-                                _loadPatientData();
+                                loadPatientData();
                               });
                             },
                             child: buildRow(
-                                height,
-                                width,
-                                'ข้อที่ 5a',
-                                '${patient?['SelectedText7']}',
-                                '${patient?['SelectedScore7']}'),
+                              height,
+                              width,
+                              'ข้อที่ 5a',
+                              '${_patient?.selectedText7}',
+                              '${_patient?.selectedScore7}',
+                            ),
                           ),
                           Divider(
                             color: Colors.black38,
@@ -321,19 +345,20 @@ class _NihssDetailState extends State<NihssDetail> {
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => EditNihss8(
-                                    patientID: widget.patientID,
+                                    patientId: widget.patientId,
                                   ),
                                 ),
                               ).then((_) {
-                                _loadPatientData();
+                                loadPatientData();
                               });
                             },
                             child: buildRow(
-                                height,
-                                width,
-                                'ข้อที่ 5b',
-                                '${patient?['SelectedText8']}',
-                                '${patient?['SelectedScore8']}'),
+                              height,
+                              width,
+                              'ข้อที่ 5b',
+                              '${_patient?.selectedText8}',
+                              '${_patient?.selectedScore8}',
+                            ),
                           ),
                           Divider(
                             color: Colors.black38,
@@ -344,19 +369,20 @@ class _NihssDetailState extends State<NihssDetail> {
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => EditNihss9(
-                                    patientID: widget.patientID,
+                                    patientId: widget.patientId,
                                   ),
                                 ),
                               ).then((_) {
-                                _loadPatientData();
+                                loadPatientData();
                               });
                             },
                             child: buildRow(
-                                height,
-                                width,
-                                'ข้อที่ 6a',
-                                '${patient?['SelectedText9']}',
-                                '${patient?['SelectedScore9']}'),
+                              height,
+                              width,
+                              'ข้อที่ 6a',
+                              '${_patient?.selectedText9}',
+                              '${_patient?.selectedScore9}',
+                            ),
                           ),
                           Divider(
                             color: Colors.black38,
@@ -367,19 +393,20 @@ class _NihssDetailState extends State<NihssDetail> {
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => EditNihss10(
-                                    patientID: widget.patientID,
+                                    patientId: widget.patientId,
                                   ),
                                 ),
                               ).then((_) {
-                                _loadPatientData();
+                                loadPatientData();
                               });
                             },
                             child: buildRow(
-                                height,
-                                width,
-                                'ข้อที่ 6b',
-                                '${patient?['SelectedText10']}',
-                                '${patient?['SelectedScore10']}'),
+                              height,
+                              width,
+                              'ข้อที่ 6b',
+                              '${_patient?.selectedText10}',
+                              '${_patient?.selectedScore10}',
+                            ),
                           ),
                           Divider(
                             color: Colors.black38,
@@ -390,19 +417,20 @@ class _NihssDetailState extends State<NihssDetail> {
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => EditNihss11(
-                                    patientID: widget.patientID,
+                                    patientId: widget.patientId,
                                   ),
                                 ),
                               ).then((_) {
-                                _loadPatientData();
+                                loadPatientData();
                               });
                             },
                             child: buildRow(
-                                height,
-                                width,
-                                'ข้อที่ 7 ',
-                                '${patient?['SelectedText11']}',
-                                '${patient?['SelectedScore11']}'),
+                              height,
+                              width,
+                              'ข้อที่ 7 ',
+                              '${_patient?.selectedText11}',
+                              '${_patient?.selectedScore11}',
+                            ),
                           ),
                           Divider(
                             color: Colors.black38,
@@ -413,19 +441,20 @@ class _NihssDetailState extends State<NihssDetail> {
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => EditNihss12(
-                                    patientID: widget.patientID,
+                                    patientId: widget.patientId,
                                   ),
                                 ),
                               ).then((_) {
-                                _loadPatientData();
+                                loadPatientData();
                               });
                             },
                             child: buildRow(
-                                height,
-                                width,
-                                'ข้อที่ 8 ',
-                                '${patient?['SelectedText12']}',
-                                '${patient?['SelectedScore12']}'),
+                              height,
+                              width,
+                              'ข้อที่ 8 ',
+                              '${_patient?.selectedText12}',
+                              '${_patient?.selectedScore12}',
+                            ),
                           ),
                           Divider(
                             color: Colors.black38,
@@ -436,19 +465,20 @@ class _NihssDetailState extends State<NihssDetail> {
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => EditNihss13(
-                                    patientID: widget.patientID,
+                                    patientId: widget.patientId,
                                   ),
                                 ),
                               ).then((_) {
-                                _loadPatientData();
+                                loadPatientData();
                               });
                             },
                             child: buildRow(
-                                height,
-                                width,
-                                'ข้อที่ 9 ',
-                                '${patient?['SelectedText13']}',
-                                '${patient?['SelectedScore13']}'),
+                              height,
+                              width,
+                              'ข้อที่ 9 ',
+                              '${_patient?.selectedText13}',
+                              '${_patient?.selectedScore13}',
+                            ),
                           ),
                           Divider(
                             color: Colors.black38,
@@ -459,19 +489,20 @@ class _NihssDetailState extends State<NihssDetail> {
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => EditNihss14(
-                                    patientID: widget.patientID,
+                                    patientId: widget.patientId,
                                   ),
                                 ),
                               ).then((_) {
-                                _loadPatientData();
+                                loadPatientData();
                               });
                             },
                             child: buildRow(
-                                height,
-                                width,
-                                'ข้อที่ 10',
-                                '${patient?['SelectedText14']}',
-                                '${patient?['SelectedScore14']}'),
+                              height,
+                              width,
+                              'ข้อที่ 10',
+                              '${_patient?.selectedText14}',
+                              '${_patient?.selectedScore14}',
+                            ),
                           ),
                           Divider(
                             color: Colors.black38,
@@ -482,19 +513,20 @@ class _NihssDetailState extends State<NihssDetail> {
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => EditNihss15(
-                                    patientID: widget.patientID,
+                                    patientId: widget.patientId,
                                   ),
                                 ),
                               ).then((_) {
-                                _loadPatientData();
+                                loadPatientData();
                               });
                             },
                             child: buildRow(
-                                height,
-                                width,
-                                'ข้อที่ 11',
-                                '${patient?['SelectedText15']}',
-                                '${patient?['SelectedScore15']}'),
+                              height,
+                              width,
+                              'ข้อที่ 11',
+                              '${_patient?.selectedText15}',
+                              '${_patient?.selectedScore15}',
+                            ),
                           ),
                           Divider(
                             color: Colors.black38,

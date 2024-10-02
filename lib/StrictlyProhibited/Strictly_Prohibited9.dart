@@ -36,18 +36,9 @@ class _Strictly_Prohibited8State extends State<Strictly_Prohibited9> {
         children: <Widget>[
           SizedBox(height: height * 0.02),
           Text(
-            'มีภาวะเลือดออกง่ายเช่น',
+            'มีประวัติได้รับยาต้านการเเข็งตัวของเลือด \n  โดยมีค่า PT > 15 วินาที หรือมีค่า INR > 1.7',
             textAlign: TextAlign.center,
             style: TextStyle(fontSize: height * 0.019),
-          ),
-          Divider(color: Colors.black, thickness: 2),
-          Text(
-            '- มีปริมาณเกล็ดเลือดน้อยกว่า 100,000\n  ต่อลูกบาศก์มิลลิเมตร\n'
-            '- ได้รับยา heparin ภายใน 48 ชั่วโมง \n  มีค่า PPT ผิดปกติ\n'
-            '- ได้รับยาต้านการเเข็งตัวของเลือดเเละ \n  มีค่า PT >= 15 วินาที หรือมีค่า INR >= 1.7\n'
-            '- มีประวัติได้รับยา NOACs ภายใน 48 ชั่วโมง \n  หรือ LMWHs ภายใน 24 ชั่วโมง เเละมีผล\n  การตรวจการเเข็งตัวของเลือดผิดปกติ \n  (aPT, INRm, Count, ECT, TT, \n  หรือ factor activiti assays)',
-            textAlign: TextAlign.left,
-            style: TextStyle(fontSize: height * 0.018),
           ),
           Padding(
             padding: EdgeInsets.only(left: width * 0.025),

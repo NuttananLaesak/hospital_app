@@ -2,15 +2,24 @@ import 'package:flutter/material.dart';
 
 class SymptomArm extends StatefulWidget {
   final ValueChanged<int> onChanged;
+  final int initialValue4; // เพิ่มค่าเริ่มต้น
 
-  const SymptomArm({Key? key, required this.onChanged}) : super(key: key);
+  const SymptomArm(
+      {Key? key, required this.onChanged, required this.initialValue4})
+      : super(key: key);
 
   @override
   State<SymptomArm> createState() => _SymptomArmState();
 }
 
 class _SymptomArmState extends State<SymptomArm> {
-  int symptomArm = -1;
+  late int symptomArm;
+
+  @override
+  void initState() {
+    super.initState();
+    symptomArm = widget.initialValue4; // กำหนดค่าเริ่มต้น
+  }
 
   void _handleCheckboxChange(int index) {
     setState(() {
@@ -34,7 +43,7 @@ class _SymptomArmState extends State<SymptomArm> {
         children: <Widget>[
           SizedBox(height: height * 0.02),
           Text(
-            'Arm : อ่อนเเรงเเขน/ขาเฉียบพลัน',
+            'Arm : เเขน/ขาอ่อนเเรงเฉียบพลัน',
             textAlign: TextAlign.left,
             style: TextStyle(fontSize: height * 0.019),
           ),

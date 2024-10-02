@@ -1,37 +1,43 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
-import 'package:hospital_app/sql_lite.dart';
+import 'package:hospital_app/share_pref.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ResultDetail extends StatefulWidget {
-  final int patientID;
+  final int patientId;
 
-  const ResultDetail({Key? key, required this.patientID}) : super(key: key);
+  const ResultDetail({Key? key, required this.patientId}) : super(key: key);
 
   @override
   State<ResultDetail> createState() => _ResultDetailState();
 }
 
 class _ResultDetailState extends State<ResultDetail> {
-  Map<String, dynamic>? patient;
-  final SqllLiteManage _databaseManager = SqllLiteManage();
   bool showMedicationError = false;
+
+  Patient? _patient;
 
   @override
   void initState() {
     super.initState();
-    _loadPatientData();
+    loadPatientData();
   }
 
-  Future<void> _loadPatientData() async {
-    await _databaseManager.openOrCreateDatabase();
-    List<Map<String, dynamic>> result = await _databaseManager.selectDatabase(
-      "SELECT * FROM Patient WHERE ID = ${widget.patientID}",
-    );
+  Future<void> loadPatientData() async {
+    final prefs = await SharedPreferences.getInstance();
+    List<String>? patientList = prefs.getStringList('patients') ?? [];
 
-    if (result.isNotEmpty) {
-      setState(() {
-        patient = result.first;
-      });
+    for (var patientData in patientList) {
+      Map<String, dynamic> map = Map.from(json.decode(patientData));
+      Patient patient = Patient.fromMap(map);
+      if (patient.id == widget.patientId) {
+        setState(() {
+          _patient = patient;
+        });
+        break;
+      }
     }
   }
 
@@ -136,22 +142,22 @@ class _ResultDetailState extends State<ResultDetail> {
       }
     }
 
-    void _calculateWeight() {
-      if (patient?['Indications1'] == 1 &&
-          patient?['Indications2'] == 1 &&
-          patient?['Indications3'] == 1 &&
-          patient?['StrictlyProhibited1'] == 1 &&
-          patient?['StrictlyProhibited2'] == 1 &&
-          patient?['StrictlyProhibited3'] == 1 &&
-          patient?['StrictlyProhibited4'] == 1 &&
-          patient?['StrictlyProhibited5'] == 1 &&
-          patient?['StrictlyProhibited6'] == 1 &&
-          patient?['StrictlyProhibited7'] == 1 &&
-          patient?['StrictlyProhibited8'] == 1 &&
-          patient?['StrictlyProhibited9'] == 1 &&
-          patient?['StrictlyProhibited10'] == 1 &&
-          patient?['StrictlyProhibited11'] == 1 &&
-          patient?['AdditionalProhibitions1'] == 1) {
+    void _checkcalculateWeight() {
+      if (_patient?.indications1 == 1 &&
+          _patient?.indications2 == 1 &&
+          _patient?.indications3 == 1 &&
+          _patient?.strictlyprohibited1 == 1 &&
+          _patient?.strictlyprohibited2 == 1 &&
+          _patient?.strictlyprohibited3 == 1 &&
+          _patient?.strictlyprohibited4 == 1 &&
+          _patient?.strictlyprohibited5 == 1 &&
+          _patient?.strictlyprohibited6 == 1 &&
+          _patient?.strictlyprohibited7 == 1 &&
+          _patient?.strictlyprohibited8 == 1 &&
+          _patient?.strictlyprohibited9 == 1 &&
+          _patient?.strictlyprohibited10 == 1 &&
+          _patient?.strictlyprohibited11 == 1 &&
+          _patient?.additionalprohibitions1 == 1) {
         setState(() {
           showMedicationError = false;
         });
@@ -219,56 +225,56 @@ class _ResultDetailState extends State<ResultDetail> {
                           thickness: 2.0,
                         ),
                         Text(
-                          'ชื่อ : ${patient?['PatientName']?.isNotEmpty == true ? patient!['PatientName'] : 'ไม่ได้ระบุ'}',
+                          'ชื่อ : ${_patient?.nameController.isNotEmpty == true ? _patient!.nameController : 'ไม่ได้ระบุ'}',
                           style: TextStyle(
                             fontSize: height * 0.02,
                           ),
                         ),
                         Divider(),
                         Text(
-                          'โรงพยาบาล : ${patient?['Hospital']?.isNotEmpty == true ? patient!['Hospital'] : 'ไม่ได้ระบุ'}',
+                          'โรงพยาบาล : ${_patient?.hospitalController.isNotEmpty == true ? _patient!.hospitalController : 'ไม่ได้ระบุ'}',
                           style: TextStyle(
                             fontSize: height * 0.02,
                           ),
                         ),
                         Divider(),
                         Text(
-                          'อายุ : ${patient?['Age'] == null ? 'ไม่ได้ระบุ' : patient!['Age'] == 0 ? 'ไม่ได้ระบุ' : patient!['Age']} ปี',
+                          'อายุ : ${_patient?.ageController == null ? 'ไม่ได้ระบุ' : _patient!.ageController == 0 ? 'ไม่ได้ระบุ' : _patient!.ageController} ปี',
                           style: TextStyle(
                             fontSize: height * 0.02,
                           ),
                         ),
                         Divider(),
                         Text(
-                          'เพศ : ${patient?['Gender']?.isNotEmpty == true ? patient!['Gender'] : 'ไม่ได้ระบุ'}',
+                          'เพศ : ${_patient?.gender.isNotEmpty == true ? _patient!.gender : 'ไม่ได้ระบุ'}',
                           style: TextStyle(
                             fontSize: height * 0.02,
                           ),
                         ),
                         Divider(),
                         Text(
-                          'น้ำหนัก : ${patient?['Weight']?.isNotEmpty == true ? patient!['Weight'] : 'ไม่ได้ระบุ'}',
+                          'น้ำหนัก : ${_patient?.weightController.isNotEmpty == true ? _patient!.weightController : 'ไม่ได้ระบุ'}',
                           style: TextStyle(
                             fontSize: height * 0.02,
                           ),
                         ),
                         Divider(),
                         Text(
-                          'ความดันโลหิต : ${patient?['SystolicBloodPressure'] ?? 'ไม่ระบุ'}/${patient?['DiastolicBloodPressure'] ?? 'ไม่ระบุ'} (mmHg)',
+                          'ความดันโลหิต : ${_patient?.systolicBloodPressureController ?? 'ไม่ระบุ'}/${_patient?.diastolicBloodPressureController ?? 'ไม่ระบุ'} (mmHg)',
                           style: TextStyle(
                             fontSize: height * 0.02,
                           ),
                         ),
                         Divider(),
                         Text(
-                          'ระดับน้ำตาลในเลือด : ${patient?['Sugar']?.isNotEmpty == true ? patient!['Sugar'] : 'ไม่ได้ระบุ'} (mg/dl)',
+                          'ระดับน้ำตาลในเลือด : ${_patient?.sugarController.isNotEmpty == true ? _patient!.sugarController : 'ไม่ได้ระบุ'} (mg/dl)',
                           style: TextStyle(
                             fontSize: height * 0.02,
                           ),
                         ),
                         Divider(),
                         Text(
-                          'โรคประจำตัว : ${patient?['SelectedDiseases']?.isNotEmpty == true ? patient!['SelectedDiseases'] : 'ไม่ได้ระบุ'}',
+                          'โรคประจำตัว : ${_patient?.selectedDiseases.isNotEmpty == true ? _patient!.selectedDiseases : 'ไม่ได้ระบุ'}',
                           style: TextStyle(
                             fontSize: height * 0.02,
                           ),
@@ -279,13 +285,7 @@ class _ResultDetailState extends State<ResultDetail> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
-                              'CT Brain : ',
-                              style: TextStyle(
-                                fontSize: height * 0.02,
-                              ),
-                            ),
-                            Text(
-                              ctbrainText(patient?['CTBrain']),
+                              'CT Brain : ${_patient?.ctBrainText?.isNotEmpty == true ? _patient!.ctBrainText : 'ไม่ได้ระบุ'}',
                               style: TextStyle(
                                 fontSize: height * 0.02,
                               ),
@@ -316,7 +316,7 @@ class _ResultDetailState extends State<ResultDetail> {
                           ),
                         ),
                         Text(
-                          '${patient?['DateTime1']?.isNotEmpty == true ? patient!['DateTime1'] : 'ไม่ได้ระบุ'}',
+                          '${_patient?.dateTimeController1.isNotEmpty == true ? _patient?.dateTimeController1 : 'ไม่ได้ระบุ'}',
                           style: TextStyle(
                             fontSize: height * 0.02,
                           ),
@@ -329,7 +329,7 @@ class _ResultDetailState extends State<ResultDetail> {
                           ),
                         ),
                         Text(
-                          '${patient?['DateTime2']?.isNotEmpty == true ? patient!['DateTime2'] : 'ไม่ได้ระบุ'}',
+                          '${_patient?.dateTimeController2.isNotEmpty == true ? _patient?.dateTimeController2 : 'ไม่ได้ระบุ'}',
                           style: TextStyle(
                             fontSize: height * 0.02,
                           ),
@@ -342,7 +342,7 @@ class _ResultDetailState extends State<ResultDetail> {
                           ),
                         ),
                         Text(
-                          '${patient?['DateTime3']?.isNotEmpty == true ? patient!['DateTime3'] : 'ไม่ได้ระบุ'}',
+                          '${_patient?.dateTimeController3.isNotEmpty == true ? _patient?.dateTimeController3 : 'ไม่ได้ระบุ'}',
                           style: TextStyle(
                             fontSize: height * 0.02,
                           ),
@@ -365,7 +365,7 @@ class _ResultDetailState extends State<ResultDetail> {
                           thickness: 2.0,
                         ),
                         Text(
-                          'ระยะเวลาเมีออาการมาโรงพยาบาล\nใช้เวลา ${patient?['TimeDifference1'].toStringAsFixed(2) ?? 'ไม่ระบุ'} ชั่วโมง',
+                          'ระยะเวลาเมีอมีอาการมาโรงพยาบาล\nใช้เวลา ${_patient?.timeDifference1!.toStringAsFixed(2) ?? 'ไม่ระบุ'} ชั่วโมง',
                           style: TextStyle(
                             fontSize: height * 0.02,
                           ),
@@ -373,7 +373,7 @@ class _ResultDetailState extends State<ResultDetail> {
                         ),
                         Divider(),
                         Text(
-                          'ระยะเวลาเมื่อมาโรงพยาบาลเเล้วฉีดยา\nใช้เวลา ${patient?['TimeDifference2'].toStringAsFixed(2) ?? 'ไม่ระบุ'} ชั่วโมง',
+                          'ระยะเวลาเมื่อมาโรงพยาบาลเเล้วฉีดยา\nใช้เวลา ${_patient?.timeDifference2!.toStringAsFixed(2) ?? 'ไม่ระบุ'} ชั่วโมง',
                           style: TextStyle(
                             fontSize: height * 0.02,
                           ),
@@ -406,7 +406,7 @@ class _ResultDetailState extends State<ResultDetail> {
                               ),
                             ),
                             Text(
-                              CheckSymptom1(patient?['SymptomHead']),
+                              CheckSymptom1(_patient?.symptomHead),
                               style: TextStyle(
                                 fontSize: height * 0.02,
                               ),
@@ -424,7 +424,7 @@ class _ResultDetailState extends State<ResultDetail> {
                               ),
                             ),
                             Text(
-                              CheckSymptom1(patient?['SymptomEye']),
+                              CheckSymptom1(_patient?.symptomEye),
                               style: TextStyle(
                                 fontSize: height * 0.02,
                               ),
@@ -442,7 +442,7 @@ class _ResultDetailState extends State<ResultDetail> {
                               ),
                             ),
                             Text(
-                              CheckSymptom2(patient?['SymptomFace'] ?? -1),
+                              CheckSymptom2(_patient?.symptomFace ?? -1),
                               style: TextStyle(
                                 fontSize: height * 0.02,
                               ),
@@ -460,7 +460,7 @@ class _ResultDetailState extends State<ResultDetail> {
                               ),
                             ),
                             Text(
-                              CheckSymptom2(patient?['SymptomArm'] ?? -1),
+                              CheckSymptom2(_patient?.symptomArm ?? -1),
                               style: TextStyle(
                                 fontSize: height * 0.02,
                               ),
@@ -478,7 +478,7 @@ class _ResultDetailState extends State<ResultDetail> {
                               ),
                             ),
                             Text(
-                              CheckSymptom1(patient?['SymptomSpeech']),
+                              CheckSymptom1(_patient?.symptomSpeech),
                               style: TextStyle(
                                 fontSize: height * 0.02,
                               ),
@@ -496,7 +496,7 @@ class _ResultDetailState extends State<ResultDetail> {
                               ),
                             ),
                             Text(
-                              CheckSymptom3(patient?['SymptomVisual'] ?? -1),
+                              CheckSymptom3(_patient?.symptomVisual ?? -1),
                               style: TextStyle(
                                 fontSize: height * 0.02,
                               ),
@@ -514,7 +514,7 @@ class _ResultDetailState extends State<ResultDetail> {
                               ),
                             ),
                             Text(
-                              CheckSymptom4(patient?['SymptomAphasia'] ?? -1),
+                              CheckSymptom4(_patient?.symptomAphasia ?? -1),
                               style: TextStyle(
                                 fontSize: height * 0.02,
                               ),
@@ -532,7 +532,7 @@ class _ResultDetailState extends State<ResultDetail> {
                               ),
                             ),
                             Text(
-                              CheckSymptom1(patient?['SymptomNeglect']),
+                              CheckSymptom1(_patient?.symptomNeglect),
                               style: TextStyle(
                                 fontSize: height * 0.02,
                               ),
@@ -557,14 +557,14 @@ class _ResultDetailState extends State<ResultDetail> {
                           thickness: 2.0,
                         ),
                         Text(
-                          'NIHSS : ${patient?['TotalScore']} คะเเนน',
+                          'NIHSS ${_patient?.totalScore} คะเเนน',
                           style: TextStyle(
                             fontSize: height * 0.02,
                           ),
                         ),
                         Divider(),
                         Text(
-                          'ระดับความรุนเเรง ${patient?['NIHSSLevel']}',
+                          'ระดับความรุนเเรง ${_patient?.nihssLevel}',
                           style: TextStyle(
                             fontSize: height * 0.02,
                           ),
@@ -590,21 +590,21 @@ class _ResultDetailState extends State<ResultDetail> {
                           height,
                           width,
                           'มีอาการของหลอดเลือดสมองตีบภายในระยะเวลา 4.5 ชั่วโมง\n',
-                          checkIndication(patient?['Indications1']),
+                          checkIndication(_patient?.indications1),
                         ),
                         Divider(),
                         buildRow(
                           height,
                           width,
                           'มีอายุเท่ากับหรือมากกว่า 18 ปี',
-                          checkIndication(patient?['Indications2']),
+                          checkIndication(_patient?.indications2),
                         ),
                         Divider(),
                         buildRow(
                           height,
                           width,
                           'ผล CT brain ไม่พบว่ามีเลือดออกในเนื้อสมองหรือชั้นใต้เยื่อหุ้มสมอง',
-                          checkIndication(patient?['Indications3']),
+                          checkIndication(_patient?.indications3),
                         ),
                         SizedBox(height: height * 0.04),
                         Divider(
@@ -626,77 +626,77 @@ class _ResultDetailState extends State<ResultDetail> {
                           height,
                           width,
                           'มีอาการบาดเจ็บที่ศรีษะอย่างรุนเเรงหรือมีประวัติเป็นโรคหลอดเลือดสมองใน 3 เดือน',
-                          checkProhibited(patient?['StrictlyProhibited1']),
+                          checkProhibited(_patient?.strictlyprohibited1),
                         ),
                         Divider(),
                         buildRow(
                           height,
                           width,
                           'มีอาการสงสัยว่ามีเลือดออกชั้นใต้ของ\nเยื่อหุ้มสมอง',
-                          checkProhibited(patient?['StrictlyProhibited2']),
+                          checkProhibited(_patient?.strictlyprohibited2),
                         ),
                         Divider(),
                         buildRow(
                           height,
                           width,
                           'มีประวัติเคยมีเลือดออกในกระโหลกศรีษะ',
-                          checkProhibited(patient?['StrictlyProhibited3']),
+                          checkProhibited(_patient?.strictlyprohibited3),
                         ),
                         Divider(),
                         buildRow(
                           height,
                           width,
                           'มีเนื้องอกในสมอง , Aneuysm, Arteriovenous Malformation',
-                          checkProhibited(patient?['StrictlyProhibited4']),
+                          checkProhibited(_patient?.strictlyprohibited4),
                         ),
                         Divider(),
                         buildRow(
                           height,
                           width,
                           'มีการเเทงหลอกเลือดเเดงขนาดใหญ่ในตำเเหน่งที่ไม่สามารถกดได้ภายใน7วัน',
-                          checkProhibited(patient?['StrictlyProhibited5']),
+                          checkProhibited(_patient?.strictlyprohibited5),
                         ),
                         Divider(),
                         buildRow(
                           height,
                           width,
                           'มีการได้รับการผ่าตัดกระโหลกศรีษะหรือกระดูกสันหลังภายใน 3 เดือน',
-                          checkProhibited(patient?['StrictlyProhibited6']),
+                          checkProhibited(_patient?.strictlyprohibited6),
                         ),
                         Divider(),
                         buildRow(
                           height,
                           width,
                           'มีความดันโลหิตสูงเเละไม่สามารถลดความดันโลหิตลงได้ก่อนให้ยาละลายลิ่มเลือด',
-                          checkProhibited(patient?['StrictlyProhibited7']),
+                          checkProhibited(_patient?.strictlyprohibited7),
                         ),
                         Divider(),
                         buildRow(
                           height,
                           width,
                           'มีผลการตรวจร่างกายพบว่ามีภาวะเลือดออก (Active Bleeding)',
-                          checkProhibited(patient?['StrictlyProhibited8']),
+                          checkProhibited(_patient?.strictlyprohibited8),
                         ),
                         Divider(),
                         buildRow(
                           height,
                           width,
                           'มีภาวะเลือดออกง่าย',
-                          checkProhibited(patient?['StrictlyProhibited9']),
+                          checkProhibited(_patient?.strictlyprohibited9),
                         ),
                         Divider(),
                         buildRow(
                           height,
                           width,
                           'มีระดับน้ำตาลในเลือดเท่ากับหรือ\nน้อยกว่า 50 mg/dl',
-                          checkProhibited(patient?['StrictlyProhibited10']),
+                          checkProhibited(_patient?.strictlyprohibited10),
                         ),
                         Divider(),
                         buildRow(
                           height,
                           width,
                           'CT brain พบมีสมองขาดเลือดมากกว่าขนาด 1/3 ชอง cerebral hemisphere',
-                          checkProhibited(patient?['StrictlyProhibited11']),
+                          checkProhibited(_patient?.strictlyprohibited11),
                         ),
                         Divider(),
                         SizedBox(height: height * 0.04),
@@ -719,42 +719,42 @@ class _ResultDetailState extends State<ResultDetail> {
                           height,
                           width,
                           'มีอาการทางประสาทดีขึ้นอย่างรวดเร็วจนเกือบเป็นปกติหรือมีอาการอย่างเดียวไม่รุนเเรง',
-                          checkProhibited(patient?['StrictlyNotProhibited1']),
+                          checkProhibited(_patient?.strictlynotprohibited1),
                         ),
                         Divider(),
                         buildRow(
                           height,
                           width,
                           'มีการตั้งครรภ์',
-                          checkProhibited(patient?['StrictlyNotProhibited2']),
+                          checkProhibited(_patient?.strictlynotprohibited2),
                         ),
                         Divider(),
                         buildRow(
                           height,
                           width,
                           'มีอาการชักตอนเริ่มต้นเเละภายหลังจากชักยังมีอาการอ่อนเเรงอยู่',
-                          checkProhibited(patient?['StrictlyNotProhibited3']),
+                          checkProhibited(_patient?.strictlynotprohibited3),
                         ),
                         Divider(),
                         buildRow(
                           height,
                           width,
                           'เคยมีประวัติการผ่าตัดใหญ่หรือ\nมีอุบัติเหตุรุนเเรงภายใน 14 วัน',
-                          checkProhibited(patient?['StrictlyNotProhibited4']),
+                          checkProhibited(_patient?.strictlynotprohibited4),
                         ),
                         Divider(),
                         buildRow(
                           height,
                           width,
                           'มีเลือดออกในทางเดินอาหารหรือ\nทางเดินปัสสสาวะภายใน 21 วัน',
-                          checkProhibited(patient?['StrictlyNotProhibited5']),
+                          checkProhibited(_patient?.strictlynotprohibited5),
                         ),
                         Divider(),
                         buildRow(
                           height,
                           width,
                           'มีประวัติ Recent Myocardial Infracytion ภายใน 3 เดือน',
-                          checkProhibited(patient?['StrictlyNotProhibited6']),
+                          checkProhibited(_patient?.strictlynotprohibited6),
                         ),
                         Divider(),
                         SizedBox(height: height * 0.04),
@@ -778,28 +778,28 @@ class _ResultDetailState extends State<ResultDetail> {
                           height,
                           width,
                           'NIHSS มากกว่า 25 คะเเนน',
-                          checkProhibited(patient?['AdditionalProhibitions1']),
+                          checkProhibited(_patient?.additionalprohibitions1),
                         ),
                         Divider(),
                         buildRow(
                           height,
                           width,
                           'เป็นเบาหวานร่วมกับเคยมีโรคหลอดเลือดสมองอุดตันมาก่อน',
-                          checkProhibited(patient?['AdditionalProhibitions2']),
+                          checkProhibited(_patient?.additionalprohibitions2),
                         ),
                         Divider(),
                         buildRow(
                           height,
                           width,
                           'มีอายุมากกว่า 80 ปี',
-                          checkProhibited(patient?['AdditionalProhibitions3']),
+                          checkProhibited(_patient?.additionalprohibitions3),
                         ),
                         Divider(),
                         buildRow(
                           height,
                           width,
                           'มีประวัติได้รับยาละลายลิ่มเลือด \n(Warfarin) โดยไม่พิจารณา INR',
-                          checkProhibited(patient?['AdditionalProhibitions4']),
+                          checkProhibited(_patient?.additionalprohibitions4),
                         ),
                         Divider(),
                         Divider(
@@ -834,19 +834,19 @@ class _ResultDetailState extends State<ResultDetail> {
                           Column(
                             children: [
                               Text(
-                                'ปริมาณยาละลายลิ่มเลือด\n(rt-PA) ${patient?['Medic1']?.toStringAsFixed(2) ?? 'ไม่ระบุ'} มิลลิกรัม',
+                                'ปริมาณยาละลายลิ่มเลือด\n(rt-PA) ${_patient?.medic1.toStringAsFixed(2) ?? 'ไม่ระบุ'} มิลลิกรัม',
                                 style: TextStyle(fontSize: height * 0.02),
                                 textAlign: TextAlign.center,
                               ),
                               Divider(),
                               Text(
-                                'แบ่งให้ ${patient?['Medic2']?.toStringAsFixed(2) ?? 'ไม่ระบุ'} มิลลิกรัม\nทางหลอดเลือดใน 1 นาที',
+                                'แบ่งให้ ${_patient?.medic2.toStringAsFixed(2) ?? 'ไม่ระบุ'} มิลลิกรัม\nทางหลอดเลือดใน 1 นาที',
                                 style: TextStyle(fontSize: height * 0.02),
                                 textAlign: TextAlign.center,
                               ),
                               Divider(),
                               Text(
-                                'และ ${patient?['Medic3']?.toStringAsFixed(2) ?? 'ไม่ระบุ'} มิลลิกรัม\nหยดทางหลอดเลือดใน 60 นาที',
+                                'และ ${_patient?.medic3.toStringAsFixed(2) ?? 'ไม่ระบุ'} มิลลิกรัม\nหยดทางหลอดเลือดใน 60 นาที',
                                 style: TextStyle(fontSize: height * 0.02),
                                 textAlign: TextAlign.center,
                               ),
@@ -879,10 +879,9 @@ class _ResultDetailState extends State<ResultDetail> {
                               Row(
                                 children: [
                                   Text(
-                                    (patient != null &&
-                                            patient!['BeforeCure'] != null &&
-                                            patient!['BeforeCure'].isNotEmpty)
-                                        ? patient!['BeforeCure']
+                                    (_patient != null &&
+                                            _patient!.beforecure.isNotEmpty)
+                                        ? _patient!.beforecure
                                         : 'ไม่ระบุ',
                                     style: TextStyle(fontSize: height * 0.02),
                                   ),
@@ -899,10 +898,9 @@ class _ResultDetailState extends State<ResultDetail> {
                               Row(
                                 children: [
                                   Text(
-                                    (patient != null &&
-                                            patient!['AfterCure'] != null &&
-                                            patient!['AfterCure'].isNotEmpty)
-                                        ? patient!['AfterCure']
+                                    (_patient != null &&
+                                            _patient!.aftercure.isNotEmpty)
+                                        ? _patient!.aftercure
                                         : 'ไม่ระบุ',
                                     style: TextStyle(fontSize: height * 0.02),
                                   ),
@@ -925,58 +923,58 @@ class _ResultDetailState extends State<ResultDetail> {
         backgroundColor: const Color(0xFF82B1FF),
         child: const Icon(Icons.send),
         onPressed: () async {
-          if (patient != null) {
+          if (_patient != null) {
             String patientDetails = '''
 ข้อมูลผู้ป่วยโรคหลอดเลือดสมอง
 
 ข้อมูลเบื้องต้น
-ชื่อ: ${patient?['PatientName']?.isNotEmpty == true ? patient!['PatientName'] : 'ไม่ได้ระบุ'}
-โรงพยาบาล: ${patient?['Hospital']?.isNotEmpty == true ? patient!['Hospital'] : 'ไม่ได้ระบุ'}
-อายุ: ${patient?['Age'] == null ? 'ไม่ได้ระบุ' : patient!['Age'] == 0 ? 'ไม่ได้ระบุ' : patient!['Age']} ปี
-เพศ: ${patient?['Gender']?.isNotEmpty == true ? patient!['Gender'] : 'ไม่ได้ระบุ'}
-น้ำหนัก: ${patient?['Weight']?.isNotEmpty == true ? patient!['Weight'] : 'ไม่ได้ระบุ'}' กิโลกรัม
-ความดันโลหิต: ${patient!['SystolicBloodPressure'] ?? 'ไม่ระบุ'}/${patient!['DiastolicBloodPressure'] ?? 'ไม่ระบุ'} (mg/dl)
-ระดับน้ำตาลในเลือด: ${patient?['Sugar']?.isNotEmpty == true ? patient!['Sugar'] : 'ไม่ได้ระบุ'} (mg/dl)
-โรคประจำตัว: ${patient?['SelectedDiseases']?.isNotEmpty == true ? patient!['SelectedDiseases'] : 'ไม่ได้ระบุ'}
-CT Brain: ${ctbrainText(patient?['CTBrain'])}
+ชื่อ: ${_patient?.nameController.isNotEmpty == true ? _patient!.nameController : 'ไม่ได้ระบุ'}
+โรงพยาบาล: ${_patient?.hospitalController.isNotEmpty == true ? _patient!.hospitalController : 'ไม่ได้ระบุ'}
+อายุ: ${_patient?.ageController == null ? 'ไม่ได้ระบุ' : _patient!.ageController == 0 ? 'ไม่ได้ระบุ' : _patient!.ageController} ปี
+เพศ: ${_patient?.gender.isNotEmpty == true ? _patient!.gender : 'ไม่ได้ระบุ'}
+น้ำหนัก: ${_patient?.weightController.isNotEmpty == true ? _patient!.weightController : 'ไม่ได้ระบุ'}' กิโลกรัม
+ความดันโลหิต: ${_patient?.systolicBloodPressureController ?? 'ไม่ระบุ'}/${_patient?.diastolicBloodPressureController ?? 'ไม่ระบุ'} (mg/dl)
+ระดับน้ำตาลในเลือด: ${_patient?.sugarController.isNotEmpty == true ? _patient!.sugarController : 'ไม่ได้ระบุ'} (mg/dl)
+โรคประจำตัว: ${_patient?.selectedDiseases.isNotEmpty == true ? _patient!.selectedDiseases : 'ไม่ได้ระบุ'}
+CT Brain: ${_patient?.ctBrainText?.isNotEmpty == true ? _patient!.ctBrainText : 'ไม่ได้ระบุ'}
 
 วันที่เเละเวลาที่บันทึกข้อมูล
 เวลาที่เริ่มมีอาการ
-${patient?['DateTime1']?.isNotEmpty == true ? patient!['DateTime1'] : 'ไม่ได้ระบุ'}
+${_patient?.dateTimeController1.isNotEmpty == true ? _patient!.dateTimeController1 : 'ไม่ได้ระบุ'}
 เวลาที่มาถึงโรงพยาบาล
-${patient?['DateTime2']?.isNotEmpty == true ? patient!['DateTime2'] : 'ไม่ได้ระบุ'}
+${_patient?.dateTimeController2.isNotEmpty == true ? _patient!.dateTimeController2 : 'ไม่ได้ระบุ'}
 เวลาที่ใช้ยาละลายลิ่มเลือด
-${patient?['DateTime3']?.isNotEmpty == true ? patient!['DateTime3'] : 'ไม่ได้ระบุ'}
+${_patient?.dateTimeController3.isNotEmpty == true ? _patient!.dateTimeController3 : 'ไม่ได้ระบุ'}
 
 ระยะเวลาที่ใช้
 ระยะเวลาเมื่อมีอาการมาโรงพยาบาล
-ใช้เวลา ${patient?['TimeDifference1']?.toStringAsFixed(2) ?? 'ไม่ระบุ'} ชั่วโมง'
+ใช้เวลา ${_patient?.timeDifference1?.toStringAsFixed(2) ?? 'ไม่ระบุ'} ชั่วโมง'
 ระยะเวลาเมื่อมาโรงพยาบาลเเล้วฉีดยา
-ใช้เวลา ${patient?['TimeDifference2']?.toStringAsFixed(2) ?? 'ไม่ระบุ'} ชั่วโมง'
+ใช้เวลา ${_patient?.timeDifference2?.toStringAsFixed(2) ?? 'ไม่ระบุ'} ชั่วโมง'
       
 อาการ
-1. เวียนศรีษะ เดินเซ: ${CheckSymptom1(patient?['SymptomHead'])}
-2. อาการตาดับทันทีทันใด: ${CheckSymptom1(patient?['SymptomEye'])} 
-3. หน้าเบี้ยวฉียบพลัน: ${CheckSymptom2(patient?['SymptomFace'] ?? -1)}
-4. อ่อนแอแขน/ขาเฉียบพลัน: ${CheckSymptom2(patient?['SymptomArm'] ?? -1)}
-5. พูดลำบาก/พูดไม่ชัด: ${CheckSymptom1(patient?['SymptomSpeech'])}
-6. การมองเห็น: ${CheckSymptom3(patient?['SymptomVisual'] ?? -1)}
-7. การเข้าใจภาษา: ${CheckSymptom4(patient?['SymptomAphasia'] ?? -1)}
-8. ไม่สนใจร่างกายหนึ่งด้าน: ${CheckSymptom1(patient?['SymptomNeglect'])}
+1. เวียนศรีษะ เดินเซ: ${CheckSymptom1(_patient?.symptomHead)}
+2. อาการตาดับทันทีทันใด: ${CheckSymptom1(_patient?.symptomEye)} 
+3. หน้าเบี้ยวฉียบพลัน: ${CheckSymptom2(_patient?.symptomFace ?? -1)}
+4. อ่อนแอแขน/ขาเฉียบพลัน: ${CheckSymptom2(_patient?.symptomArm ?? -1)}
+5. พูดลำบาก/พูดไม่ชัด: ${CheckSymptom1(_patient?.symptomSpeech)}
+6. การมองเห็น: ${CheckSymptom3(_patient?.symptomVisual ?? -1)}
+7. การเข้าใจภาษา: ${CheckSymptom4(_patient?.symptomAphasia ?? -1)}
+8. ไม่สนใจร่างกายหนึ่งด้าน: ${CheckSymptom1(_patient?.symptomNeglect)}
 
 การให้ยาผู้ป่วย
 ปริมาณยาละลายลิ่มเลือด
-(rt-PA) ${patient?['Medic1']?.toStringAsFixed(2) ?? 'ไม่ระบุ'} มิลลิกรัม
-แบ่งให้ ${patient?['Medic2']?.toStringAsFixed(2) ?? 'ไม่ระบุ'} มิลลิกรัม
+(rt-PA) ${_patient?.medic1.toStringAsFixed(2) ?? 'ไม่ระบุ'} มิลลิกรัม
+แบ่งให้ ${_patient?.medic2.toStringAsFixed(2) ?? 'ไม่ระบุ'} มิลลิกรัม
 ทางหลอดเลือดใน 1 นาที'
-'และ ${patient?['Medic3']?.toStringAsFixed(2) ?? 'ไม่ระบุ'} มิลลิกรัม
+'และ ${_patient?.medic3.toStringAsFixed(2) ?? 'ไม่ระบุ'} มิลลิกรัม
 หยดทางหลอดเลือดใน 60 นาที',
 
 ผลการรักษา
 ก่อนการรักษา
-${patient?['BeforeCure'] ?? 'ไม่ระบุ'}
+${_patient?.beforecure ?? 'ไม่ระบุ'}
 หลังการรักษา
-${patient?['BeforeCure'] ?? 'ไม่ระบุ'}
+${_patient?.aftercure ?? 'ไม่ระบุ'}
       ''';
             await Share.share(patientDetails);
           } else {

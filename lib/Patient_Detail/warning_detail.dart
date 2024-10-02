@@ -1,36 +1,41 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:hospital_app/Edit_Patient/EditWarning1.dart';
-import 'package:hospital_app/sql_lite.dart';
+import 'package:hospital_app/share_pref.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class WarningDetail extends StatefulWidget {
-  final int patientID;
+  final int patientId;
 
-  const WarningDetail({Key? key, required this.patientID}) : super(key: key);
+  const WarningDetail({Key? key, required this.patientId}) : super(key: key);
 
   @override
   State<WarningDetail> createState() => _WarningDetailState();
 }
 
 class _WarningDetailState extends State<WarningDetail> {
-  Map<String, dynamic>? patient;
-  final SqllLiteManage _databaseManager = SqllLiteManage();
+  Patient? _patient;
 
   @override
   void initState() {
     super.initState();
-    _loadPatientData();
+    loadPatientData();
   }
 
-  Future<void> _loadPatientData() async {
-    await _databaseManager.openOrCreateDatabase();
-    List<Map<String, dynamic>> result = await _databaseManager.selectDatabase(
-      "SELECT * FROM Patient WHERE ID = ${widget.patientID}",
-    );
+  Future<void> loadPatientData() async {
+    final prefs = await SharedPreferences.getInstance();
+    List<String>? patientList = prefs.getStringList('patients') ?? [];
 
-    if (result.isNotEmpty) {
-      setState(() {
-        patient = result.first;
-      });
+    for (var patientData in patientList) {
+      Map<String, dynamic> map = Map.from(json.decode(patientData));
+      Patient patient = Patient.fromMap(map);
+      if (patient.id == widget.patientId) {
+        setState(() {
+          _patient = patient;
+        });
+        break;
+      }
     }
   }
 
@@ -45,9 +50,9 @@ class _WarningDetailState extends State<WarningDetail> {
       }
       switch (value) {
         case 0:
-          return 'ไม่';
+          return 'ไม่มี';
         case 1:
-          return 'ใช่';
+          return 'มี';
         default:
           return 'ไม่ได้ระบุ';
       }
@@ -128,22 +133,22 @@ class _WarningDetailState extends State<WarningDetail> {
                           buildRow(
                             height,
                             width,
-                            'มีอาการของหลอดเลือดสมองตีบภายในระยะเวลา 4.5 ชั่วโมง\n',
-                            checkIndication(patient?['Indications1']),
+                            'มีอายุเท่ากับหรือมากกว่า 18 ปี',
+                            checkIndication(_patient?.indications2),
                           ),
                           Divider(),
                           buildRow(
                             height,
                             width,
-                            'มีอายุเท่ากับหรือมากกว่า 18 ปี',
-                            checkIndication(patient?['Indications2']),
+                            'มีอาการของหลอดเลือดสมองตีบ\nภายในระยะเวลา 4.5 ชั่วโมงหรือไม่',
+                            checkIndication(_patient?.indications1),
                           ),
                           Divider(),
                           buildRow(
                             height,
                             width,
                             'ผล CT brain ไม่พบว่ามีเลือดออกในเนื้อสมองหรือชั้นใต้เยื่อหุ้มสมอง',
-                            checkIndication(patient?['Indications3']),
+                            checkIndication(_patient?.indications3),
                           ),
                           Divider(),
                         ],
@@ -192,78 +197,99 @@ class _WarningDetailState extends State<WarningDetail> {
                           buildRow(
                             height,
                             width,
-                            'มีอาการบาดเจ็บที่ศรีษะอย่างรุนเเรงหรือมีประวัติเป็นโรคหลอดเลือดสมองใน 3 เดือน',
-                            checkProhibited(patient?['StrictlyProhibited1']),
+                            'มีความดันโลหิตช่วงก่อนให้รักษาสูง\n(SBP > 185 mm/Hg) (DBP > 110 mm/Hg)\nเเละไม่สามารถลดความดันโลหิตลงได้ก่อนให้ยาละลายลิ่มเลือด',
+                            checkProhibited(_patient?.strictlyprohibited7),
                           ),
                           Divider(),
                           buildRow(
                             height,
                             width,
-                            'มีอาการสงสัยว่ามีเลือดออกชั้นใต้ของ\nเยื่อหุ้มสมอง',
-                            checkProhibited(patient?['StrictlyProhibited2']),
+                            'มีประวัติเลือดออกในสมองมาก่อน',
+                            checkProhibited(_patient?.strictlyprohibited3),
                           ),
                           Divider(),
                           buildRow(
                             height,
                             width,
-                            'มีประวัติเคยมีเลือดออกในกระโหลกศรีษะ',
-                            checkProhibited(patient?['StrictlyProhibited3']),
+                            'มีเนื้องอกในสมอง',
+                            checkProhibited(_patient?.strictlyprohibited4),
                           ),
                           Divider(),
                           buildRow(
                             height,
                             width,
-                            'มีเนื้องอกในสมอง , Aneuysm, Arteriovenous Malformation',
-                            checkProhibited(patient?['StrictlyProhibited4']),
+                            'มีอาการบาดเจ็บที่ศรีษะอย่างรุนเเรงหรือมีประวัติเป็นโรคหลอดเลือดสมองภายใน 3 เดือน',
+                            checkProhibited(_patient?.strictlyprohibited1),
                           ),
                           Divider(),
                           buildRow(
                             height,
                             width,
-                            'มีการเเทงหลอกเลือดเเดงขนาดใหญ่ในตำเเหน่งที่ไม่สามารถกดได้ภายใน7วัน',
-                            checkProhibited(patient?['StrictlyProhibited5']),
+                            'มีประวัติได้รับยาต้านการเเข็งตัวของเลือดโดยมีค่า PT > 15 วินาที หรือมีค่า INR > 1.7',
+                            checkProhibited(_patient?.strictlyprohibited9),
                           ),
                           Divider(),
                           buildRow(
                             height,
                             width,
-                            'มีการได้รับการผ่าตัดกระโหลกศรีษะหรือกระดูกสันหลังภายใน 3 เดือน',
-                            checkProhibited(patient?['StrictlyProhibited6']),
+                            'มีประวัติได้รับยาเเละผลตรวจดังนี้\nได้รับยากลุ่ม Non vitamin K antagonist oral anticoagullant',
+                            checkProhibited(_patient?.strictlyprohibited12),
                           ),
                           Divider(),
                           buildRow(
                             height,
                             width,
-                            'มีความดันโลหิตสูงเเละไม่สามารถลดความดันโลหิตลงได้ก่อนให้ยาละลายลิ่มเลือด',
-                            checkProhibited(patient?['StrictlyProhibited7']),
+                            'ได้รับยา heparin ภายใน 48 ชั่วโมงเเละมีค่า partial-thromboplastin time ผิดปกติ',
+                            checkProhibited(_patient?.strictlyprohibited13),
                           ),
                           Divider(),
                           buildRow(
                             height,
                             width,
-                            'มีผลการตรวจร่างกายพบว่ามีภาวะเลือดออก (Active Bleeding)',
-                            checkProhibited(patient?['StrictlyProhibited8']),
-                          ),
-                          Divider(),
-                          buildRow(
-                            height,
-                            width,
-                            'มีภาวะเลือดออกง่าย',
-                            checkProhibited(patient?['StrictlyProhibited9']),
-                          ),
-                          Divider(),
-                          buildRow(
-                            height,
-                            width,
-                            'มีระดับน้ำตาลในเลือดเท่ากับหรือ\nน้อยกว่า 50 mg/dl',
-                            checkProhibited(patient?['StrictlyProhibited10']),
+                            'มีปริมาณเกล็ดเลือดน้อยกว่า \n100,000 ต่อลูกบาศก์มิลลิเมตร',
+                            checkProhibited(_patient?.strictlyprohibited14),
                           ),
                           Divider(),
                           buildRow(
                             height,
                             width,
                             'CT brain พบมีสมองขาดเลือดมากกว่าขนาด 1/3 ชอง cerebral hemisphere',
-                            checkProhibited(patient?['StrictlyProhibited11']),
+                            checkProhibited(_patient?.strictlyprohibited11),
+                          ),
+                          Divider(),
+                          buildRow(
+                            height,
+                            width,
+                            'มีระดับน้ำตาลในเลือดเท่ากับหรือ\nน้อยกว่า 50 mg/dl',
+                            checkProhibited(_patient?.strictlyprohibited10),
+                          ),
+                          Divider(),
+                          buildRow(
+                            height,
+                            width,
+                            'มีการได้รับการผ่าตัดกระโหลกศรีษะ \nหรือกระดูกสันหลังภายใน 3 เดือน',
+                            checkProhibited(_patient?.strictlyprohibited6),
+                          ),
+                          Divider(),
+                          buildRow(
+                            height,
+                            width,
+                            'มีภาวะเลือดออกเเละอวัยวะภายใน',
+                            checkProhibited(_patient?.strictlyprohibited8),
+                          ),
+                          Divider(),
+                          buildRow(
+                            height,
+                            width,
+                            'มีประวัติสงสัยภาวะเลือดออก\nชั้นใต้เยื่อหุ้มสมอง',
+                            checkProhibited(_patient?.strictlyprohibited2),
+                          ),
+                          Divider(),
+                          buildRow(
+                            height,
+                            width,
+                            'มีการเเทงหลอกเลือดเเดงขนาดใหญ่\nในตำเเหน่งที่ไม่สามารถกดได้ภายใน 7 วัน',
+                            checkProhibited(_patient?.strictlyprohibited5),
                           ),
                           Divider(),
                         ],
@@ -313,160 +339,60 @@ class _WarningDetailState extends State<WarningDetail> {
                             height,
                             width,
                             'มีอาการทางประสาทดีขึ้นอย่างรวดเร็วจนเกือบเป็นปกติหรือมีอาการอย่างเดียวไม่รุนเเรง',
-                            checkProhibited(patient?['StrictlyNotProhibited1']),
-                          ),
-                          Divider(),
-                          buildRow(
-                            height,
-                            width,
-                            'มีการตั้งครรภ์',
-                            checkProhibited(patient?['StrictlyNotProhibited2']),
+                            checkProhibited(_patient?.strictlynotprohibited1),
                           ),
                           Divider(),
                           buildRow(
                             height,
                             width,
                             'มีอาการชักตอนเริ่มต้นเเละภายหลังจากชักยังมีอาการอ่อนเเรงอยู่',
-                            checkProhibited(patient?['StrictlyNotProhibited3']),
+                            checkProhibited(_patient?.strictlynotprohibited3),
                           ),
                           Divider(),
                           buildRow(
                             height,
                             width,
                             'เคยมีประวัติการผ่าตัดใหญ่หรือ\nมีอุบัติเหตุรุนเเรงภายใน 14 วัน',
-                            checkProhibited(patient?['StrictlyNotProhibited4']),
+                            checkProhibited(_patient?.strictlynotprohibited4),
                           ),
                           Divider(),
                           buildRow(
                             height,
                             width,
                             'มีเลือดออกในทางเดินอาหารหรือ\nทางเดินปัสสสาวะภายใน 21 วัน',
-                            checkProhibited(patient?['StrictlyNotProhibited5']),
+                            checkProhibited(_patient?.strictlynotprohibited5),
                           ),
                           Divider(),
                           buildRow(
                             height,
                             width,
                             'มีประวัติ Recent Myocardial Infracytion ภายใน 3 เดือน',
-                            checkProhibited(patient?['StrictlyNotProhibited6']),
+                            checkProhibited(_patient?.strictlynotprohibited6),
                           ),
                           Divider(),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-            SizedBox(height: height * 0.04),
-            Padding(
-              padding: EdgeInsets.symmetric(
-                horizontal: height * 0.02,
-              ),
-              child: Card(
-                color: Colors.white,
-                elevation: 5,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(40),
-                  side: const BorderSide(
-                    color: Color(0xFF82B1FF),
-                    width: 5,
-                  ),
-                ),
-                child: Padding(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: width * 0.04,
-                    vertical: height * 0.02,
-                  ),
-                  child: Column(
-                    children: [
-                      Column(
-                        children: [
-                          Text(
-                            'ข้อห้ามเพิ่มเติมในกรณีผู้ป่วยมีอาการมากกว่า 3 - 4.5 ชั่วโมง',
-                            style: TextStyle(
-                              fontSize: height * 0.024,
-                              fontWeight: FontWeight.bold,
+                          buildRow(
+                            height,
+                            width,
+                            'มีการตั้งครรภ์',
+                            checkProhibited(_patient?.strictlynotprohibited2),
+                          ),
+                          Divider(),
+                          buildRow(
+                            height,
+                            width,
+                            'เคยเป็นโรคหลอดเลือดสมองตีบหรือ\nหลอดเลือดสมองอุดตันภายใน 3 เดือน',
+                            checkProhibited(
+                              (_patient?.additionalprohibitions2),
                             ),
-                            textAlign: TextAlign.center,
                           ),
-                          Divider(
-                            color: Color(0xFF82B1FF),
-                            thickness: 2.0,
-                          ),
+                          Divider(),
                           buildRow(
                             height,
                             width,
                             'NIHSS มากกว่า 25 คะเเนน',
                             checkProhibited(
-                                patient?['AdditionalProhibitions1']),
-                          ),
-                          Divider(),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-            SizedBox(height: height * 0.04),
-            Padding(
-              padding: EdgeInsets.symmetric(
-                horizontal: height * 0.02,
-              ),
-              child: Card(
-                color: Colors.white,
-                elevation: 5,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(40),
-                  side: const BorderSide(
-                    color: Color(0xFF82B1FF),
-                    width: 5,
-                  ),
-                ),
-                child: Padding(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: width * 0.04,
-                    vertical: height * 0.02,
-                  ),
-                  child: Column(
-                    children: [
-                      Column(
-                        children: [
-                          Text(
-                            'ข้อห้ามเพิ่มเติมในกรณีผู้ป่วยมีอาการมากกว่า 3 - 4.5 ชั่วโมง',
-                            style: TextStyle(
-                              fontSize: height * 0.024,
-                              fontWeight: FontWeight.bold,
+                              (_patient?.additionalprohibitions1),
                             ),
-                            textAlign: TextAlign.center,
-                          ),
-                          Divider(
-                            color: Color(0xFF82B1FF),
-                            thickness: 2.0,
-                          ),
-                          buildRow(
-                            height,
-                            width,
-                            'เป็นเบาหวานร่วมกับเคยมีโรคหลอดเลือดสมองอุดตันมาก่อน',
-                            checkProhibited(
-                                patient?['AdditionalProhibitions2']),
-                          ),
-                          Divider(),
-                          buildRow(
-                            height,
-                            width,
-                            'มีอายุมากกว่า 80 ปี',
-                            checkProhibited(
-                                patient?['AdditionalProhibitions3']),
-                          ),
-                          Divider(),
-                          buildRow(
-                            height,
-                            width,
-                            'มีประวัติได้รับยาละลายลิ่มเลือด \n(Warfarin) โดยไม่พิจารณา INR',
-                            checkProhibited(
-                                patient?['AdditionalProhibitions4']),
                           ),
                           Divider(),
                         ],
@@ -476,7 +402,7 @@ class _WarningDetailState extends State<WarningDetail> {
                 ),
               ),
             ),
-            SizedBox(height: height * 0.04),
+            SizedBox(height: height * 0.07),
           ],
         ),
       ),
@@ -509,11 +435,11 @@ class _WarningDetailState extends State<WarningDetail> {
                 context,
                 MaterialPageRoute(
                   builder: (context) => EditWarning1(
-                    patientID: widget.patientID,
+                    patientId: widget.patientId,
                   ),
                 ),
               ).then((_) {
-                _loadPatientData();
+                loadPatientData();
               });
             },
             borderRadius: BorderRadius.circular(height * 0.076 / 2),

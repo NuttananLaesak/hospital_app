@@ -1,18 +1,19 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:hospital_app/AdditionalProhibitions/AdditionalProhibitions1.dart';
 import 'package:hospital_app/AdditionalProhibitions/AdditionalProhibitions2.dart';
-import 'package:hospital_app/AdditionalProhibitions/AdditionalProhibitions3.dart';
-import 'package:hospital_app/AdditionalProhibitions/AdditionalProhibitions4.dart';
 import 'package:hospital_app/StrictlyNotProhibited/StrictlyNotProhibited1.dart';
 import 'package:hospital_app/StrictlyNotProhibited/StrictlyNotProhibited2.dart';
 import 'package:hospital_app/StrictlyNotProhibited/StrictlyNotProhibited3.dart';
 import 'package:hospital_app/StrictlyNotProhibited/StrictlyNotProhibited4.dart';
 import 'package:hospital_app/StrictlyNotProhibited/StrictlyNotProhibited5.dart';
 import 'package:hospital_app/StrictlyNotProhibited/StrictlyNotProhibited6.dart';
-import 'package:hospital_app/sql_lite.dart';
+import 'package:hospital_app/share_pref.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class EditWarning2 extends StatefulWidget {
-  final int patientID;
+  final int patientId;
   final int indications1;
   final int indications2;
   final int indications3;
@@ -27,10 +28,13 @@ class EditWarning2 extends StatefulWidget {
   final int strictlyprohibited9;
   final int strictlyprohibited10;
   final int strictlyprohibited11;
+  final int strictlyprohibited12;
+  final int strictlyprohibited13;
+  final int strictlyprohibited14;
 
   const EditWarning2({
     super.key,
-    required this.patientID,
+    required this.patientId,
     required this.indications1,
     required this.indications2,
     required this.indications3,
@@ -45,6 +49,9 @@ class EditWarning2 extends StatefulWidget {
     required this.strictlyprohibited9,
     required this.strictlyprohibited10,
     required this.strictlyprohibited11,
+    required this.strictlyprohibited12,
+    required this.strictlyprohibited13,
+    required this.strictlyprohibited14,
   });
 
   @override
@@ -52,7 +59,6 @@ class EditWarning2 extends StatefulWidget {
 }
 
 class _EditWarning2State extends State<EditWarning2> {
-  final SqllLiteManage _databaseManager = SqllLiteManage();
   int strictlynotprohibited1 = -1;
   int strictlynotprohibited2 = -1;
   int strictlynotprohibited3 = -1;
@@ -69,24 +75,29 @@ class _EditWarning2State extends State<EditWarning2> {
   int additionalprohibitions4 = -1;
   int _totalScore = 0;
   int _age2 = 0;
-
+  // ignore: unused_field
+  Patient? _patient;
   @override
   void initState() {
     super.initState();
-    _loadPatientData();
+    loadPatientData();
   }
 
-  Future<void> _loadPatientData() async {
-    await _databaseManager.openOrCreateDatabase();
-    List<Map<String, dynamic>> result = await _databaseManager.selectDatabase(
-      "SELECT * FROM Patient WHERE ID = ${widget.patientID}",
-    );
+  Future<void> loadPatientData() async {
+    final prefs = await SharedPreferences.getInstance();
+    List<String>? patientList = prefs.getStringList('patients') ?? [];
 
-    if (result.isNotEmpty) {
-      setState(() {
-        _totalScore = result.first['TotalScore'];
-        _age2 = result.first['Age'];
-      });
+    for (var patientData in patientList) {
+      Map<String, dynamic> map = Map.from(json.decode(patientData));
+      Patient patient = Patient.fromMap(map);
+      if (patient.id == widget.patientId) {
+        setState(() {
+          _patient = patient;
+          _totalScore = patient.totalScore;
+          _age2 = patient.ageController ?? 0;
+        });
+        break;
+      }
       _initializeAdditionalProhibitions();
     }
   }
@@ -115,34 +126,111 @@ class _EditWarning2State extends State<EditWarning2> {
   }
 
   Future<void> _updateWarning() async {
-    String updateQuery = "UPDATE Patient SET "
-        "Indications1 = ${widget.indications1}, "
-        "Indications2 = ${widget.indications2}, "
-        "Indications3 = ${widget.indications3}, "
-        "StrictlyProhibited1 = ${widget.strictlyprohibited1}, "
-        "StrictlyProhibited2 = ${widget.strictlyprohibited2}, "
-        "StrictlyProhibited3 = ${widget.strictlyprohibited3}, "
-        "StrictlyProhibited4 = ${widget.strictlyprohibited4}, "
-        "StrictlyProhibited5 = ${widget.strictlyprohibited5}, "
-        "StrictlyProhibited6 = ${widget.strictlyprohibited6}, "
-        "StrictlyProhibited7 = ${widget.strictlyprohibited7}, "
-        "StrictlyProhibited8 = ${widget.strictlyprohibited8}, "
-        "StrictlyProhibited9 = ${widget.strictlyprohibited9}, "
-        "StrictlyProhibited10 = ${widget.strictlyprohibited10}, "
-        "StrictlyProhibited11 = ${widget.strictlyprohibited11}, "
-        "StrictlyNotProhibited1 = ${strictlynotprohibited1}, "
-        "StrictlyNotProhibited2 = ${strictlynotprohibited2}, "
-        "StrictlyNotProhibited3 = ${strictlynotprohibited3}, "
-        "StrictlyNotProhibited4 = ${strictlynotprohibited4}, "
-        "StrictlyNotProhibited5 = ${strictlynotprohibited5}, "
-        "StrictlyNotProhibited6 = ${strictlynotprohibited6}, "
-        "AdditionalProhibitions1 = ${additionalprohibitions1}, "
-        "AdditionalProhibitions2 = ${additionalprohibitions2}, "
-        "AdditionalProhibitions3 = ${additionalprohibitions3}, "
-        "AdditionalProhibitions4 = ${additionalprohibitions4} "
-        "WHERE ID = ${widget.patientID}";
+    final prefs = await SharedPreferences.getInstance();
+    List<String>? patientList = prefs.getStringList('patients') ?? [];
 
-    await _databaseManager.updateDatabase(updateQuery);
+    // อัปเดตข้อมูลผู้ป่วย
+    final updatedPatient = Patient(
+      id: widget.patientId,
+      nameController: _patient?.nameController ?? '',
+      hospitalController: _patient?.hospitalController ?? '',
+      ageController: _patient?.ageController,
+      gender: _patient?.gender ?? '',
+      weightController: _patient?.weightController ?? '',
+      systolicBloodPressureController:
+          _patient?.systolicBloodPressureController ?? '',
+      diastolicBloodPressureController:
+          _patient?.diastolicBloodPressureController ?? '',
+      sugarController: _patient?.sugarController ?? '',
+      dateTimeController1: _patient?.dateTimeController1 ?? '',
+      dateTimeController2: _patient?.dateTimeController2 ?? '',
+      dateTimeController3: _patient?.dateTimeController3 ?? '',
+      timeDifference1: _patient?.timeDifference1,
+      timeDifference2: _patient?.timeDifference2,
+      symptomHead: _patient?.symptomHead ?? 0,
+      symptomEye: _patient?.symptomEye ?? 0,
+      symptomFace: _patient?.symptomFace ?? 0,
+      symptomArm: _patient?.symptomArm ?? 0,
+      symptomSpeech: _patient?.symptomSpeech ?? 0,
+      symptomVisual: _patient?.symptomVisual ?? 0,
+      symptomAphasia: _patient?.symptomAphasia ?? 0,
+      symptomNeglect: _patient?.symptomNeglect ?? 0,
+      selectedDiseases: _patient?.selectedDiseases ?? '',
+      scoreDiseases: _patient?.scoreDiseases ?? 0,
+      ctBrain: _patient?.ctBrain,
+      ctBrainText: _patient?.ctBrainText,
+      totalScore: _patient?.totalScore ?? 0,
+      selectedScore1: _patient?.selectedScore1 ?? 0,
+      selectedScore2: _patient?.selectedScore2 ?? 0,
+      selectedScore3: _patient?.selectedScore3 ?? 0,
+      selectedScore4: _patient?.selectedScore4 ?? 0,
+      selectedScore5: _patient?.selectedScore5 ?? 0,
+      selectedScore6: _patient?.selectedScore6 ?? 0,
+      selectedScore7: _patient?.selectedScore7 ?? 0,
+      selectedScore8: _patient?.selectedScore8 ?? 0,
+      selectedScore9: _patient?.selectedScore9 ?? 0,
+      selectedScore10: _patient?.selectedScore10 ?? 0,
+      selectedScore11: _patient?.selectedScore11 ?? 0,
+      selectedScore12: _patient?.selectedScore12 ?? 0,
+      selectedScore13: _patient?.selectedScore13 ?? 0,
+      selectedScore14: _patient?.selectedScore14 ?? 0,
+      selectedScore15: _patient?.selectedScore15 ?? 0,
+      selectedText1: _patient?.selectedText1 ?? '',
+      selectedText2: _patient?.selectedText2 ?? '',
+      selectedText3: _patient?.selectedText3 ?? '',
+      selectedText4: _patient?.selectedText4 ?? '',
+      selectedText5: _patient?.selectedText5 ?? '',
+      selectedText6: _patient?.selectedText6 ?? '',
+      selectedText7: _patient?.selectedText7 ?? '',
+      selectedText8: _patient?.selectedText8 ?? '',
+      selectedText9: _patient?.selectedText9 ?? '',
+      selectedText10: _patient?.selectedText10 ?? '',
+      selectedText11: _patient?.selectedText11 ?? '',
+      selectedText12: _patient?.selectedText12 ?? '',
+      selectedText13: _patient?.selectedText13 ?? '',
+      selectedText14: _patient?.selectedText14 ?? '',
+      selectedText15: _patient?.selectedText15 ?? '',
+      nihssLevel: _patient?.nihssLevel ?? '',
+      indications1: widget.indications1,
+      indications2: widget.indications2,
+      indications3: widget.indications2,
+      strictlyprohibited1: widget.strictlyprohibited1,
+      strictlyprohibited2: widget.strictlyprohibited2,
+      strictlyprohibited3: widget.strictlyprohibited3,
+      strictlyprohibited4: widget.strictlyprohibited4,
+      strictlyprohibited5: widget.strictlyprohibited5,
+      strictlyprohibited6: widget.strictlyprohibited6,
+      strictlyprohibited7: widget.strictlyprohibited7,
+      strictlyprohibited8: widget.strictlyprohibited8,
+      strictlyprohibited9: widget.strictlyprohibited9,
+      strictlyprohibited10: widget.strictlyprohibited10,
+      strictlyprohibited11: widget.strictlyprohibited11,
+      strictlyprohibited12: widget.strictlyprohibited12,
+      strictlyprohibited13: widget.strictlyprohibited13,
+      strictlyprohibited14: widget.strictlyprohibited14,
+      strictlynotprohibited1: strictlynotprohibited1,
+      strictlynotprohibited2: strictlynotprohibited2,
+      strictlynotprohibited3: strictlynotprohibited3,
+      strictlynotprohibited4: strictlynotprohibited4,
+      strictlynotprohibited5: strictlynotprohibited5,
+      strictlynotprohibited6: strictlynotprohibited6,
+      additionalprohibitions1: additionalprohibitions1,
+      additionalprohibitions2: additionalprohibitions2,
+      additionalprohibitions3: additionalprohibitions3,
+      additionalprohibitions4: additionalprohibitions4,
+      medic1: _patient?.medic1 ?? 0,
+      medic2: _patient?.medic2 ?? 0,
+      medic3: _patient?.medic3 ?? 0,
+      beforecure: _patient?.beforecure ?? '',
+      aftercure: _patient?.aftercure ?? '',
+      recordedTime1: _patient?.recordedTime1,
+      recordedTime2: _patient?.recordedTime2,
+    );
+
+    // อัปเดตใน SharedPreferences
+    patientList[widget.patientId] = json.encode(updatedPatient.toMap());
+    await prefs.setStringList('patients', patientList);
+
     Navigator.pop(context);
     Navigator.pop(context);
   }
@@ -238,14 +326,6 @@ class _EditWarning2State extends State<EditWarning2> {
                           },
                         ),
                         SizedBox(height: height * 0.02),
-                        StrictlyNotProhibited2(
-                          onChanged: (value) {
-                            setState(() {
-                              strictlynotprohibited2 = value;
-                            });
-                          },
-                        ),
-                        SizedBox(height: height * 0.02),
                         StrictlyNotProhibited3(
                           onChanged: (value) {
                             setState(() {
@@ -277,88 +357,15 @@ class _EditWarning2State extends State<EditWarning2> {
                             });
                           },
                         ),
-                        SizedBox(height: height * 0.03),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            ),
-            SizedBox(height: height * 0.05),
-            Center(
-              child: SizedBox(
-                width: width * 0.9,
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Color.fromARGB(255, 150, 192, 255),
-                    borderRadius: BorderRadius.circular(20),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.2),
-                        spreadRadius: 2,
-                        blurRadius: 5,
-                        offset: Offset(0, 3),
-                      ),
-                    ],
-                  ),
-                  child: Padding(
-                    padding: EdgeInsets.all(width * 0.05),
-                    child: Column(
-                      children: [
-                        Text(
-                          "ข้อห้ามเพิ่มเติมกรณีให้ยาใน\nผู้ป่วยที่มีอาการมากกว่า 4.5 ชั่วโมง",
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: height * 0.023,
-                            fontWeight: FontWeight.bold,
-                          ),
+                        SizedBox(height: height * 0.02),
+                        StrictlyNotProhibited2(
+                          onChanged: (value) {
+                            setState(() {
+                              strictlynotprohibited2 = value;
+                            });
+                          },
                         ),
-                        SizedBox(height: height * 0.04),
-                        AdditionalProhibitions1(
-                          nihssLess: nihssLess,
-                          nihssMore: nihssMore,
-                          nihssLessChanged: (value) =>
-                              updateAdditionalProhibitions1(value, true),
-                          nihssMoreChanged: (value) =>
-                              updateAdditionalProhibitions1(value, false),
-                        ),
-                        SizedBox(height: height * 0.03),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            ),
-            SizedBox(height: height * 0.05),
-            Center(
-              child: SizedBox(
-                width: width * 0.9,
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Color.fromARGB(255, 150, 192, 255),
-                    borderRadius: BorderRadius.circular(20),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.2),
-                        spreadRadius: 2,
-                        blurRadius: 5,
-                        offset: Offset(0, 3),
-                      ),
-                    ],
-                  ),
-                  child: Padding(
-                    padding: EdgeInsets.all(width * 0.05),
-                    child: Column(
-                      children: [
-                        Text(
-                          "ข้อห้ามเพิ่มเติมกรณีให้ยาใน\nผู้ป่วยที่มีอาการมากกว่า 4.5 ชั่วโมง",
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: height * 0.023,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        SizedBox(height: height * 0.04),
+                        SizedBox(height: height * 0.02),
                         AdditionalProhibitions2(
                           onChanged: (value) {
                             setState(() {
@@ -367,21 +374,13 @@ class _EditWarning2State extends State<EditWarning2> {
                           },
                         ),
                         SizedBox(height: height * 0.02),
-                        AdditionalProhibitions3(
-                          age2Less: age2Less,
-                          age2sMore: age2sMore,
-                          age2LessChanged: (value) =>
-                              updateAdditionalProhibitions3(value, true),
-                          age2MoreChanged: (value) =>
-                              updateAdditionalProhibitions3(value, false),
-                        ),
-                        SizedBox(height: height * 0.02),
-                        AdditionalProhibitions4(
-                          onChanged: (value) {
-                            setState(() {
-                              additionalprohibitions4 = value;
-                            });
-                          },
+                        AdditionalProhibitions1(
+                          nihssLess: nihssLess,
+                          nihssMore: nihssMore,
+                          nihssLessChanged: (value) =>
+                              updateAdditionalProhibitions1(value, true),
+                          nihssMoreChanged: (value) =>
+                              updateAdditionalProhibitions1(value, false),
                         ),
                         SizedBox(height: height * 0.03),
                       ],

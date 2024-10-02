@@ -36,7 +36,7 @@ class _AdditionalProhibitions2State extends State<AdditionalProhibitions2> {
         children: <Widget>[
           SizedBox(height: height * 0.02),
           Text(
-            'เป็นเบาหวานร่วมกับเคยมี\nโรคหลอดเลือดสมองอุดตันมาก่อน',
+            'เคยเป็นโรคหลอดเลือดสมองตีบหรือ\nหลอดเลือดสมองอุดตันภายใน 3 เดือน',
             textAlign: TextAlign.center,
             style: TextStyle(fontSize: height * 0.019),
           ),

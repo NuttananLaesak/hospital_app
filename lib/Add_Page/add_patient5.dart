@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:hospital_app/Add_Page/add_patient10.dart';
 import 'package:hospital_app/AdditionalProhibitions/AdditionalProhibitions1.dart';
 import 'package:hospital_app/AdditionalProhibitions/AdditionalProhibitions2.dart';
-import 'package:hospital_app/AdditionalProhibitions/AdditionalProhibitions3.dart';
-import 'package:hospital_app/AdditionalProhibitions/AdditionalProhibitions4.dart';
 import 'package:hospital_app/StrictlyNotProhibited/StrictlyNotProhibited1.dart';
 import 'package:hospital_app/StrictlyNotProhibited/StrictlyNotProhibited2.dart';
 import 'package:hospital_app/StrictlyNotProhibited/StrictlyNotProhibited3.dart';
@@ -25,14 +23,6 @@ class AddPatient5 extends StatefulWidget {
   final TextEditingController dateTimeController3;
   final double? timeDifference1;
   final double? timeDifference2;
-  final int symptomHead;
-  final int symptomEye;
-  final int symptomFace;
-  final int symptomArm;
-  final int symptomSpeech;
-  final int symptomVisual;
-  final int symptomAphasia;
-  final int symptomNeglect;
   final String selectedDiseases;
   final int? ctBrain;
   final String? ctBrainText;
@@ -82,6 +72,9 @@ class AddPatient5 extends StatefulWidget {
   final int strictlyprohibited9;
   final int strictlyprohibited10;
   final int strictlyprohibited11;
+  final int strictlyprohibited12;
+  final int strictlyprohibited13;
+  final int strictlyprohibited14;
 
   const AddPatient5({
     super.key,
@@ -98,14 +91,6 @@ class AddPatient5 extends StatefulWidget {
     required this.dateTimeController3,
     required this.timeDifference1,
     required this.timeDifference2,
-    required this.symptomHead,
-    required this.symptomEye,
-    required this.symptomFace,
-    required this.symptomArm,
-    required this.symptomSpeech,
-    required this.symptomVisual,
-    required this.symptomAphasia,
-    required this.symptomNeglect,
     required this.selectedDiseases,
     required this.ctBrain,
     required this.ctBrainText,
@@ -155,6 +140,9 @@ class AddPatient5 extends StatefulWidget {
     required this.strictlyprohibited9,
     required this.strictlyprohibited10,
     required this.strictlyprohibited11,
+    required this.strictlyprohibited12,
+    required this.strictlyprohibited13,
+    required this.strictlyprohibited14,
   });
 
   @override
@@ -298,14 +286,6 @@ class _AddPatient5State extends State<AddPatient5> {
                           },
                         ),
                         SizedBox(height: height * 0.02),
-                        StrictlyNotProhibited2(
-                          onChanged: (value) {
-                            setState(() {
-                              strictlynotprohibited2 = value;
-                            });
-                          },
-                        ),
-                        SizedBox(height: height * 0.02),
                         StrictlyNotProhibited3(
                           onChanged: (value) {
                             setState(() {
@@ -337,88 +317,15 @@ class _AddPatient5State extends State<AddPatient5> {
                             });
                           },
                         ),
-                        SizedBox(height: height * 0.03),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            ),
-            SizedBox(height: height * 0.05),
-            Center(
-              child: SizedBox(
-                width: width * 0.9,
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Color.fromARGB(255, 150, 192, 255),
-                    borderRadius: BorderRadius.circular(20),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.2),
-                        spreadRadius: 2,
-                        blurRadius: 5,
-                        offset: Offset(0, 3),
-                      ),
-                    ],
-                  ),
-                  child: Padding(
-                    padding: EdgeInsets.all(width * 0.05),
-                    child: Column(
-                      children: [
-                        Text(
-                          "ข้อห้ามเพิ่มเติมกรณีให้ยาใน\nผู้ป่วยที่มีอาการมากกว่า 4.5 ชั่วโมง",
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: height * 0.023,
-                            fontWeight: FontWeight.bold,
-                          ),
+                        SizedBox(height: height * 0.02),
+                        StrictlyNotProhibited2(
+                          onChanged: (value) {
+                            setState(() {
+                              strictlynotprohibited2 = value;
+                            });
+                          },
                         ),
-                        SizedBox(height: height * 0.04),
-                        AdditionalProhibitions1(
-                          nihssLess: nihssLess,
-                          nihssMore: nihssMore,
-                          nihssLessChanged: (value) =>
-                              updateAdditionalProhibitions1(value, true),
-                          nihssMoreChanged: (value) =>
-                              updateAdditionalProhibitions1(value, false),
-                        ),
-                        SizedBox(height: height * 0.03),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            ),
-            SizedBox(height: height * 0.05),
-            Center(
-              child: SizedBox(
-                width: width * 0.9,
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Color.fromARGB(255, 150, 192, 255),
-                    borderRadius: BorderRadius.circular(20),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.2),
-                        spreadRadius: 2,
-                        blurRadius: 5,
-                        offset: Offset(0, 3),
-                      ),
-                    ],
-                  ),
-                  child: Padding(
-                    padding: EdgeInsets.all(width * 0.05),
-                    child: Column(
-                      children: [
-                        Text(
-                          "ข้อห้ามเพิ่มเติมกรณีให้ยาใน\nผู้ป่วยที่มีอาการมากกว่า 4.5 ชั่วโมง",
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: height * 0.023,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        SizedBox(height: height * 0.04),
+                        SizedBox(height: height * 0.02),
                         AdditionalProhibitions2(
                           onChanged: (value) {
                             setState(() {
@@ -427,21 +334,13 @@ class _AddPatient5State extends State<AddPatient5> {
                           },
                         ),
                         SizedBox(height: height * 0.02),
-                        AdditionalProhibitions3(
-                          age2Less: age2Less,
-                          age2sMore: age2sMore,
-                          age2LessChanged: (value) =>
-                              updateAdditionalProhibitions3(value, true),
-                          age2MoreChanged: (value) =>
-                              updateAdditionalProhibitions3(value, false),
-                        ),
-                        SizedBox(height: height * 0.02),
-                        AdditionalProhibitions4(
-                          onChanged: (value) {
-                            setState(() {
-                              additionalprohibitions4 = value;
-                            });
-                          },
+                        AdditionalProhibitions1(
+                          nihssLess: nihssLess,
+                          nihssMore: nihssMore,
+                          nihssLessChanged: (value) =>
+                              updateAdditionalProhibitions1(value, true),
+                          nihssMoreChanged: (value) =>
+                              updateAdditionalProhibitions1(value, false),
                         ),
                         SizedBox(height: height * 0.03),
                       ],
@@ -475,14 +374,6 @@ class _AddPatient5State extends State<AddPatient5> {
                           dateTimeController3: widget.dateTimeController3,
                           timeDifference1: widget.timeDifference1,
                           timeDifference2: widget.timeDifference2,
-                          symptomHead: widget.symptomHead,
-                          symptomEye: widget.symptomEye,
-                          symptomFace: widget.symptomFace,
-                          symptomArm: widget.symptomArm,
-                          symptomSpeech: widget.symptomSpeech,
-                          symptomVisual: widget.symptomVisual,
-                          symptomAphasia: widget.symptomAphasia,
-                          symptomNeglect: widget.symptomNeglect,
                           selectedDiseases: widget.selectedDiseases,
                           ctBrain: widget.ctBrain,
                           ctBrainText: widget.ctBrainText,
@@ -532,6 +423,9 @@ class _AddPatient5State extends State<AddPatient5> {
                           strictlyprohibited9: widget.strictlyprohibited9,
                           strictlyprohibited10: widget.strictlyprohibited10,
                           strictlyprohibited11: widget.strictlyprohibited11,
+                          strictlyprohibited12: widget.strictlyprohibited12,
+                          strictlyprohibited13: widget.strictlyprohibited13,
+                          strictlyprohibited14: widget.strictlyprohibited14,
                           strictlynotprohibited1: strictlynotprohibited1,
                           strictlynotprohibited2: strictlynotprohibited2,
                           strictlynotprohibited3: strictlynotprohibited3,

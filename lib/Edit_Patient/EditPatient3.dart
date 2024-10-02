@@ -1,10 +1,15 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:hospital_app/Add_Patient/ct_brain.dart';
 import 'package:hospital_app/Add_Patient/disease_selection.dart';
-import 'package:hospital_app/sql_lite.dart';
+import 'package:hospital_app/Provider/Paddpatient3.dart';
+import 'package:hospital_app/share_pref.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class EditPatient3 extends StatefulWidget {
-  final int patientID;
+  final int patientId;
   final TextEditingController nameController;
   final TextEditingController hospitalController;
   final TextEditingController ageController;
@@ -28,7 +33,7 @@ class EditPatient3 extends StatefulWidget {
   final int symptomNeglect;
 
   const EditPatient3(
-      {required this.patientID,
+      {required this.patientId,
       required this.nameController,
       required this.hospitalController,
       required this.ageController,
@@ -56,72 +61,158 @@ class EditPatient3 extends StatefulWidget {
 }
 
 class _EditPatient3State extends State<EditPatient3> {
-  final SqllLiteManage _databaseManager = SqllLiteManage();
+  late String initialctselectedDiseases;
+  late int initialonDiseasesScore;
+  // ignore: unused_field
   String _selectedDiseases = '';
+  // ignore: unused_field
+  int _onDiseasesScore = -1;
   int? ctBrainScore;
   String? ctBrainText;
+
+  Patient? _patient;
 
   @override
   void initState() {
     super.initState();
-    _loadPatientData();
+    loadPatientData();
   }
 
-  Future<void> _loadPatientData() async {
-    await _databaseManager.openOrCreateDatabase();
-    List<Map<String, dynamic>> result = await _databaseManager.selectDatabase(
-      "SELECT * FROM Patient WHERE ID = ${widget.patientID}",
-    );
+  Future<void> loadPatientData() async {
+    final prefs = await SharedPreferences.getInstance();
+    List<String>? patientList = prefs.getStringList('patients') ?? [];
 
-    if (result.isNotEmpty) {
-      setState(() {
-        _selectedDiseases = result.first['SelectedDiseases'];
-        ctBrainScore = result.first['CTBrain'];
-        ctBrainText = result.first['CTBrainText'];
-      });
+    for (var patientData in patientList) {
+      Map<String, dynamic> map = Map.from(json.decode(patientData));
+      Patient patient = Patient.fromMap(map);
+      if (patient.id == widget.patientId) {
+        setState(() {
+          _patient = patient;
+          _selectedDiseases = patient.selectedDiseases;
+          ctBrainScore = patient.ctBrain;
+          ctBrainText = patient.ctBrainText;
+        });
+        break;
+      }
     }
   }
 
   Future<void> _updatePatientData() async {
-    String updateQuery = "UPDATE Patient SET "
-        "PatientName = '${widget.nameController.text}', "
-        "Hospital = '${widget.hospitalController.text}', "
-        "Age = ${widget.ageController.text}, "
-        "Gender = '${widget.gender}', "
-        "Weight = '${widget.weightController.text}', "
-        "SystolicBloodPressure = '${widget.systolicBloodPressureController.text}', "
-        "DiastolicBloodPressure = '${widget.diastolicBloodPressureController.text}', "
-        "Sugar = '${widget.sugarController.text}', "
-        "DateTime1 = '${widget.dateTimeController1.text}', "
-        "DateTime2 = '${widget.dateTimeController2.text}', "
-        "DateTime3 = '${widget.dateTimeController3.text}', "
-        "TimeDifference1 = ${widget.timeDifference1 ?? 'NULL'}, "
-        "TimeDifference2 = ${widget.timeDifference2 ?? 'NULL'}, "
-        "SymptomHead = ${widget.symptomHead}, "
-        "SymptomEye = ${widget.symptomEye}, "
-        "SymptomFace = ${widget.symptomFace}, "
-        "SymptomArm = ${widget.symptomArm}, "
-        "SymptomSpeech = ${widget.symptomSpeech}, "
-        "SymptomVisual = ${widget.symptomVisual}, "
-        "SymptomAphasia = ${widget.symptomAphasia}, "
-        "SymptomNeglect = ${widget.symptomNeglect}, "
-        "SelectedDiseases = '$_selectedDiseases', "
-        "CTBrain = ${ctBrainScore ?? 'NULL'}, "
-        "CTBrainText = '${ctBrainText ?? 'NULL'}' "
-        "WHERE ID = ${widget.patientID}";
+    final prefs = await SharedPreferences.getInstance();
+    List<String>? patientList = prefs.getStringList('patients') ?? [];
 
-    await _databaseManager.updateDatabase(updateQuery);
-    Navigator.pop(context);
-    Navigator.pop(context);
-    Navigator.pop(context);
+    // อัปเดตข้อมูลผู้ป่วย
+    final updatedPatient = Patient(
+      id: widget.patientId,
+      nameController: widget.nameController.text,
+      hospitalController: widget.hospitalController.text,
+      ageController: int.tryParse(widget.ageController.text),
+      gender: widget.gender,
+      weightController: widget.weightController.text,
+      systolicBloodPressureController:
+          widget.systolicBloodPressureController.text,
+      diastolicBloodPressureController:
+          widget.diastolicBloodPressureController.text,
+      sugarController: widget.sugarController.text,
+      dateTimeController1: widget.dateTimeController1.text,
+      dateTimeController2: widget.dateTimeController2.text,
+      dateTimeController3: widget.dateTimeController3.text,
+      timeDifference1: widget.timeDifference1,
+      timeDifference2: widget.timeDifference2,
+      symptomHead: widget.symptomHead,
+      symptomEye: widget.symptomEye,
+      symptomFace: widget.symptomFace,
+      symptomArm: widget.symptomArm,
+      symptomSpeech: widget.symptomSpeech,
+      symptomVisual: widget.symptomVisual,
+      symptomAphasia: widget.symptomAphasia,
+      symptomNeglect: widget.symptomNeglect,
+      selectedDiseases: _patient?.selectedDiseases ?? '',
+      scoreDiseases: _patient?.scoreDiseases ?? 0,
+      ctBrain: _patient?.ctBrain,
+      ctBrainText: _patient?.ctBrainText,
+      totalScore: _patient?.totalScore ?? 0,
+      selectedScore1: _patient?.selectedScore1 ?? 0,
+      selectedScore2: _patient?.selectedScore2 ?? 0,
+      selectedScore3: _patient?.selectedScore3 ?? 0,
+      selectedScore4: _patient?.selectedScore4 ?? 0,
+      selectedScore5: _patient?.selectedScore5 ?? 0,
+      selectedScore6: _patient?.selectedScore6 ?? 0,
+      selectedScore7: _patient?.selectedScore7 ?? 0,
+      selectedScore8: _patient?.selectedScore8 ?? 0,
+      selectedScore9: _patient?.selectedScore9 ?? 0,
+      selectedScore10: _patient?.selectedScore10 ?? 0,
+      selectedScore11: _patient?.selectedScore11 ?? 0,
+      selectedScore12: _patient?.selectedScore12 ?? 0,
+      selectedScore13: _patient?.selectedScore13 ?? 0,
+      selectedScore14: _patient?.selectedScore14 ?? 0,
+      selectedScore15: _patient?.selectedScore15 ?? 0,
+      selectedText1: _patient?.selectedText1 ?? '',
+      selectedText2: _patient?.selectedText2 ?? '',
+      selectedText3: _patient?.selectedText3 ?? '',
+      selectedText4: _patient?.selectedText4 ?? '',
+      selectedText5: _patient?.selectedText5 ?? '',
+      selectedText6: _patient?.selectedText6 ?? '',
+      selectedText7: _patient?.selectedText7 ?? '',
+      selectedText8: _patient?.selectedText8 ?? '',
+      selectedText9: _patient?.selectedText9 ?? '',
+      selectedText10: _patient?.selectedText10 ?? '',
+      selectedText11: _patient?.selectedText11 ?? '',
+      selectedText12: _patient?.selectedText12 ?? '',
+      selectedText13: _patient?.selectedText13 ?? '',
+      selectedText14: _patient?.selectedText14 ?? '',
+      selectedText15: _patient?.selectedText15 ?? '',
+      nihssLevel: _patient?.nihssLevel ?? '',
+      indications1: _patient?.indications1 ?? 0,
+      indications2: _patient?.indications2 ?? 0,
+      indications3: _patient?.indications3 ?? 0,
+      strictlyprohibited1: _patient?.strictlyprohibited1 ?? 0,
+      strictlyprohibited2: _patient?.strictlyprohibited2 ?? 0,
+      strictlyprohibited3: _patient?.strictlyprohibited3 ?? 0,
+      strictlyprohibited4: _patient?.strictlyprohibited4 ?? 0,
+      strictlyprohibited5: _patient?.strictlyprohibited5 ?? 0,
+      strictlyprohibited6: _patient?.strictlyprohibited6 ?? 0,
+      strictlyprohibited7: _patient?.strictlyprohibited7 ?? 0,
+      strictlyprohibited8: _patient?.strictlyprohibited8 ?? 0,
+      strictlyprohibited9: _patient?.strictlyprohibited9 ?? 0,
+      strictlyprohibited10: _patient?.strictlyprohibited10 ?? 0,
+      strictlyprohibited11: _patient?.strictlyprohibited11 ?? 0,
+      strictlyprohibited12: _patient?.strictlyprohibited12 ?? 0,
+      strictlyprohibited13: _patient?.strictlyprohibited13 ?? 0,
+      strictlyprohibited14: _patient?.strictlyprohibited14 ?? 0,
+      strictlynotprohibited1: _patient?.strictlynotprohibited1 ?? 0,
+      strictlynotprohibited2: _patient?.strictlynotprohibited2 ?? 0,
+      strictlynotprohibited3: _patient?.strictlynotprohibited3 ?? 0,
+      strictlynotprohibited4: _patient?.strictlynotprohibited4 ?? 0,
+      strictlynotprohibited5: _patient?.strictlynotprohibited5 ?? 0,
+      strictlynotprohibited6: _patient?.strictlynotprohibited6 ?? 0,
+      additionalprohibitions1: _patient?.additionalprohibitions1 ?? 0,
+      additionalprohibitions2: _patient?.additionalprohibitions2 ?? 0,
+      additionalprohibitions3: _patient?.additionalprohibitions3 ?? 0,
+      additionalprohibitions4: _patient?.additionalprohibitions4 ?? 0,
+      medic1: _patient?.medic1 ?? 0,
+      medic2: _patient?.medic2 ?? 0,
+      medic3: _patient?.medic3 ?? 0,
+      beforecure: _patient?.beforecure ?? '',
+      aftercure: _patient?.aftercure ?? '',
+      recordedTime1: _patient?.recordedTime1,
+      recordedTime2: _patient?.recordedTime2,
+    );
 
-    _loadPatientData();
+    // อัปเดตใน SharedPreferences
+    patientList[widget.patientId] = json.encode(updatedPatient.toMap());
+    await prefs.setStringList('patients', patientList);
+
+    Navigator.pop(context);
+    Navigator.pop(context);
+    Navigator.pop(context);
   }
 
   @override
   Widget build(BuildContext context) {
     final double height = MediaQuery.of(context).size.height;
     final double width = MediaQuery.of(context).size.width;
+    final paddPatient3 = Provider.of<Paddpatient3>(context);
 
     return Scaffold(
       appBar: PreferredSize(
@@ -176,10 +267,14 @@ class _EditPatient3State extends State<EditPatient3> {
                         SizedBox(height: height * 0.02),
                         DiseaseSelection(
                           onDiseasesSelected: (selectedDiseases) {
-                            setState(() {
-                              this._selectedDiseases = selectedDiseases;
-                            });
+                            paddPatient3
+                                .updateSelectedDiseases(selectedDiseases);
                           },
+                          initialValue1: initialctselectedDiseases,
+                          onDiseasesScore: (score) {
+                            paddPatient3.updateOnDiseasesScore(score);
+                          },
+                          initialValue2: initialonDiseasesScore,
                         ),
                         SizedBox(height: height * 0.02),
                       ],
@@ -243,7 +338,7 @@ class _EditPatient3State extends State<EditPatient3> {
                 ElevatedButton(
                   onPressed: () {
                     _updatePatientData();
-                    _loadPatientData();
+                    loadPatientData();
                   },
                   style: ButtonStyle(
                     backgroundColor: MaterialStateProperty.all<Color>(

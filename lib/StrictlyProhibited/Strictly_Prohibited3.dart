@@ -36,7 +36,7 @@ class _Strictly_Prohibited3State extends State<Strictly_Prohibited3> {
         children: <Widget>[
           SizedBox(height: height * 0.02),
           Text(
-            'มีประวัติเคยมีเลือดออกในกระโหลกศรีษะ',
+            'มีประวัติเคยมีเลือดออกในสมองมาก่อน',
             textAlign: TextAlign.center,
             style: TextStyle(fontSize: height * 0.019),
           ),

@@ -1,17 +1,20 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:hospital_app/Edit_Patient/EditPatient3.dart';
-import 'package:hospital_app/Symptom_Patient/symptom_aphasia.dart';
-import 'package:hospital_app/Symptom_Patient/symptom_arm.dart';
-import 'package:hospital_app/Symptom_Patient/symptom_eye.dart';
-import 'package:hospital_app/Symptom_Patient/symptom_face.dart';
-import 'package:hospital_app/Symptom_Patient/symptom_head.dart';
-import 'package:hospital_app/Symptom_Patient/symptom_negelct.dart';
-import 'package:hospital_app/Symptom_Patient/symptom_speech.dart';
-import 'package:hospital_app/Symptom_Patient/symptom_visual.dart';
-import 'package:hospital_app/sql_lite.dart';
+import 'package:hospital_app/Symptom_Edit/symptom_aphasia_edit.dart';
+import 'package:hospital_app/Symptom_Edit/symptom_arm_edit.dart';
+import 'package:hospital_app/Symptom_Edit/symptom_eye_edit.dart';
+import 'package:hospital_app/Symptom_Edit/symptom_face_edit.dart';
+import 'package:hospital_app/Symptom_Edit/symptom_head_edit.dart';
+import 'package:hospital_app/Symptom_Edit/symptom_negelct_edit.dart';
+import 'package:hospital_app/Symptom_Edit/symptom_speech_edit.dart';
+import 'package:hospital_app/Symptom_Edit/symptom_visual_edit.dart';
+import 'package:hospital_app/share_pref.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class EditPatient2 extends StatefulWidget {
-  final int patientID;
+  final int patientId;
   final TextEditingController nameController;
   final TextEditingController hospitalController;
   final TextEditingController ageController;
@@ -27,7 +30,7 @@ class EditPatient2 extends StatefulWidget {
   final double? timeDifference2;
 
   const EditPatient2({
-    required this.patientID,
+    required this.patientId,
     required this.nameController,
     required this.hospitalController,
     required this.ageController,
@@ -48,7 +51,6 @@ class EditPatient2 extends StatefulWidget {
 }
 
 class _EditPatient2State extends State<EditPatient2> {
-  final SqllLiteManage _databaseManager = SqllLiteManage();
   int _symptomHead = 0;
   int _symptomEye = 0;
   int _symptomFace = 0;
@@ -58,29 +60,36 @@ class _EditPatient2State extends State<EditPatient2> {
   int _symptomAphasia = 0;
   int _symptomNeglect = 0;
 
+  // ignore: unused_field
+  Patient? _patient;
+
   @override
   void initState() {
     super.initState();
-    _loadPatientData();
+    loadPatientData();
   }
 
-  Future<void> _loadPatientData() async {
-    await _databaseManager.openOrCreateDatabase();
-    List<Map<String, dynamic>> result = await _databaseManager.selectDatabase(
-      "SELECT * FROM Patient WHERE ID = ${widget.patientID}",
-    );
+  Future<void> loadPatientData() async {
+    final prefs = await SharedPreferences.getInstance();
+    List<String>? patientList = prefs.getStringList('patients') ?? [];
 
-    if (result.isNotEmpty) {
-      setState(() {
-        _symptomHead = result.first['SymptomHead'];
-        _symptomEye = result.first['SymptomEye'];
-        _symptomFace = result.first['SymptomFace'];
-        _symptomArm = result.first['SymptomArm'];
-        _symptomSpeech = result.first['SymptomSpeech'];
-        _symptomVisual = result.first['SymptomVisual'];
-        _symptomAphasia = result.first['SymptomAphasia'];
-        _symptomNeglect = result.first['SymptomNeglect'];
-      });
+    for (var patientData in patientList) {
+      Map<String, dynamic> map = Map.from(json.decode(patientData));
+      Patient patient = Patient.fromMap(map);
+      if (patient.id == widget.patientId) {
+        setState(() {
+          _patient = patient;
+          _symptomHead = patient.symptomHead;
+          _symptomEye = patient.symptomEye;
+          _symptomFace = patient.symptomFace;
+          _symptomArm = patient.symptomArm;
+          _symptomSpeech = patient.symptomSpeech;
+          _symptomVisual = patient.symptomVisual;
+          _symptomAphasia = patient.symptomAphasia;
+          _symptomNeglect = patient.symptomNeglect;
+        });
+        break;
+      }
     }
   }
 
@@ -141,7 +150,7 @@ class _EditPatient2State extends State<EditPatient2> {
                           ),
                         ),
                         SizedBox(height: height * 0.02),
-                        SymptomHead(
+                        SymptomHeadEdit(
                           onChanged: (value) {
                             setState(() {
                               _symptomHead = value;
@@ -149,7 +158,7 @@ class _EditPatient2State extends State<EditPatient2> {
                           },
                         ),
                         SizedBox(height: height * 0.02),
-                        SymptomEye(
+                        SymptomEyeEdit(
                           onChanged: (value) {
                             setState(() {
                               _symptomEye = value;
@@ -157,7 +166,7 @@ class _EditPatient2State extends State<EditPatient2> {
                           },
                         ),
                         SizedBox(height: height * 0.02),
-                        SymptomFace(
+                        SymptomFaceEdit(
                           onChanged: (value) {
                             setState(() {
                               _symptomFace = value;
@@ -165,7 +174,7 @@ class _EditPatient2State extends State<EditPatient2> {
                           },
                         ),
                         SizedBox(height: height * 0.02),
-                        SymptomArm(
+                        SymptomArmEdit(
                           onChanged: (value) {
                             setState(() {
                               _symptomArm = value;
@@ -173,7 +182,7 @@ class _EditPatient2State extends State<EditPatient2> {
                           },
                         ),
                         SizedBox(height: height * 0.02),
-                        SymptomSpeech(
+                        SymptomSpeechEdit(
                           onChanged: (value) {
                             setState(() {
                               _symptomSpeech = value;
@@ -181,7 +190,7 @@ class _EditPatient2State extends State<EditPatient2> {
                           },
                         ),
                         SizedBox(height: height * 0.02),
-                        SymptomVisual(
+                        SymptomVisualEdit(
                           onChanged: (value) {
                             setState(() {
                               _symptomVisual = value;
@@ -189,7 +198,7 @@ class _EditPatient2State extends State<EditPatient2> {
                           },
                         ),
                         SizedBox(height: height * 0.02),
-                        SymptomAphasia(
+                        SymptomAphasiaEdit(
                           onChanged: (value) {
                             setState(() {
                               _symptomAphasia = value;
@@ -197,7 +206,7 @@ class _EditPatient2State extends State<EditPatient2> {
                           },
                         ),
                         SizedBox(height: height * 0.02),
-                        SymptomNegelct(
+                        SymptomNegelctEdit(
                           onChanged: (value) {
                             setState(() {
                               _symptomNeglect = value;
@@ -218,7 +227,7 @@ class _EditPatient2State extends State<EditPatient2> {
                   context,
                   MaterialPageRoute(
                     builder: (context) => EditPatient3(
-                      patientID: widget.patientID,
+                      patientId: widget.patientId,
                       nameController: widget.nameController,
                       hospitalController: widget.hospitalController,
                       ageController: widget.ageController,

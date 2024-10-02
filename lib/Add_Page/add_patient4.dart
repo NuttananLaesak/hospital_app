@@ -6,6 +6,9 @@ import 'package:hospital_app/Indications/Indications3.dart';
 import 'package:hospital_app/StrictlyProhibited/Strictly_Prohibited1.dart';
 import 'package:hospital_app/StrictlyProhibited/Strictly_Prohibited10.dart';
 import 'package:hospital_app/StrictlyProhibited/Strictly_Prohibited11.dart';
+import 'package:hospital_app/StrictlyProhibited/Strictly_Prohibited12.dart';
+import 'package:hospital_app/StrictlyProhibited/Strictly_Prohibited13.dart';
+import 'package:hospital_app/StrictlyProhibited/Strictly_Prohibited14.dart';
 import 'package:hospital_app/StrictlyProhibited/Strictly_Prohibited2.dart';
 import 'package:hospital_app/StrictlyProhibited/Strictly_Prohibited3.dart';
 import 'package:hospital_app/StrictlyProhibited/Strictly_Prohibited4.dart';
@@ -29,14 +32,6 @@ class AddPatient4 extends StatefulWidget {
   final TextEditingController dateTimeController3;
   final double? timeDifference1;
   final double? timeDifference2;
-  final int symptomHead;
-  final int symptomEye;
-  final int symptomFace;
-  final int symptomArm;
-  final int symptomSpeech;
-  final int symptomVisual;
-  final int symptomAphasia;
-  final int symptomNeglect;
   final String selectedDiseases;
   final int? ctBrain;
   final String? ctBrainText;
@@ -88,14 +83,6 @@ class AddPatient4 extends StatefulWidget {
     required this.dateTimeController3,
     required this.timeDifference1,
     required this.timeDifference2,
-    required this.symptomHead,
-    required this.symptomEye,
-    required this.symptomFace,
-    required this.symptomArm,
-    required this.symptomSpeech,
-    required this.symptomVisual,
-    required this.symptomAphasia,
-    required this.symptomNeglect,
     required this.selectedDiseases,
     required this.ctBrain,
     required this.ctBrainText,
@@ -162,6 +149,9 @@ class _AddPatient4State extends State<AddPatient4> {
   late bool ctLess;
   late bool ctMore;
   int strictlyprohibited11 = -1;
+  int strictlyprohibited12 = -1;
+  int strictlyprohibited13 = -1;
+  int strictlyprohibited14 = -1;
 
   @override
   void initState() {
@@ -343,15 +333,6 @@ class _AddPatient4State extends State<AddPatient4> {
                           textAlign: TextAlign.center,
                         ),
                         SizedBox(height: height * 0.04),
-                        Indications1(
-                          hourLess: hourLess,
-                          hourMore: hourMore,
-                          hourLessChanged: (value) =>
-                              updateIndications1(value, true),
-                          hourMoreChanged: (value) =>
-                              updateIndications1(value, false),
-                        ),
-                        SizedBox(height: height * 0.02),
                         Indictions2(
                           ageMore: ageMore,
                           ageLess: ageLess,
@@ -359,6 +340,15 @@ class _AddPatient4State extends State<AddPatient4> {
                               updateIndications2(value, true),
                           AgeLessChanged: (value) =>
                               updateIndications2(value, false),
+                        ),
+                        SizedBox(height: height * 0.02),
+                        Indications1(
+                          hourLess: hourLess,
+                          hourMore: hourMore,
+                          hourLessChanged: (value) =>
+                              updateIndications1(value, true),
+                          hourMoreChanged: (value) =>
+                              updateIndications1(value, false),
                         ),
                         SizedBox(height: height * 0.02),
                         Indictions3(
@@ -405,20 +395,13 @@ class _AddPatient4State extends State<AddPatient4> {
                           ),
                         ),
                         SizedBox(height: height * 0.04),
-                        Strictly_Prohibited1(
-                          onChanged: (value) {
-                            setState(() {
-                              strictlyprohibited1 = value;
-                            });
-                          },
-                        ),
-                        SizedBox(height: height * 0.02),
-                        Strictly_Prohibited2(
-                          onChanged: (value) {
-                            setState(() {
-                              strictlyprohibited2 = value;
-                            });
-                          },
+                        Strictly_Prohibited7(
+                          bloodLess: bloodLess,
+                          bloodMore: bloodMore,
+                          bloodLessChanged: (value) =>
+                              updateStrictlyProhibited7(value, true),
+                          bloodMoreChanged: (value) =>
+                              updateStrictlyProhibited7(value, false),
                         ),
                         SizedBox(height: height * 0.02),
                         Strictly_Prohibited3(
@@ -437,35 +420,10 @@ class _AddPatient4State extends State<AddPatient4> {
                           },
                         ),
                         SizedBox(height: height * 0.02),
-                        Strictly_Prohibited5(
+                        Strictly_Prohibited1(
                           onChanged: (value) {
                             setState(() {
-                              strictlyprohibited5 = value;
-                            });
-                          },
-                        ),
-                        SizedBox(height: height * 0.02),
-                        Strictly_Prohibited6(
-                          onChanged: (value) {
-                            setState(() {
-                              strictlyprohibited6 = value;
-                            });
-                          },
-                        ),
-                        SizedBox(height: height * 0.02),
-                        Strictly_Prohibited7(
-                          bloodLess: bloodLess,
-                          bloodMore: bloodMore,
-                          bloodLessChanged: (value) =>
-                              updateStrictlyProhibited7(value, true),
-                          bloodMoreChanged: (value) =>
-                              updateStrictlyProhibited7(value, false),
-                        ),
-                        SizedBox(height: height * 0.02),
-                        Strictly_Prohibited8(
-                          onChanged: (value) {
-                            setState(() {
-                              strictlyprohibited8 = value;
+                              strictlyprohibited1 = value;
                             });
                           },
                         ),
@@ -478,13 +436,28 @@ class _AddPatient4State extends State<AddPatient4> {
                           },
                         ),
                         SizedBox(height: height * 0.02),
-                        Strictly_Prohibited10(
-                          sugarLess: sugarLess,
-                          sugarMore: sugarMore,
-                          sugarMoreChanged: (value) =>
-                              updateStrictlyProhibited10(value, true),
-                          sugarLessChanged: (value) =>
-                              updateStrictlyProhibited10(value, false),
+                        Strictly_Prohibited12(
+                          onChanged: (value) {
+                            setState(() {
+                              strictlyprohibited12 = value;
+                            });
+                          },
+                        ),
+                        SizedBox(height: height * 0.02),
+                        Strictly_Prohibited13(
+                          onChanged: (value) {
+                            setState(() {
+                              strictlyprohibited13 = value;
+                            });
+                          },
+                        ),
+                        SizedBox(height: height * 0.02),
+                        Strictly_Prohibited14(
+                          onChanged: (value) {
+                            setState(() {
+                              strictlyprohibited14 = value;
+                            });
+                          },
                         ),
                         SizedBox(height: height * 0.02),
                         Strictly_Prohibited11(
@@ -494,6 +467,47 @@ class _AddPatient4State extends State<AddPatient4> {
                               updateStrictlyProhibited11(value, true),
                           ctMoreChanged: (value) =>
                               updateStrictlyProhibited11(value, false),
+                        ),
+                        SizedBox(height: height * 0.02),
+                        Strictly_Prohibited10(
+                          sugarLess: sugarLess,
+                          sugarMore: sugarMore,
+                          sugarMoreChanged: (value) =>
+                              updateStrictlyProhibited10(value, true),
+                          sugarLessChanged: (value) =>
+                              updateStrictlyProhibited10(value, false),
+                        ),
+                        SizedBox(height: height * 0.02),
+                        Strictly_Prohibited6(
+                          onChanged: (value) {
+                            setState(() {
+                              strictlyprohibited6 = value;
+                            });
+                          },
+                        ),
+                        SizedBox(height: height * 0.02),
+                        Strictly_Prohibited8(
+                          onChanged: (value) {
+                            setState(() {
+                              strictlyprohibited8 = value;
+                            });
+                          },
+                        ),
+                        SizedBox(height: height * 0.02),
+                        Strictly_Prohibited2(
+                          onChanged: (value) {
+                            setState(() {
+                              strictlyprohibited2 = value;
+                            });
+                          },
+                        ),
+                        SizedBox(height: height * 0.02),
+                        Strictly_Prohibited5(
+                          onChanged: (value) {
+                            setState(() {
+                              strictlyprohibited5 = value;
+                            });
+                          },
                         ),
                         SizedBox(height: height * 0.03),
                       ],
@@ -527,14 +541,6 @@ class _AddPatient4State extends State<AddPatient4> {
                           dateTimeController3: widget.dateTimeController3,
                           timeDifference1: widget.timeDifference1,
                           timeDifference2: widget.timeDifference2,
-                          symptomHead: widget.symptomHead,
-                          symptomEye: widget.symptomEye,
-                          symptomFace: widget.symptomFace,
-                          symptomArm: widget.symptomArm,
-                          symptomSpeech: widget.symptomSpeech,
-                          symptomVisual: widget.symptomVisual,
-                          symptomAphasia: widget.symptomAphasia,
-                          symptomNeglect: widget.symptomNeglect,
                           selectedDiseases: widget.selectedDiseases,
                           ctBrain: widget.ctBrain,
                           ctBrainText: widget.ctBrainText,
@@ -584,6 +590,9 @@ class _AddPatient4State extends State<AddPatient4> {
                           strictlyprohibited9: strictlyprohibited9,
                           strictlyprohibited10: strictlyprohibited10,
                           strictlyprohibited11: strictlyprohibited11,
+                          strictlyprohibited12: strictlyprohibited12,
+                          strictlyprohibited13: strictlyprohibited13,
+                          strictlyprohibited14: strictlyprohibited14,
                         ),
                       ),
                     );

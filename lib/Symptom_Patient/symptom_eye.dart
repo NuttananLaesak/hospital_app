@@ -2,15 +2,24 @@ import 'package:flutter/material.dart';
 
 class SymptomEye extends StatefulWidget {
   final ValueChanged<int> onChanged;
+  final int initialValue2; // เพิ่มค่าเริ่มต้น
 
-  const SymptomEye({Key? key, required this.onChanged}) : super(key: key);
+  const SymptomEye(
+      {Key? key, required this.onChanged, required this.initialValue2})
+      : super(key: key);
 
   @override
   State<SymptomEye> createState() => _SymptomEyeState();
 }
 
 class _SymptomEyeState extends State<SymptomEye> {
-  int symptomEye = -1;
+  late int symptomEye;
+
+  @override
+  void initState() {
+    super.initState();
+    symptomEye = widget.initialValue2; // กำหนดค่าเริ่มต้น
+  }
 
   @override
   Widget build(BuildContext context) {

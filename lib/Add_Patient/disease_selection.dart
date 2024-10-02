@@ -2,8 +2,16 @@ import 'package:flutter/material.dart';
 
 class DiseaseSelection extends StatefulWidget {
   final Function(String) onDiseasesSelected;
+  final Function(int) onDiseasesScore;
+  final String initialValue1;
+  final int initialValue2;
 
-  const DiseaseSelection({Key? key, required this.onDiseasesSelected})
+  const DiseaseSelection(
+      {Key? key,
+      required this.onDiseasesSelected,
+      required this.onDiseasesScore,
+      required this.initialValue1,
+      required this.initialValue2})
       : super(key: key);
 
   @override
@@ -11,15 +19,51 @@ class DiseaseSelection extends StatefulWidget {
 }
 
 class _DiseaseSelectionState extends State<DiseaseSelection> {
-  bool hasNoDisease = false;
-  bool hasDiabetes = false;
-  bool hasHypertension = false;
-  bool hasDyslipdemia = false;
-  bool hasArteryDisease = false;
-  bool hasAviral = false;
-  bool hasOtherDisease = false;
-
+  String selectedDisease = ''; // ตัวแปรที่ใช้เก็บโรคที่เลือก
+  int scoreDiseases = -1; // คะแนนที่ใช้ในการคำนวณ
   TextEditingController otherDiseaseController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    selectedDisease = widget.initialValue1; // กำหนดค่าเริ่มต้น
+    scoreDiseases = widget.initialValue2; // กำหนดค่าเริ่มต้น
+    _setSelectedDisease();
+    if (selectedDisease == 'อื่นๆ') {
+      otherDiseaseController.text = widget.initialValue1; // Show initial value
+    }
+  }
+
+  void _setSelectedDisease() {
+    // กำหนดค่า selectedDisease ตาม scoreDiseases
+    switch (scoreDiseases) {
+      case 0:
+        selectedDisease = 'ไม่มีโรคประจำตัว';
+        break;
+      case 1:
+        selectedDisease = 'โรคเบาหวาน';
+        break;
+      case 2:
+        selectedDisease = 'โรคความดันโลหิตสูง';
+        break;
+      case 3:
+        selectedDisease = 'โรคไขมันในเลือดสูง';
+        break;
+      case 4:
+        selectedDisease = 'โรคหลอดเลือดสมอง';
+        break;
+      case 5:
+        selectedDisease = 'โรคหัวใจเต้นพลิ้ว';
+        break;
+      case 6:
+        selectedDisease = 'อื่นๆ';
+        break;
+      default:
+        selectedDisease = ''; // ไม่มีโรค
+    }
+    otherDiseaseController.text =
+        (scoreDiseases == 6) ? '' : ''; // ล้างค่าในฟิลด์อื่นๆ
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,22 +77,20 @@ class _DiseaseSelectionState extends State<DiseaseSelection> {
               'ไม่มีโรคประจำตัว\n(No Underlying Disease)',
               style: TextStyle(fontSize: height * 0.018),
             ),
-            value: hasNoDisease,
+            value: selectedDisease == 'ไม่มีโรคประจำตัว',
             activeColor: Color(0xFF304FFE),
-            onChanged: (bool? value) {
+            onChanged: (value) {
               setState(() {
-                hasNoDisease = value!;
-                if (hasNoDisease) {
-                  hasDiabetes = false;
-                  hasHypertension = false;
-                  hasDyslipdemia = false;
-                  hasArteryDisease = false;
-                  hasAviral = false;
-                  hasOtherDisease = false;
-                  otherDiseaseController.clear();
+                if (selectedDisease == 'ไม่มีโรคประจำตัว') {
+                  selectedDisease = ''; // ยกเลิกการเลือก
+                  scoreDiseases = -1; // คะแนนเป็น 0
+                } else {
+                  selectedDisease = 'ไม่มีโรคประจำตัว';
+                  scoreDiseases = 0; // คะแนนสำหรับไม่มีโรค
+                  otherDiseaseController.clear(); // ล้างค่าในฟิลด์อื่นๆ
                 }
-                updateSelectedDiseases();
               });
+              updateSelectedDiseases();
             },
           ),
         ),
@@ -59,16 +101,21 @@ class _DiseaseSelectionState extends State<DiseaseSelection> {
               'โรคเบาหวาน\n(Diabetes Mellitus)',
               style: TextStyle(fontSize: height * 0.018),
             ),
-            value: hasDiabetes,
+            value: selectedDisease == 'โรคเบาหวาน',
             activeColor: Color(0xFF304FFE),
-            onChanged: hasNoDisease
-                ? null
-                : (bool? value) {
-                    setState(() {
-                      hasDiabetes = value!;
-                      updateSelectedDiseases();
-                    });
-                  },
+            onChanged: (value) {
+              setState(() {
+                if (selectedDisease == 'โรคเบาหวาน') {
+                  selectedDisease = ''; // ยกเลิกการเลือก
+                  scoreDiseases = -1; // คะแนนเป็น 0
+                } else {
+                  selectedDisease = 'โรคเบาหวาน';
+                  scoreDiseases = 1; // คะแนนสำหรับโรคเบาหวาน
+                  otherDiseaseController.clear(); // ล้างค่าในฟิลด์อื่นๆ
+                }
+              });
+              updateSelectedDiseases();
+            },
           ),
         ),
         SizedBox(height: height * 0.01),
@@ -78,16 +125,21 @@ class _DiseaseSelectionState extends State<DiseaseSelection> {
               'โรคความดันโลหิตสูง\n(Hypertension)',
               style: TextStyle(fontSize: height * 0.018),
             ),
-            value: hasHypertension,
+            value: selectedDisease == 'โรคความดันโลหิตสูง',
             activeColor: Color(0xFF304FFE),
-            onChanged: hasNoDisease
-                ? null
-                : (bool? value) {
-                    setState(() {
-                      hasHypertension = value!;
-                      updateSelectedDiseases();
-                    });
-                  },
+            onChanged: (value) {
+              setState(() {
+                if (selectedDisease == 'โรคความดันโลหิตสูง') {
+                  selectedDisease = ''; // ยกเลิกการเลือก
+                  scoreDiseases = -1; // คะแนนเป็น 0
+                } else {
+                  selectedDisease = 'โรคความดันโลหิตสูง';
+                  scoreDiseases = 2; // คะแนนสำหรับความดันโลหิตสูง
+                  otherDiseaseController.clear(); // ล้างค่าในฟิลด์อื่นๆ
+                }
+              });
+              updateSelectedDiseases();
+            },
           ),
         ),
         SizedBox(height: height * 0.01),
@@ -97,16 +149,21 @@ class _DiseaseSelectionState extends State<DiseaseSelection> {
               'โรคไขมันในเลือดสูง\n(Dyslipidemia)',
               style: TextStyle(fontSize: height * 0.018),
             ),
-            value: hasDyslipdemia,
+            value: selectedDisease == 'โรคไขมันในเลือดสูง',
             activeColor: Color(0xFF304FFE),
-            onChanged: hasNoDisease
-                ? null
-                : (bool? value) {
-                    setState(() {
-                      hasDyslipdemia = value!;
-                      updateSelectedDiseases();
-                    });
-                  },
+            onChanged: (value) {
+              setState(() {
+                if (selectedDisease == 'โรคไขมันในเลือดสูง') {
+                  selectedDisease = ''; // ยกเลิกการเลือก
+                  scoreDiseases = -1; // คะแนนเป็น 0
+                } else {
+                  selectedDisease = 'โรคไขมันในเลือดสูง';
+                  scoreDiseases = 3; // คะแนนสำหรับไขมันในเลือดสูง
+                  otherDiseaseController.clear(); // ล้างค่าในฟิลด์อื่นๆ
+                }
+              });
+              updateSelectedDiseases();
+            },
           ),
         ),
         SizedBox(height: height * 0.01),
@@ -116,16 +173,21 @@ class _DiseaseSelectionState extends State<DiseaseSelection> {
               'โรคหลอดเลือดสมอง\n(Stroke)',
               style: TextStyle(fontSize: height * 0.018),
             ),
-            value: hasArteryDisease,
+            value: selectedDisease == 'โรคหลอดเลือดสมอง',
             activeColor: Color(0xFF304FFE),
-            onChanged: hasNoDisease
-                ? null
-                : (bool? value) {
-                    setState(() {
-                      hasArteryDisease = value!;
-                      updateSelectedDiseases();
-                    });
-                  },
+            onChanged: (value) {
+              setState(() {
+                if (selectedDisease == 'โรคหลอดเลือดสมอง') {
+                  selectedDisease = ''; // ยกเลิกการเลือก
+                  scoreDiseases = -1; // คะแนนเป็น 0
+                } else {
+                  selectedDisease = 'โรคหลอดเลือดสมอง';
+                  scoreDiseases = 4; // คะแนนสำหรับโรคหลอดเลือดสมอง
+                  otherDiseaseController.clear(); // ล้างค่าในฟิลด์อื่นๆ
+                }
+              });
+              updateSelectedDiseases();
+            },
           ),
         ),
         SizedBox(height: height * 0.01),
@@ -135,16 +197,21 @@ class _DiseaseSelectionState extends State<DiseaseSelection> {
               'โรคหัวใจเต้นพลิ้ว\n(Atrial Fibrillation/Atrial Flutter)',
               style: TextStyle(fontSize: height * 0.017),
             ),
-            value: hasAviral,
+            value: selectedDisease == 'โรคหัวใจเต้นพลิ้ว',
             activeColor: Color(0xFF304FFE),
-            onChanged: hasNoDisease
-                ? null
-                : (bool? value) {
-                    setState(() {
-                      hasAviral = value!;
-                      updateSelectedDiseases();
-                    });
-                  },
+            onChanged: (value) {
+              setState(() {
+                if (selectedDisease == 'โรคหัวใจเต้นพลิ้ว') {
+                  selectedDisease = ''; // ยกเลิกการเลือก
+                  scoreDiseases = -1; // คะแนนเป็น 0
+                } else {
+                  selectedDisease = 'โรคหัวใจเต้นพลิ้ว';
+                  scoreDiseases = 5; // คะแนนสำหรับโรคหัวใจเต้นพลิ้ว
+                  otherDiseaseController.clear(); // ล้างค่าในฟิลด์อื่นๆ
+                }
+              });
+              updateSelectedDiseases();
+            },
           ),
         ),
         SizedBox(height: height * 0.01),
@@ -154,19 +221,23 @@ class _DiseaseSelectionState extends State<DiseaseSelection> {
               'อื่นๆ',
               style: TextStyle(fontSize: height * 0.018),
             ),
-            value: hasOtherDisease,
+            value: selectedDisease == 'อื่นๆ',
             activeColor: Color(0xFF304FFE),
-            onChanged: hasNoDisease
-                ? null
-                : (bool? value) {
-                    setState(() {
-                      hasOtherDisease = value!;
-                      updateSelectedDiseases();
-                    });
-                  },
+            onChanged: (value) {
+              setState(() {
+                if (selectedDisease == 'อื่นๆ') {
+                  selectedDisease = ''; // ยกเลิกการเลือก
+                  scoreDiseases = -1; // คะแนนเป็น 0
+                } else {
+                  selectedDisease = 'อื่นๆ';
+                  scoreDiseases = 6; // คะแนนสำหรับโรคอื่นๆ
+                }
+              });
+              updateSelectedDiseases();
+            },
           ),
         ),
-        if (hasOtherDisease)
+        if (selectedDisease == 'อื่นๆ')
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: TextField(
@@ -185,31 +256,23 @@ class _DiseaseSelectionState extends State<DiseaseSelection> {
                 ),
                 labelStyle: TextStyle(color: Colors.grey),
               ),
-              onChanged: (text) {
+              onChanged: (String text) {
                 updateSelectedDiseases();
               },
             ),
           ),
+        SizedBox(height: height * 0.02),
       ],
     );
   }
 
   void updateSelectedDiseases() {
-    List<String> selectedDiseases = [];
-    if (hasNoDisease) {
-      selectedDiseases.add('ไม่มีโรคประจำตัว');
-    } else {
-      if (hasDiabetes) selectedDiseases.add('โรคเบาหวาน');
-      if (hasHypertension) selectedDiseases.add('โรคความดันโลหิตสูง');
-      if (hasDyslipdemia) selectedDiseases.add('โรคไขมันในเลือดสูง');
+    // เช็คว่าถ้า selectedDisease เป็น "อื่นๆ" ให้ใช้ค่าจาก otherDiseaseController แทน
+    String finalDisease = selectedDisease == 'อื่นๆ'
+        ? otherDiseaseController.text
+        : selectedDisease;
 
-      if (hasArteryDisease) selectedDiseases.add('โรคหลอดเลือดสมอง');
-      if (hasAviral) selectedDiseases.add('โรคหัวใจเต้นพลิ้ว');
-      if (hasOtherDisease && otherDiseaseController.text.isNotEmpty) {
-        selectedDiseases.add(otherDiseaseController.text);
-      }
-    }
-
-    widget.onDiseasesSelected(selectedDiseases.join(', '));
+    widget.onDiseasesSelected(finalDisease);
+    widget.onDiseasesScore(scoreDiseases);
   }
 }

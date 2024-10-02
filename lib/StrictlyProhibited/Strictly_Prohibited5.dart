@@ -36,7 +36,7 @@ class _Strictly_Prohibited5State extends State<Strictly_Prohibited5> {
         children: <Widget>[
           SizedBox(height: height * 0.02),
           Text(
-            'มีการเเทงหลอกเลือดเเดงขนาดใหญ่\nในตำเเหน่งที่ไม่สามารถกดได้ภายใน7วัน',
+            'มีการเเทงหลอกเลือดเเดงขนาดใหญ่\nในตำเเหน่งที่ไม่สามารถกดได้ภายใน 7 วัน',
             textAlign: TextAlign.center,
             style: TextStyle(fontSize: height * 0.019),
           ),

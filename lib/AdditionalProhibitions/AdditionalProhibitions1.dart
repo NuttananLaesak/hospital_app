@@ -41,7 +41,7 @@ class AdditionalProhibitions1 extends StatelessWidget {
                     onChanged: nihssMoreChanged,
                   ),
                   Text(
-                    'ใช่',
+                    'มี',
                     style: TextStyle(fontSize: height * 0.018),
                   ),
                   SizedBox(width: width * 0.05),
@@ -51,7 +51,7 @@ class AdditionalProhibitions1 extends StatelessWidget {
                     onChanged: nihssLessChanged,
                   ),
                   Text(
-                    'ไม่',
+                    'ไม่มี',
                     style: TextStyle(fontSize: height * 0.018),
                   ),
                 ],

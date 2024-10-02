@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:hospital_app/Patient_Detail/cure_detail.dart';
 import 'package:hospital_app/Patient_Detail/madic_detail.dart';
@@ -5,12 +7,13 @@ import 'package:hospital_app/Patient_Detail/nihss_detail.dart';
 import 'package:hospital_app/Patient_Detail/patient_detail.dart';
 import 'package:hospital_app/Patient_Detail/result_detail.dart';
 import 'package:hospital_app/Patient_Detail/warning_detail.dart';
-import 'package:hospital_app/sql_lite.dart';
+import 'package:hospital_app/share_pref.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class DashboardPatient extends StatefulWidget {
-  final int patientID;
+  final int patientId;
 
-  const DashboardPatient({Key? key, required this.patientID}) : super(key: key);
+  const DashboardPatient({Key? key, required this.patientId}) : super(key: key);
 
   @override
   State<DashboardPatient> createState() => _DashboardPatientState();
@@ -19,8 +22,39 @@ class DashboardPatient extends StatefulWidget {
 class _DashboardPatientState extends State<DashboardPatient> {
   late double height;
   late double width;
-  Map<String, dynamic>? patient;
-  final SqllLiteManage _databaseManager = SqllLiteManage();
+
+  Patient? _patient;
+
+  @override
+  void initState() {
+    super.initState();
+    loadPatientData();
+
+    pageLink = [
+      (BuildContext context) => PatientDetail(patientId: widget.patientId),
+      (BuildContext context) => NihssDetail(patientId: widget.patientId),
+      (BuildContext context) => WarningDetail(patientId: widget.patientId),
+      (BuildContext context) => MadicDetail(patientId: widget.patientId),
+      (BuildContext context) => CureDetial(patientId: widget.patientId),
+      (BuildContext context) => ResultDetail(patientId: widget.patientId),
+    ];
+  }
+
+  Future<void> loadPatientData() async {
+    final prefs = await SharedPreferences.getInstance();
+    List<String>? patientList = prefs.getStringList('patients') ?? [];
+
+    for (var patientData in patientList) {
+      Map<String, dynamic> map = Map.from(json.decode(patientData));
+      Patient patient = Patient.fromMap(map);
+      if (patient.id == widget.patientId) {
+        setState(() {
+          _patient = patient;
+        });
+        break;
+      }
+    }
+  }
 
   List<String> menuName = [
     "ประวัติผู้ป่วย",
@@ -43,38 +77,11 @@ class _DashboardPatientState extends State<DashboardPatient> {
   late List<Widget Function(BuildContext)> pageLink;
 
   @override
-  void initState() {
-    super.initState();
-    _loadPatientData();
-  }
-
-  Future<void> _loadPatientData() async {
-    await _databaseManager.openOrCreateDatabase();
-    List<Map<String, dynamic>> result = await _databaseManager.selectDatabase(
-      "SELECT * FROM Patient WHERE ID = ${widget.patientID}",
-    );
-
-    if (result.isNotEmpty) {
-      setState(() {
-        patient = result.first;
-        pageLink = [
-          (BuildContext context) => PatientDetail(patientID: widget.patientID),
-          (BuildContext context) => NihssDetail(patientID: widget.patientID),
-          (BuildContext context) => WarningDetail(patientID: widget.patientID),
-          (BuildContext context) => MadicDetail(patientID: widget.patientID),
-          (BuildContext context) => CureDetial(patientID: widget.patientID),
-          (BuildContext context) => ResultDetail(patientID: widget.patientID),
-        ];
-      });
-    }
-  }
-
-  @override
   Widget build(BuildContext context) {
     height = MediaQuery.of(context).size.height;
     width = MediaQuery.of(context).size.width;
 
-    if (patient == null) {
+    if (_patient == null) {
       return Scaffold(
         body: Center(child: CircularProgressIndicator()),
       );
@@ -121,7 +128,7 @@ class _DashboardPatientState extends State<DashboardPatient> {
                           width: width * 0.4, height: height * 0.2),
                       SizedBox(height: height * 0.01),
                       Text(
-                          'ชื่อ : ${patient!['PatientName']?.isNotEmpty == true ? patient!['PatientName'] : 'ไม่ได้ระบุ'}',
+                          'ชื่อ : ${_patient!.nameController.isNotEmpty == true ? _patient!.nameController : 'ไม่ได้ระบุ'}',
                           style: TextStyle(
                               fontSize: height * 0.024,
                               fontWeight: FontWeight.bold,
@@ -158,7 +165,7 @@ class _DashboardPatientState extends State<DashboardPatient> {
                                             builder: (context) =>
                                                 pageLink[index](context)))
                                     .then((_) {
-                                  _loadPatientData();
+                                  loadPatientData();
                                 });
                               },
                               child: Column(

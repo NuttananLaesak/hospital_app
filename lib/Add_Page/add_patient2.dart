@@ -8,6 +8,9 @@ import 'package:hospital_app/Symptom_Patient/symptom_head.dart';
 import 'package:hospital_app/Symptom_Patient/symptom_negelct.dart';
 import 'package:hospital_app/Symptom_Patient/symptom_speech.dart';
 import 'package:hospital_app/Symptom_Patient/symptom_visual.dart';
+import 'package:provider/provider.dart';
+
+import '../Provider/Paddpatient2.dart';
 
 class Add_Patient2 extends StatefulWidget {
   final TextEditingController nameController;
@@ -45,19 +48,36 @@ class Add_Patient2 extends StatefulWidget {
 }
 
 class _Add_Patient2State extends State<Add_Patient2> {
-  int symptomHead = -1;
-  int symptomEye = -1;
-  int symptomFace = -1;
-  int symptomArm = -1;
-  int symptomSpeech = -1;
-  int symptomVisual = -1;
-  int symptomAphasia = -1;
-  int symptomNegelct = -1;
+  late int initialSymptomHead;
+  late int initialSymptomEye;
+  late int initialSymptomFace;
+  late int initialSymptomArm;
+  late int initialSymptomSpeech;
+  late int initialSymptomVisual;
+  late int initialSymptomAphasia;
+  late int initialSymptomNeglect;
+
+  @override
+  void initState() {
+    super.initState();
+    // ดึง paddPatient2 จาก Provider
+    final paddPatient2 = Provider.of<Paddpatient2>(context, listen: false);
+    // กำหนดค่าครั้งแรกจาก paddPatient2
+    initialSymptomHead = paddPatient2.symptomHead;
+    initialSymptomEye = paddPatient2.symptomEye;
+    initialSymptomFace = paddPatient2.symptomFace;
+    initialSymptomArm = paddPatient2.symptomArm;
+    initialSymptomSpeech = paddPatient2.symptomSpeech;
+    initialSymptomVisual = paddPatient2.symptomVisual;
+    initialSymptomAphasia = paddPatient2.symptomAphasia;
+    initialSymptomNeglect = paddPatient2.symptomNeglect;
+  }
 
   @override
   Widget build(BuildContext context) {
     final double height = MediaQuery.of(context).size.height;
     final double width = MediaQuery.of(context).size.width;
+    final paddPatient2 = Provider.of<Paddpatient2>(context);
 
     return Scaffold(
       appBar: PreferredSize(
@@ -114,41 +134,66 @@ class _Add_Patient2State extends State<Add_Patient2> {
                         SymptomHead(
                           onChanged: (value) {
                             setState(() {
-                              symptomHead = value;
+                              paddPatient2.setSymptomHead(value);
                             });
                           },
+                          initialValue1: initialSymptomHead,
+                        ),
+                        Text(
+                          "อาการ Head: ${paddPatient2.symptomHead}",
+                          style: TextStyle(fontSize: height * 0.022),
                         ),
                         SizedBox(height: height * 0.02),
                         SymptomEye(
                           onChanged: (value) {
                             setState(() {
-                              symptomEye = value;
+                              paddPatient2.setSymptomEye(value);
                             });
                           },
+                          initialValue2: initialSymptomEye,
+                        ),
+                        Text(
+                          "อาการ Eye: ${paddPatient2.symptomEye}",
+                          style: TextStyle(fontSize: height * 0.022),
                         ),
                         SizedBox(height: height * 0.02),
                         SymptomFace(
                           onChanged: (value) {
                             setState(() {
-                              symptomFace = value;
+                              paddPatient2.setSymptomFace(value);
                             });
                           },
+                          initialValue3: initialSymptomFace,
+                        ),
+                        Text(
+                          "อาการ Face: ${paddPatient2.symptomFace}",
+                          style: TextStyle(fontSize: height * 0.022),
                         ),
                         SizedBox(height: height * 0.02),
                         SymptomArm(
                           onChanged: (value) {
                             setState(() {
-                              symptomArm = value;
+                              paddPatient2.setSymptomArm(value);
                             });
                           },
+                          initialValue4: initialSymptomArm,
+                        ),
+                        Text(
+                          "อาการ Arm: ${paddPatient2.symptomArm}",
+                          style: TextStyle(fontSize: height * 0.022),
                         ),
                         SizedBox(height: height * 0.02),
                         SymptomSpeech(
                           onChanged: (value) {
                             setState(() {
-                              symptomSpeech = value;
+                              paddPatient2.setSymptomSpeech(value);
                             });
                           },
+                          initialValue5: initialSymptomSpeech,
+                        ),
+                        Text(
+                          "อาการ Speech: ${paddPatient2.symptomSpeech}",
+                          style: TextStyle(fontSize: height * 0.022),
                         ),
                         SizedBox(height: height * 0.02),
                       ],
@@ -189,9 +234,14 @@ class _Add_Patient2State extends State<Add_Patient2> {
                         SymptomVisual(
                           onChanged: (value) {
                             setState(() {
-                              symptomVisual = value;
+                              paddPatient2.setSymptomVisual(value);
                             });
                           },
+                          initialValue6: initialSymptomVisual,
+                        ),
+                        Text(
+                          "อาการ Visual: ${paddPatient2.symptomVisual}",
+                          style: TextStyle(fontSize: height * 0.022),
                         ),
                         SizedBox(height: height * 0.02),
                       ],
@@ -232,9 +282,14 @@ class _Add_Patient2State extends State<Add_Patient2> {
                         SymptomAphasia(
                           onChanged: (value) {
                             setState(() {
-                              symptomAphasia = value;
+                              paddPatient2.setSymptomAphasia(value);
                             });
                           },
+                          initialValue7: initialSymptomAphasia,
+                        ),
+                        Text(
+                          "อาการ Aphasia: ${paddPatient2.symptomAphasia}",
+                          style: TextStyle(fontSize: height * 0.022),
                         ),
                         SizedBox(height: height * 0.02),
                       ],
@@ -275,9 +330,14 @@ class _Add_Patient2State extends State<Add_Patient2> {
                         SymptomNegelct(
                           onChanged: (value) {
                             setState(() {
-                              symptomNegelct = value;
+                              paddPatient2.setSymptomNeglect(value);
                             });
                           },
+                          initialValue8: initialSymptomNeglect,
+                        ),
+                        Text(
+                          "อาการ Neglect: ${paddPatient2.symptomNeglect}",
+                          style: TextStyle(fontSize: height * 0.022),
                         ),
                         SizedBox(height: height * 0.02),
                       ],
@@ -311,14 +371,6 @@ class _Add_Patient2State extends State<Add_Patient2> {
                           dateTimeController3: widget.dateTimeController3,
                           timeDifference1: widget.timeDifference1,
                           timeDifference2: widget.timeDifference2,
-                          symptomHead: symptomHead,
-                          symptomEye: symptomEye,
-                          symptomFace: symptomFace,
-                          symptomArm: symptomArm,
-                          symptomSpeech: symptomSpeech,
-                          symptomVisual: symptomVisual,
-                          symptomAphasia: symptomAphasia,
-                          symptomNeglect: symptomNegelct,
                         ),
                       ),
                     );

@@ -1,5 +1,12 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:hospital_app/sql_lite.dart';
+import 'package:hospital_app/Provider/Paddpatient2.dart';
+import 'package:hospital_app/Provider/Paddpatient3.dart';
+import 'package:hospital_app/Provider/Pquiz.dart';
+import 'package:hospital_app/share_pref.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:intl/intl.dart';
 
 class AddPatient10 extends StatefulWidget {
   final TextEditingController nameController;
@@ -15,14 +22,7 @@ class AddPatient10 extends StatefulWidget {
   final TextEditingController dateTimeController3;
   final double? timeDifference1;
   final double? timeDifference2;
-  final int symptomHead;
-  final int symptomEye;
-  final int symptomFace;
-  final int symptomArm;
-  final int symptomSpeech;
-  final int symptomVisual;
-  final int symptomAphasia;
-  final int symptomNeglect;
+
   final String selectedDiseases;
   final int? ctBrain;
   final String? ctBrainText;
@@ -72,6 +72,9 @@ class AddPatient10 extends StatefulWidget {
   final int strictlyprohibited9;
   final int strictlyprohibited10;
   final int strictlyprohibited11;
+  final int strictlyprohibited12;
+  final int strictlyprohibited13;
+  final int strictlyprohibited14;
   final int strictlynotprohibited1;
   final int strictlynotprohibited2;
   final int strictlynotprohibited3;
@@ -103,14 +106,6 @@ class AddPatient10 extends StatefulWidget {
       required this.dateTimeController3,
       required this.timeDifference1,
       required this.timeDifference2,
-      required this.symptomHead,
-      required this.symptomEye,
-      required this.symptomFace,
-      required this.symptomArm,
-      required this.symptomSpeech,
-      required this.symptomVisual,
-      required this.symptomAphasia,
-      required this.symptomNeglect,
       required this.selectedDiseases,
       required this.ctBrain,
       required this.ctBrainText,
@@ -160,6 +155,9 @@ class AddPatient10 extends StatefulWidget {
       required this.strictlyprohibited9,
       required this.strictlyprohibited10,
       required this.strictlyprohibited11,
+      required this.strictlyprohibited12,
+      required this.strictlyprohibited13,
+      required this.strictlyprohibited14,
       required this.strictlynotprohibited1,
       required this.strictlynotprohibited2,
       required this.strictlynotprohibited3,
@@ -182,131 +180,155 @@ class AddPatient10 extends StatefulWidget {
 }
 
 class _AddPatient10State extends State<AddPatient10> {
-  final SqllLiteManage _databaseManager = SqllLiteManage();
+  String? recordedTime1; // ตัวแปรสำหรับเก็บเวลา
+  String? recordedTime2; // ตัวแปรสำหรับเก็บเวลา
 
-  @override
-  void initState() {
-    super.initState();
-    _databaseManager.openOrCreateDatabase();
+  void _recordTime() {
+    // รับเวลาปัจจุบัน
+    final now = DateTime.now();
+
+    // แปลงเป็นรูปแบบทศนิยม (ชั่วโมง.นาที)
+    String formattedTime = DateFormat('HH:mm').format(now);
+
+    // สร้างข้อความสำหรับวันที่และเวลาที่บันทึก
+    recordedTime1 = "${now.day}/${now.month}/${now.year}";
+    recordedTime2 = "เวลา ${formattedTime} นาฬิกา";
+    setState(() {}); // อัพเดท UI
   }
 
-  Future<void> _savePatientData() async {
-    String name = widget.nameController.text;
-    String hospital = widget.hospitalController.text;
-    int age = int.tryParse(widget.ageController.text) ?? 0;
-    String gender = widget.gender;
-    String weight = widget.weightController.text;
-    String systolicBloodPressure = widget.systolicBloodPressureController.text;
-    String diastolicBloodPressure =
-        widget.diastolicBloodPressureController.text;
-    String sugar = widget.sugarController.text;
-    String dateTime1 = widget.dateTimeController1.text;
-    String dateTime2 = widget.dateTimeController2.text;
-    String dateTime3 = widget.dateTimeController3.text;
-    int symptomHead = widget.symptomHead;
-    int symptomEye = widget.symptomEye;
-    int symptomFace = widget.symptomFace;
-    int symptomArm = widget.symptomArm;
-    int symptomSpeech = widget.symptomSpeech;
-    int symptomVisual = widget.symptomVisual;
-    int symptomAphasia = widget.symptomAphasia;
-    int symptomNeglect = widget.symptomNeglect;
-    String selectedDiseases = widget.selectedDiseases;
-    int? ctBrain = widget.ctBrain;
-    int totalScore = widget.totalScore;
-    int selectedScore1 = widget.selectedScore1;
-    String selectedText1 = widget.selectedText1;
-    int selectedScore2 = widget.selectedScore2;
-    String selectedText2 = widget.selectedText2;
-    int selectedScore3 = widget.selectedScore3;
-    String selectedText3 = widget.selectedText3;
-    int selectedScore4 = widget.selectedScore4;
-    String selectedText4 = widget.selectedText4;
-    int selectedScore5 = widget.selectedScore5;
-    String selectedText5 = widget.selectedText5;
-    int selectedScore6 = widget.selectedScore6;
-    String selectedText6 = widget.selectedText6;
-    int selectedScore7 = widget.selectedScore7;
-    String selectedText7 = widget.selectedText7;
-    int selectedScore8 = widget.selectedScore8;
-    String selectedText8 = widget.selectedText8;
-    int selectedScore9 = widget.selectedScore9;
-    String selectedText9 = widget.selectedText9;
-    int selectedScore10 = widget.selectedScore10;
-    String selectedText10 = widget.selectedText10;
-    int selectedScore11 = widget.selectedScore11;
-    String selectedText11 = widget.selectedText11;
-    int selectedScore12 = widget.selectedScore12;
-    String selectedText12 = widget.selectedText12;
-    int selectedScore13 = widget.selectedScore13;
-    String selectedText13 = widget.selectedText13;
-    int selectedScore14 = widget.selectedScore14;
-    String selectedText14 = widget.selectedText14;
-    int selectedScore15 = widget.selectedScore15;
-    String selectedText15 = widget.selectedText15;
-    String nihssLevel = widget.nihssLevel;
-    int indications1 = widget.indications1;
-    int indications2 = widget.indications2;
-    int indications3 = widget.indications3;
-    int strictlyprohibited1 = widget.strictlyprohibited1;
-    int strictlyprohibited2 = widget.strictlyprohibited2;
-    int strictlyprohibited3 = widget.strictlyprohibited3;
-    int strictlyprohibited4 = widget.strictlyprohibited4;
-    int strictlyprohibited5 = widget.strictlyprohibited5;
-    int strictlyprohibited6 = widget.strictlyprohibited6;
-    int strictlyprohibited7 = widget.strictlyprohibited7;
-    int strictlyprohibited8 = widget.strictlyprohibited8;
-    int strictlyprohibited9 = widget.strictlyprohibited9;
-    int strictlyprohibited10 = widget.strictlyprohibited10;
-    int strictlyprohibited11 = widget.strictlyprohibited11;
-    int strictlynotprohibited1 = widget.strictlynotprohibited1;
-    int strictlynotprohibited2 = widget.strictlynotprohibited2;
-    int strictlynotprohibited3 = widget.strictlynotprohibited3;
-    int strictlynotprohibited4 = widget.strictlynotprohibited4;
-    int strictlynotprohibited5 = widget.strictlynotprohibited5;
-    int strictlynotprohibited6 = widget.strictlynotprohibited6;
-    int additionalprohibitions1 = widget.additionalprohibitions1;
-    int additionalprohibitions2 = widget.additionalprohibitions2;
-    int additionalprohibitions3 = widget.additionalprohibitions3;
-    int additionalprohibitions4 = widget.additionalprohibitions4;
-    double? timeDifference1 = widget.timeDifference1;
-    double? timeDifference2 = widget.timeDifference2;
-    double medic1 = widget.medic1;
-    double medic2 = widget.medic2;
-    double medic3 = widget.medic3;
-    String beforeCure = widget.beforecure.text;
-    String afterCure = widget.aftercure.text;
-    String? ctBrainText = widget.ctBrainText;
+  Future<void> savePatientData() async {
+    final prefs = await SharedPreferences.getInstance();
+    List<String>? patientList = prefs.getStringList('patients') ?? [];
 
-    String sql =
-        "INSERT INTO Patient (PatientName, Hospital, Age, Gender, Weight, SystolicBloodPressure, DiastolicBloodPressure, "
-        "Sugar, DateTime1, DateTime2, DateTime3, SymptomHead, SymptomEye, SymptomFace, SymptomArm, SymptomSpeech, "
-        "SymptomVisual, SymptomAphasia, SymptomNeglect, SelectedDiseases, CTBrain, TotalScore, SelectedScore1, SelectedText1, "
-        "SelectedScore2, SelectedText2, SelectedScore3, SelectedText3, SelectedScore4, SelectedText4, SelectedScore5, "
-        "SelectedText5, SelectedScore6, SelectedText6, SelectedScore7, SelectedText7, SelectedScore8, SelectedText8, "
-        "SelectedScore9, SelectedText9, SelectedScore10, SelectedText10, SelectedScore11, SelectedText11, SelectedScore12, "
-        "SelectedText12, SelectedScore13, SelectedText13, SelectedScore14, SelectedText14, SelectedScore15, SelectedText15, "
-        "NIHSSLevel, Indications1, Indications2, Indications3, StrictlyProhibited1, StrictlyProhibited2, StrictlyProhibited3, "
-        "StrictlyProhibited4, StrictlyProhibited5, StrictlyProhibited6, StrictlyProhibited7, StrictlyProhibited8, StrictlyProhibited9, "
-        "StrictlyProhibited10, StrictlyProhibited11, StrictlyNotProhibited1, StrictlyNotProhibited2, StrictlyNotProhibited3, "
-        "StrictlyNotProhibited4, StrictlyNotProhibited5, StrictlyNotProhibited6, AdditionalProhibitions1, AdditionalProhibitions2, "
-        "AdditionalProhibitions3, AdditionalProhibitions4, TimeDifference1, TimeDifference2, Medic1, Medic2, Medic3, BeforeCure, AfterCure, CTBrainText) "
-        "VALUES ('$name','$hospital', $age, '$gender', '$weight', '$systolicBloodPressure', '$diastolicBloodPressure', "
-        "'$sugar', '$dateTime1', '$dateTime2', '$dateTime3', $symptomHead, $symptomEye, $symptomFace, $symptomArm, "
-        "$symptomSpeech, $symptomVisual, $symptomAphasia, $symptomNeglect, '$selectedDiseases', "
-        "$ctBrain, $totalScore, $selectedScore1, '$selectedText1', $selectedScore2, '$selectedText2', "
-        "$selectedScore3, '$selectedText3', $selectedScore4, '$selectedText4', $selectedScore5, '$selectedText5', "
-        "$selectedScore6, '$selectedText6', $selectedScore7, '$selectedText7', $selectedScore8, '$selectedText8', "
-        "$selectedScore9, '$selectedText9', $selectedScore10, '$selectedText10', $selectedScore11, '$selectedText11', "
-        "$selectedScore12, '$selectedText12', $selectedScore13, '$selectedText13', $selectedScore14, '$selectedText14', "
-        "$selectedScore15, '$selectedText15', '$nihssLevel', $indications1, $indications2, $indications3, "
-        "$strictlyprohibited1, $strictlyprohibited2, $strictlyprohibited3, $strictlyprohibited4, $strictlyprohibited5, "
-        "$strictlyprohibited6, $strictlyprohibited7, $strictlyprohibited8, $strictlyprohibited9, $strictlyprohibited10, "
-        "$strictlyprohibited11, $strictlynotprohibited1, $strictlynotprohibited2, $strictlynotprohibited3, $strictlynotprohibited4, "
-        "$strictlynotprohibited5, $strictlynotprohibited6, $additionalprohibitions1, $additionalprohibitions2, "
-        "$additionalprohibitions3, $additionalprohibitions4, $timeDifference1, $timeDifference2, $medic1, $medic2, $medic3, '$beforeCure', '$afterCure', '$ctBrainText')";
+    int newId = patientList.length;
 
-    await _databaseManager.insertDatabase(sql);
+    final paddPatient2 = Provider.of<Paddpatient2>(context, listen: false);
+    final paddPatient3 = Provider.of<Paddpatient3>(context, listen: false);
+    final quiz = Provider.of<QuizModel>(context, listen: false);
+
+    Patient patient = Patient(
+      id: newId,
+      nameController: widget.nameController.text,
+      hospitalController: widget.hospitalController.text,
+      ageController: int.tryParse(widget.ageController.text),
+      gender: widget.gender,
+      weightController: widget.weightController.text,
+      systolicBloodPressureController:
+          widget.systolicBloodPressureController.text,
+      diastolicBloodPressureController:
+          widget.diastolicBloodPressureController.text,
+      sugarController: widget.sugarController.text,
+      dateTimeController1: widget.dateTimeController1.text,
+      dateTimeController2: widget.dateTimeController2.text,
+      dateTimeController3: widget.dateTimeController3.text,
+      timeDifference1: widget.timeDifference1,
+      timeDifference2: widget.timeDifference2,
+      symptomHead: paddPatient2.symptomHead,
+      symptomEye: paddPatient2.symptomEye,
+      symptomFace: paddPatient2.symptomFace,
+      symptomArm: paddPatient2.symptomArm,
+      symptomSpeech: paddPatient2.symptomSpeech,
+      symptomVisual: paddPatient2.symptomVisual,
+      symptomAphasia: paddPatient2.symptomAphasia,
+      symptomNeglect: paddPatient2.symptomNeglect,
+      selectedDiseases: paddPatient3.selectedDiseases,
+      scoreDiseases: paddPatient3.onDiseasesScore,
+      ctBrain: paddPatient3.ctBrainScore,
+      ctBrainText: paddPatient3.ctBrainText,
+      totalScore: widget.totalScore,
+      selectedScore1: widget.selectedScore1,
+      selectedScore2: widget.selectedScore2,
+      selectedScore3: widget.selectedScore3,
+      selectedScore4: widget.selectedScore4,
+      selectedScore5: widget.selectedScore5,
+      selectedScore6: widget.selectedScore6,
+      selectedScore7: widget.selectedScore7,
+      selectedScore8: widget.selectedScore8,
+      selectedScore9: widget.selectedScore9,
+      selectedScore10: widget.selectedScore10,
+      selectedScore11: widget.selectedScore11,
+      selectedScore12: widget.selectedScore12,
+      selectedScore13: widget.selectedScore13,
+      selectedScore14: widget.selectedScore14,
+      selectedScore15: widget.selectedScore15,
+      selectedText1: widget.selectedText1,
+      selectedText2: widget.selectedText2,
+      selectedText3: widget.selectedText3,
+      selectedText4: widget.selectedText4,
+      selectedText5: widget.selectedText5,
+      selectedText6: widget.selectedText6,
+      selectedText7: widget.selectedText7,
+      selectedText8: widget.selectedText8,
+      selectedText9: widget.selectedText9,
+      selectedText10: widget.selectedText10,
+      selectedText11: widget.selectedText11,
+      selectedText12: widget.selectedText12,
+      selectedText13: widget.selectedText13,
+      selectedText14: widget.selectedText14,
+      selectedText15: widget.selectedText15,
+      nihssLevel: widget.nihssLevel,
+      indications1: widget.indications1,
+      indications2: widget.indications2,
+      indications3: widget.indications3,
+      strictlyprohibited1: widget.strictlyprohibited1,
+      strictlyprohibited2: widget.strictlyprohibited2,
+      strictlyprohibited3: widget.strictlyprohibited3,
+      strictlyprohibited4: widget.strictlyprohibited4,
+      strictlyprohibited5: widget.strictlyprohibited5,
+      strictlyprohibited6: widget.strictlyprohibited6,
+      strictlyprohibited7: widget.strictlyprohibited7,
+      strictlyprohibited8: widget.strictlyprohibited8,
+      strictlyprohibited9: widget.strictlyprohibited9,
+      strictlyprohibited10: widget.strictlyprohibited10,
+      strictlyprohibited11: widget.strictlyprohibited11,
+      strictlyprohibited12: widget.strictlyprohibited12,
+      strictlyprohibited13: widget.strictlyprohibited13,
+      strictlyprohibited14: widget.strictlyprohibited14,
+      strictlynotprohibited1: widget.strictlynotprohibited1,
+      strictlynotprohibited2: widget.strictlynotprohibited2,
+      strictlynotprohibited3: widget.strictlynotprohibited3,
+      strictlynotprohibited4: widget.strictlynotprohibited4,
+      strictlynotprohibited5: widget.strictlynotprohibited5,
+      strictlynotprohibited6: widget.strictlynotprohibited6,
+      additionalprohibitions1: widget.additionalprohibitions1,
+      additionalprohibitions2: widget.additionalprohibitions2,
+      additionalprohibitions3: widget.additionalprohibitions3,
+      additionalprohibitions4: widget.additionalprohibitions4,
+      medic1: widget.medic1,
+      medic2: widget.medic2,
+      medic3: widget.medic3,
+      beforecure: widget.beforecure.text,
+      aftercure: widget.aftercure.text,
+      recordedTime1: recordedTime1,
+      recordedTime2: recordedTime2,
+    );
+
+    // แปลงเป็น JSON และเพิ่มในลิสต์
+    patientList.add(json.encode(patient.toMap()));
+    await prefs.setStringList('patients', patientList);
+
+    paddPatient2.setSymptomHead(-1);
+    paddPatient2.setSymptomEye(-1);
+    paddPatient2.setSymptomFace(-1);
+    paddPatient2.setSymptomArm(-1);
+    paddPatient2.setSymptomSpeech(-1);
+    paddPatient2.setSymptomVisual(-1);
+    paddPatient2.setSymptomAphasia(-1);
+    paddPatient2.setSymptomNeglect(-1);
+    paddPatient3.updateCtBrainScore(null, null);
+    paddPatient3.updateSelectedDiseases('');
+    paddPatient3.updateOnDiseasesScore(-1);
+    quiz.updateScore1(-1, '');
+  }
+
+  Future<List<Patient>> loadPatients() async {
+    final prefs = await SharedPreferences.getInstance();
+    List<String>? patientList = prefs.getStringList('patients') ?? [];
+
+    return patientList.map((patientData) {
+      Map<String, dynamic> map = Map.from(json.decode(patientData));
+      return Patient.fromMap(map);
+    }).toList();
   }
 
   @override
@@ -464,7 +486,8 @@ class _AddPatient10State extends State<AddPatient10> {
                   children: [
                     ElevatedButton(
                       onPressed: () async {
-                        await _savePatientData();
+                        _recordTime();
+                        savePatientData();
                         Navigator.of(context).pushNamedAndRemoveUntil(
                             '/patientList', (route) => false);
                       },

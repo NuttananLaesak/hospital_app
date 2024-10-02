@@ -35,7 +35,7 @@ class _StrictlyNotProhibited6State extends State<StrictlyNotProhibited6> {
         children: <Widget>[
           SizedBox(height: height * 0.02),
           Text(
-            'มีประวัติ Recent Myocardial Infracytion ภายใน 3 เดือน',
+            'มีประวัติกล้ามเนื้อหัวใจ\nขาดเลือดภายใน 3 เดือน',
             textAlign: TextAlign.center,
             style: TextStyle(fontSize: height * 0.019),
           ),

@@ -36,7 +36,7 @@ class _Strictly_Prohibited2State extends State<Strictly_Prohibited2> {
         children: <Widget>[
           SizedBox(height: height * 0.02),
           Text(
-            'มีอาการสงสัยว่า\nมีเลือดออกชั้นใต้เยื่อหุ้มสมอง',
+            'มีประวัติสงสัยภาวะ\nเลือดออกชั้นใต้เยื่อหุ้มสมอง\n(Subarachnoid Hemorrhage)',
             textAlign: TextAlign.center,
             style: TextStyle(fontSize: height * 0.019),
           ),

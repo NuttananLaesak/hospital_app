@@ -2,15 +2,24 @@ import 'package:flutter/material.dart';
 
 class SymptomSpeech extends StatefulWidget {
   final ValueChanged<int> onChanged;
+  final int initialValue5; // เพิ่มค่าเริ่มต้น
 
-  const SymptomSpeech({Key? key, required this.onChanged}) : super(key: key);
+  const SymptomSpeech(
+      {Key? key, required this.onChanged, required this.initialValue5})
+      : super(key: key);
 
   @override
   State<SymptomSpeech> createState() => _SymptomSpeechState();
 }
 
 class _SymptomSpeechState extends State<SymptomSpeech> {
-  int symptomSpeech = -1;
+  late int symptomSpeech;
+
+  @override
+  void initState() {
+    super.initState();
+    symptomSpeech = widget.initialValue5; // กำหนดค่าเริ่มต้น
+  }
 
   @override
   Widget build(BuildContext context) {

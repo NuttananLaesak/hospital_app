@@ -1,7 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:hospital_app/Provider/Pquiz.dart';
 import 'package:hospital_app/Quiz/quiz2_page.dart';
+import 'package:provider/provider.dart';
+import 'package:photo_view/photo_view.dart';
 
 class Question1Page extends StatefulWidget {
   final TextEditingController nameController;
@@ -17,14 +20,7 @@ class Question1Page extends StatefulWidget {
   final TextEditingController dateTimeController3;
   final double? timeDifference1;
   final double? timeDifference2;
-  final int symptomHead;
-  final int symptomEye;
-  final int symptomFace;
-  final int symptomArm;
-  final int symptomSpeech;
-  final int symptomVisual;
-  final int symptomAphasia;
-  final int symptomNegelct;
+
   final String selectedDiseases;
   final int? ctBrain;
   final String? ctBrainText;
@@ -44,14 +40,6 @@ class Question1Page extends StatefulWidget {
     required this.dateTimeController3,
     required this.timeDifference1,
     required this.timeDifference2,
-    required this.symptomHead,
-    required this.symptomEye,
-    required this.symptomFace,
-    required this.symptomArm,
-    required this.symptomSpeech,
-    required this.symptomVisual,
-    required this.symptomAphasia,
-    required this.symptomNegelct,
     required this.selectedDiseases,
     required this.ctBrain,
     required this.ctBrainText,
@@ -65,11 +53,21 @@ class _Question1PageState extends State<Question1Page> {
   int selectedScore1 = 0;
   String selectedText1 = "";
 
+  @override
+  void initState() {
+    super.initState();
+    final quiz = Provider.of<QuizModel>(context, listen: false);
+    selectedScore1 = quiz.selectedScore1;
+  }
+
   void _selectAnswer(int score, String text) {
+    final quiz = Provider.of<QuizModel>(context, listen: false);
+    quiz.updateScore1(score, text);
     setState(() {
       selectedScore1 = score;
       selectedText1 = text;
     });
+
     _nextPage();
   }
 
@@ -94,14 +92,6 @@ class _Question1PageState extends State<Question1Page> {
             dateTimeController3: widget.dateTimeController3,
             timeDifference1: widget.timeDifference1,
             timeDifference2: widget.timeDifference2,
-            symptomHead: widget.symptomHead,
-            symptomEye: widget.symptomEye,
-            symptomFace: widget.symptomFace,
-            symptomArm: widget.symptomArm,
-            symptomSpeech: widget.symptomSpeech,
-            symptomVisual: widget.symptomVisual,
-            symptomAphasia: widget.symptomAphasia,
-            symptomNegelct: widget.symptomNegelct,
             selectedDiseases: widget.selectedDiseases,
             ctBrain: widget.ctBrain,
             ctBrainText: widget.ctBrainText,
@@ -113,12 +103,23 @@ class _Question1PageState extends State<Question1Page> {
     }
   }
 
+  void _showFullScreenImage() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) =>
+            FullScreenImageViewer(imagePath: 'images/nihss.png'),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final double height = MediaQuery.of(context).size.height;
+    final quiz = Provider.of<QuizModel>(context, listen: false);
 
     String questionText =
-        "ข้อที่ 1a ระดับความรู้สึก\n(Level of Consciousness, LOC)${widget.ctBrainText}";
+        "ข้อที่ 1a ระดับความรู้สึก\n(Level of Consciousness, LOC)${selectedScore1}${quiz.selectedScore1}";
     List<String> _questions = [
       "รู้สึกตัวดี",
       "ไม่รู้สึกตัว เเต่สามารถปลุกได้",
@@ -186,9 +187,12 @@ class _Question1PageState extends State<Question1Page> {
                           children: [
                             Padding(
                               padding: EdgeInsets.all(screenHeight * 0.0),
-                              child: Image.asset('images/nihss.png',
-                                  width: screenWidth * 0.4,
-                                  height: screenHeight * 0.21),
+                              child: GestureDetector(
+                                onTap: _showFullScreenImage,
+                                child: Image.asset('images/nihss.png',
+                                    width: screenWidth * 0.4,
+                                    height: screenHeight * 0.21),
+                              ),
                             ),
                             Text(
                               questionText,
@@ -204,15 +208,16 @@ class _Question1PageState extends State<Question1Page> {
                               itemBuilder: (BuildContext context, int index) {
                                 String text = _questions[index];
                                 int score = _scores[index];
+                                bool isSelected = selectedScore1 == score;
                                 return GestureDetector(
                                   onTap: () => _selectAnswer(score, text),
                                   child: Container(
                                     decoration: BoxDecoration(
-                                      color: selectedText1.isEmpty
-                                          ? const Color(0xFFC5CAE9)
-                                          : selectedText1 == text
-                                              ? const Color(0xFF81C784)
-                                              : const Color(0xFFC5CAE9),
+                                      color: isSelected
+                                          ? const Color(
+                                              0xFF81C784) // สีเขียวเมื่อเลือกแล้ว
+                                          : const Color(
+                                              0xFFC5CAE9), // สีเริ่มต้นเมื่อยังไม่เลือก
                                       borderRadius: BorderRadius.circular(30),
                                     ),
                                     padding:
@@ -257,6 +262,28 @@ class _Question1PageState extends State<Question1Page> {
             ],
           );
         },
+      ),
+    );
+  }
+}
+
+class FullScreenImageViewer extends StatelessWidget {
+  final String imagePath;
+
+  FullScreenImageViewer({required this.imagePath});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('ภาพประกอบ'),
+        centerTitle: true,
+      ),
+      body: PhotoView(
+        imageProvider: AssetImage(imagePath),
+        backgroundDecoration: BoxDecoration(
+          color: Colors.transparent, // พื้นหลังสีดำเพื่อให้ดูชัดเจน
+        ),
       ),
     );
   }

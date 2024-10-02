@@ -1,37 +1,42 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:hospital_app/Edit_Patient/EditPatient1.dart';
-import 'package:hospital_app/sql_lite.dart';
+import 'package:hospital_app/share_pref.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class PatientDetail extends StatefulWidget {
-  final int patientID;
+  final int patientId;
 
-  const PatientDetail({Key? key, required this.patientID}) : super(key: key);
+  const PatientDetail({Key? key, required this.patientId}) : super(key: key);
 
   @override
   State<PatientDetail> createState() => _PatientDetailState();
 }
 
 class _PatientDetailState extends State<PatientDetail> {
-  Map<String, dynamic>? patient;
-  final SqllLiteManage _databaseManager = SqllLiteManage();
+  Patient? _patient;
 
   @override
   void initState() {
     super.initState();
-    _loadPatientData();
+    loadPatientData();
   }
 
-  Future<void> _loadPatientData() async {
-    await _databaseManager.openOrCreateDatabase();
-    List<Map<String, dynamic>> result = await _databaseManager.selectDatabase(
-      "SELECT * FROM Patient WHERE ID = ${widget.patientID}",
-    );
+  Future<void> loadPatientData() async {
+    final prefs = await SharedPreferences.getInstance();
+    List<String>? patientList = prefs.getStringList('patients') ?? [];
 
-    if (result.isNotEmpty) {
-      setState(() {
-        patient = result.first;
-      });
+    for (var patientData in patientList) {
+      Map<String, dynamic> map = Map.from(json.decode(patientData));
+      Patient patient = Patient.fromMap(map);
+      if (patient.id == widget.patientId) {
+        setState(() {
+          _patient = patient;
+        });
+        break;
+      }
     }
   }
 
@@ -106,7 +111,7 @@ class _PatientDetailState extends State<PatientDetail> {
         case 4:
           return 'Intracerebral Hemorrhage';
         case 5:
-          return '${patient?['CTBrainText']}';
+          return '${_patient?.ctBrainText}';
         default:
           return 'ไม่ได้ระบุ';
       }
@@ -170,56 +175,56 @@ class _PatientDetailState extends State<PatientDetail> {
                             thickness: 2.0,
                           ),
                           Text(
-                            'ชื่อ : ${patient?['PatientName']?.isNotEmpty == true ? patient!['PatientName'] : 'ไม่ได้ระบุ'}',
+                            'ชื่อ : ${_patient?.nameController.isNotEmpty == true ? _patient!.nameController : 'ไม่ได้ระบุ'}',
                             style: TextStyle(
                               fontSize: height * 0.02,
                             ),
                           ),
                           Divider(),
                           Text(
-                            'โรงพยาบาล : ${patient?['Hospital']?.isNotEmpty == true ? patient!['Hospital'] : 'ไม่ได้ระบุ'}',
+                            'โรงพยาบาล : ${_patient?.hospitalController.isNotEmpty == true ? _patient!.hospitalController : 'ไม่ได้ระบุ'}',
                             style: TextStyle(
                               fontSize: height * 0.02,
                             ),
                           ),
                           Divider(),
                           Text(
-                            'อายุ : ${patient?['Age'] == null ? 'ไม่ได้ระบุ' : patient!['Age'] == 0 ? 'ไม่ได้ระบุ' : patient!['Age']} ปี',
+                            'อายุ : ${_patient?.ageController == null ? 'ไม่ได้ระบุ' : _patient!.ageController == 0 ? 'ไม่ได้ระบุ' : _patient!.ageController} ปี',
                             style: TextStyle(
                               fontSize: height * 0.02,
                             ),
                           ),
                           Divider(),
                           Text(
-                            'เพศ : ${patient?['Gender']?.isNotEmpty == true ? patient!['Gender'] : 'ไม่ได้ระบุ'}',
+                            'เพศ : ${_patient?.gender.isNotEmpty == true ? _patient!.gender : 'ไม่ได้ระบุ'}',
                             style: TextStyle(
                               fontSize: height * 0.02,
                             ),
                           ),
                           Divider(),
                           Text(
-                            'น้ำหนัก : ${patient?['Weight']?.isNotEmpty == true ? patient!['Weight'] : 'ไม่ได้ระบุ'}',
+                            'น้ำหนัก : ${_patient?.weightController.isNotEmpty == true ? _patient!.weightController : 'ไม่ได้ระบุ'}',
                             style: TextStyle(
                               fontSize: height * 0.02,
                             ),
                           ),
                           Divider(),
                           Text(
-                            'ความดันโลหิต : ${patient?['SystolicBloodPressure'] ?? 'ไม่ระบุ'}/${patient?['DiastolicBloodPressure'] ?? 'ไม่ระบุ'} (mmHg)',
+                            'ความดันโลหิต : ${_patient?.systolicBloodPressureController ?? 'ไม่ระบุ'}/${_patient?.diastolicBloodPressureController ?? 'ไม่ระบุ'} (mmHg)',
                             style: TextStyle(
                               fontSize: height * 0.02,
                             ),
                           ),
                           Divider(),
                           Text(
-                            'ระดับน้ำตาลในเลือด : ${patient?['Sugar']?.isNotEmpty == true ? patient!['Sugar'] : 'ไม่ได้ระบุ'} (mg/dl)',
+                            'ระดับน้ำตาลในเลือด : ${_patient?.sugarController.isNotEmpty == true ? _patient!.sugarController : 'ไม่ได้ระบุ'} (mg/dl)',
                             style: TextStyle(
                               fontSize: height * 0.02,
                             ),
                           ),
                           Divider(),
                           Text(
-                            'โรคประจำตัว : ${patient?['SelectedDiseases']?.isNotEmpty == true ? patient!['SelectedDiseases'] : 'ไม่ได้ระบุ'}',
+                            'โรคประจำตัว : ${_patient?.selectedDiseases.isNotEmpty == true ? _patient!.selectedDiseases : 'ไม่ได้ระบุ'}',
                             style: TextStyle(
                               fontSize: height * 0.02,
                             ),
@@ -230,13 +235,7 @@ class _PatientDetailState extends State<PatientDetail> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Text(
-                                'CT Brain : ',
-                                style: TextStyle(
-                                  fontSize: height * 0.02,
-                                ),
-                              ),
-                              Text(
-                                ctbrainText(patient?['CTBrain']),
+                                'CT Brain : ${_patient?.ctBrainText?.isNotEmpty == true ? _patient!.ctBrainText : 'ไม่ได้ระบุ'}',
                                 style: TextStyle(
                                   fontSize: height * 0.02,
                                 ),
@@ -267,7 +266,7 @@ class _PatientDetailState extends State<PatientDetail> {
                             ),
                           ),
                           Text(
-                            '${patient?['DateTime1']?.isNotEmpty == true ? patient!['DateTime1'] : 'ไม่ได้ระบุ'}',
+                            '${_patient?.dateTimeController1.isNotEmpty == true ? _patient?.dateTimeController1 : 'ไม่ได้ระบุ'}',
                             style: TextStyle(
                               fontSize: height * 0.02,
                             ),
@@ -280,7 +279,7 @@ class _PatientDetailState extends State<PatientDetail> {
                             ),
                           ),
                           Text(
-                            '${patient?['DateTime2']?.isNotEmpty == true ? patient!['DateTime2'] : 'ไม่ได้ระบุ'}',
+                            '${_patient?.dateTimeController2.isNotEmpty == true ? _patient?.dateTimeController2 : 'ไม่ได้ระบุ'}',
                             style: TextStyle(
                               fontSize: height * 0.02,
                             ),
@@ -293,7 +292,7 @@ class _PatientDetailState extends State<PatientDetail> {
                             ),
                           ),
                           Text(
-                            '${patient?['DateTime3']?.isNotEmpty == true ? patient!['DateTime3'] : 'ไม่ได้ระบุ'}',
+                            '${_patient?.dateTimeController3.isNotEmpty == true ? _patient?.dateTimeController3 : 'ไม่ได้ระบุ'}',
                             style: TextStyle(
                               fontSize: height * 0.02,
                             ),
@@ -316,7 +315,7 @@ class _PatientDetailState extends State<PatientDetail> {
                             thickness: 2.0,
                           ),
                           Text(
-                            'ระยะเวลาเมีออาการมาโรงพยาบาล\nใช้เวลา ${patient?['TimeDifference1'].toStringAsFixed(2) ?? 'ไม่ระบุ'} ชั่วโมง',
+                            'ระยะเวลาเมีอมีอาการมาโรงพยาบาล\nใช้เวลา ${_patient?.timeDifference1!.toStringAsFixed(2) ?? 'ไม่ระบุ'} ชั่วโมง',
                             style: TextStyle(
                               fontSize: height * 0.02,
                             ),
@@ -324,7 +323,7 @@ class _PatientDetailState extends State<PatientDetail> {
                           ),
                           Divider(),
                           Text(
-                            'ระยะเวลาเมื่อมาโรงพยาบาลเเล้วฉีดยา\nใช้เวลา ${patient?['TimeDifference2'].toStringAsFixed(2) ?? 'ไม่ระบุ'} ชั่วโมง',
+                            'ระยะเวลาเมื่อมาโรงพยาบาลเเล้วฉีดยา\nใช้เวลา ${_patient?.timeDifference2!.toStringAsFixed(2) ?? 'ไม่ระบุ'} ชั่วโมง',
                             style: TextStyle(
                               fontSize: height * 0.02,
                             ),
@@ -357,7 +356,7 @@ class _PatientDetailState extends State<PatientDetail> {
                                 ),
                               ),
                               Text(
-                                CheckSymptom1(patient?['SymptomHead']),
+                                CheckSymptom1(_patient?.symptomHead),
                                 style: TextStyle(
                                   fontSize: height * 0.02,
                                 ),
@@ -375,7 +374,7 @@ class _PatientDetailState extends State<PatientDetail> {
                                 ),
                               ),
                               Text(
-                                CheckSymptom1(patient?['SymptomEye']),
+                                CheckSymptom1(_patient?.symptomEye),
                                 style: TextStyle(
                                   fontSize: height * 0.02,
                                 ),
@@ -393,7 +392,7 @@ class _PatientDetailState extends State<PatientDetail> {
                                 ),
                               ),
                               Text(
-                                CheckSymptom2(patient?['SymptomFace'] ?? -1),
+                                CheckSymptom2(_patient?.symptomFace ?? -1),
                                 style: TextStyle(
                                   fontSize: height * 0.02,
                                 ),
@@ -411,7 +410,7 @@ class _PatientDetailState extends State<PatientDetail> {
                                 ),
                               ),
                               Text(
-                                CheckSymptom2(patient?['SymptomArm'] ?? -1),
+                                CheckSymptom2(_patient?.symptomArm ?? -1),
                                 style: TextStyle(
                                   fontSize: height * 0.02,
                                 ),
@@ -429,7 +428,7 @@ class _PatientDetailState extends State<PatientDetail> {
                                 ),
                               ),
                               Text(
-                                CheckSymptom1(patient?['SymptomSpeech']),
+                                CheckSymptom1(_patient?.symptomSpeech),
                                 style: TextStyle(
                                   fontSize: height * 0.02,
                                 ),
@@ -447,7 +446,7 @@ class _PatientDetailState extends State<PatientDetail> {
                                 ),
                               ),
                               Text(
-                                CheckSymptom3(patient?['SymptomVisual'] ?? -1),
+                                CheckSymptom3(_patient?.symptomVisual ?? -1),
                                 style: TextStyle(
                                   fontSize: height * 0.02,
                                 ),
@@ -465,7 +464,7 @@ class _PatientDetailState extends State<PatientDetail> {
                                 ),
                               ),
                               Text(
-                                CheckSymptom4(patient?['SymptomAphasia'] ?? -1),
+                                CheckSymptom4(_patient?.symptomAphasia ?? -1),
                                 style: TextStyle(
                                   fontSize: height * 0.02,
                                 ),
@@ -483,7 +482,7 @@ class _PatientDetailState extends State<PatientDetail> {
                                 ),
                               ),
                               Text(
-                                CheckSymptom1(patient?['SymptomNeglect']),
+                                CheckSymptom1(_patient?.symptomNeglect),
                                 style: TextStyle(
                                   fontSize: height * 0.02,
                                 ),
@@ -532,11 +531,11 @@ class _PatientDetailState extends State<PatientDetail> {
                 context,
                 MaterialPageRoute(
                   builder: (context) => EditPatient1(
-                    patientID: widget.patientID,
+                    patientId: widget.patientId,
                   ),
                 ),
               ).then((_) {
-                _loadPatientData();
+                loadPatientData();
               });
             },
             borderRadius: BorderRadius.circular(height * 0.076 / 2),

@@ -2,15 +2,24 @@ import 'package:flutter/material.dart';
 
 class SymptomNegelct extends StatefulWidget {
   final ValueChanged<int> onChanged;
+  final int initialValue8; // เพิ่มค่าเริ่มต้น
 
-  const SymptomNegelct({Key? key, required this.onChanged}) : super(key: key);
+  const SymptomNegelct(
+      {Key? key, required this.onChanged, required this.initialValue8})
+      : super(key: key);
 
   @override
   State<SymptomNegelct> createState() => _SymptomNegelctState();
 }
 
 class _SymptomNegelctState extends State<SymptomNegelct> {
-  int symptomNegelct = -1;
+  late int symptomNegelct;
+
+  @override
+  void initState() {
+    super.initState();
+    symptomNegelct = widget.initialValue8; // กำหนดค่าเริ่มต้น
+  }
 
   @override
   Widget build(BuildContext context) {

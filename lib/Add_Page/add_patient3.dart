@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:hospital_app/Add_Patient/ct_brain.dart';
-import 'package:hospital_app/Add_Patient/disease_selection.dart';
+import 'package:provider/provider.dart';
+import 'package:hospital_app/Provider/Paddpatient3.dart';
 import 'package:hospital_app/Quiz/quiz1_page.dart';
+import 'package:hospital_app/Add_Patient/disease_selection.dart';
 
 class AddPatient3 extends StatefulWidget {
   final TextEditingController nameController;
@@ -17,14 +19,6 @@ class AddPatient3 extends StatefulWidget {
   final TextEditingController dateTimeController3;
   final double? timeDifference1;
   final double? timeDifference2;
-  final int symptomHead;
-  final int symptomEye;
-  final int symptomFace;
-  final int symptomArm;
-  final int symptomSpeech;
-  final int symptomVisual;
-  final int symptomAphasia;
-  final int symptomNeglect;
 
   const AddPatient3({
     required this.nameController,
@@ -40,14 +34,6 @@ class AddPatient3 extends StatefulWidget {
     required this.dateTimeController3,
     required this.timeDifference1,
     required this.timeDifference2,
-    required this.symptomHead,
-    required this.symptomEye,
-    required this.symptomFace,
-    required this.symptomArm,
-    required this.symptomSpeech,
-    required this.symptomVisual,
-    required this.symptomAphasia,
-    required this.symptomNeglect,
   });
 
   @override
@@ -56,13 +42,25 @@ class AddPatient3 extends StatefulWidget {
 
 class _AddPatient3State extends State<AddPatient3> {
   String selectedDiseases = '';
-  int? ctBrainScore;
-  String? ctBrainText;
+  int onDiseasesScore = -1;
+
+  late String initialctselectedDiseases;
+  late int initialonDiseasesScore;
+  @override
+  void initState() {
+    super.initState();
+    // ดึง paddPatient2 จาก Provider
+    final paddPatient3 = Provider.of<Paddpatient3>(context, listen: false);
+    // กำหนดค่าครั้งแรกจาก paddPatient2
+    initialctselectedDiseases = paddPatient3.selectedDiseases;
+    initialonDiseasesScore = paddPatient3.onDiseasesScore;
+  }
 
   @override
   Widget build(BuildContext context) {
     final double height = MediaQuery.of(context).size.height;
     final double width = MediaQuery.of(context).size.width;
+    final paddPatient3 = Provider.of<Paddpatient3>(context);
 
     return Scaffold(
       appBar: PreferredSize(
@@ -73,7 +71,9 @@ class _AddPatient3State extends State<AddPatient3> {
           title: Text(
             'เพิ่มข้อมูลผู้ป่วย',
             style: TextStyle(
-                fontSize: height * 0.025, fontWeight: FontWeight.bold),
+              fontSize: height * 0.025,
+              fontWeight: FontWeight.bold,
+            ),
           ),
           shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.only(
@@ -117,10 +117,26 @@ class _AddPatient3State extends State<AddPatient3> {
                         SizedBox(height: height * 0.02),
                         DiseaseSelection(
                           onDiseasesSelected: (selectedDiseases) {
-                            setState(() {
-                              this.selectedDiseases = selectedDiseases;
-                            });
+                            paddPatient3
+                                .updateSelectedDiseases(selectedDiseases);
                           },
+                          initialValue1: initialctselectedDiseases,
+                          onDiseasesScore: (score) {
+                            paddPatient3.updateOnDiseasesScore(score);
+                          },
+                          initialValue2: initialonDiseasesScore,
+                        ),
+                        Text(
+                          'Disease Score: ${paddPatient3.onDiseasesScore}',
+                          style: TextStyle(
+                            fontSize: height * 0.018,
+                          ),
+                        ),
+                        Text(
+                          'Disease Text: ${paddPatient3.selectedDiseases}',
+                          style: TextStyle(
+                            fontSize: height * 0.018,
+                          ),
                         ),
                         SizedBox(height: height * 0.02),
                       ],
@@ -161,16 +177,19 @@ class _AddPatient3State extends State<AddPatient3> {
                         SizedBox(height: height * 0.02),
                         ctBrainWidget(
                           context: context,
-                          ctBrainScore: ctBrainScore,
-                          ctBrainText: ctBrainText,
+                          ctBrainScore: paddPatient3.ctBrainScore,
+                          ctBrainText: paddPatient3.ctBrainText,
                           onChanged: (int? newScore, String? newText) {
-                            setState(() {
-                              ctBrainScore = newScore;
-                              ctBrainText = newText;
-                            });
+                            paddPatient3.updateCtBrainScore(newScore, newText);
                           },
                         ),
                         SizedBox(height: height * 0.02),
+                        Text(
+                          'CT Score: ${paddPatient3.ctBrainScore}',
+                          style: TextStyle(
+                            fontSize: height * 0.018,
+                          ),
+                        ),
                       ],
                     ),
                   ),
@@ -202,17 +221,9 @@ class _AddPatient3State extends State<AddPatient3> {
                           dateTimeController3: widget.dateTimeController3,
                           timeDifference1: widget.timeDifference1,
                           timeDifference2: widget.timeDifference2,
-                          symptomHead: widget.symptomHead,
-                          symptomEye: widget.symptomEye,
-                          symptomFace: widget.symptomFace,
-                          symptomArm: widget.symptomArm,
-                          symptomSpeech: widget.symptomSpeech,
-                          symptomVisual: widget.symptomVisual,
-                          symptomAphasia: widget.symptomAphasia,
-                          symptomNegelct: widget.symptomNeglect,
                           selectedDiseases: selectedDiseases,
-                          ctBrain: ctBrainScore,
-                          ctBrainText: ctBrainText,
+                          ctBrain: paddPatient3.ctBrainScore,
+                          ctBrainText: paddPatient3.ctBrainText,
                         ),
                       ),
                     );

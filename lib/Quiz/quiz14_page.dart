@@ -15,14 +15,7 @@ class Question14Page extends StatefulWidget {
   final TextEditingController dateTimeController3;
   final double? timeDifference1;
   final double? timeDifference2;
-  final int symptomHead;
-  final int symptomEye;
-  final int symptomFace;
-  final int symptomArm;
-  final int symptomSpeech;
-  final int symptomVisual;
-  final int symptomAphasia;
-  final int symptomNegelct;
+
   final String selectedDiseases;
   final int? ctBrain;
   final String? ctBrainText;
@@ -68,14 +61,6 @@ class Question14Page extends StatefulWidget {
       required this.dateTimeController3,
       required this.timeDifference1,
       required this.timeDifference2,
-      required this.symptomHead,
-      required this.symptomEye,
-      required this.symptomFace,
-      required this.symptomArm,
-      required this.symptomSpeech,
-      required this.symptomVisual,
-      required this.symptomAphasia,
-      required this.symptomNegelct,
       required this.selectedDiseases,
       required this.ctBrain,
       required this.ctBrainText,
@@ -144,14 +129,6 @@ class _Question14PageState extends State<Question14Page> {
             dateTimeController3: widget.dateTimeController3,
             timeDifference1: widget.timeDifference1,
             timeDifference2: widget.timeDifference2,
-            symptomHead: widget.symptomHead,
-            symptomEye: widget.symptomEye,
-            symptomFace: widget.symptomFace,
-            symptomArm: widget.symptomArm,
-            symptomSpeech: widget.symptomSpeech,
-            symptomVisual: widget.symptomVisual,
-            symptomAphasia: widget.symptomAphasia,
-            symptomNegelct: widget.symptomNegelct,
             selectedDiseases: widget.selectedDiseases,
             ctBrain: widget.ctBrain,
             ctBrainText: widget.ctBrainText,

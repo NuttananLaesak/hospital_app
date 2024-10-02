@@ -1,9 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:hospital_app/Provider/Paddpatient2.dart';
+import 'package:hospital_app/Provider/Paddpatient3.dart';
+import 'package:hospital_app/Provider/Pquiz.dart';
 import 'package:hospital_app/get_start.dart';
 import 'package:hospital_app/patient_list.dart';
+import 'package:provider/provider.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => Paddpatient2()),
+        ChangeNotifierProvider(create: (_) => Paddpatient3()),
+        ChangeNotifierProvider(create: (_) => QuizModel()),
+        // Add other providers here
+      ],
+      child: MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {

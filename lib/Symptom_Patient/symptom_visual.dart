@@ -2,15 +2,24 @@ import 'package:flutter/material.dart';
 
 class SymptomVisual extends StatefulWidget {
   final ValueChanged<int> onChanged;
+  final int initialValue6; // เพิ่มค่าเริ่มต้น
 
-  const SymptomVisual({Key? key, required this.onChanged}) : super(key: key);
+  const SymptomVisual(
+      {Key? key, required this.onChanged, required this.initialValue6})
+      : super(key: key);
 
   @override
   State<SymptomVisual> createState() => _SymptomVisualState();
 }
 
 class _SymptomVisualState extends State<SymptomVisual> {
-  int symptomVisual = -1;
+  late int symptomVisual;
+
+  @override
+  void initState() {
+    super.initState();
+    symptomVisual = widget.initialValue6; // กำหนดค่าเริ่มต้น
+  }
 
   void _handleCheckboxChange(int index) {
     setState(() {

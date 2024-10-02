@@ -2,15 +2,24 @@ import 'package:flutter/material.dart';
 
 class SymptomAphasia extends StatefulWidget {
   final ValueChanged<int> onChanged;
+  final int initialValue7; // เพิ่มค่าเริ่มต้น
 
-  const SymptomAphasia({Key? key, required this.onChanged}) : super(key: key);
+  const SymptomAphasia(
+      {Key? key, required this.onChanged, required this.initialValue7})
+      : super(key: key);
 
   @override
   State<SymptomAphasia> createState() => _SymptomAphasiaState();
 }
 
 class _SymptomAphasiaState extends State<SymptomAphasia> {
-  int symptomAphasia = -1;
+  late int symptomAphasia;
+
+  @override
+  void initState() {
+    super.initState();
+    symptomAphasia = widget.initialValue7; // กำหนดค่าเริ่มต้น
+  }
 
   void _handleCheckboxChange(int index) {
     setState(() {

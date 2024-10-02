@@ -36,7 +36,7 @@ class _Strictly_Prohibited8State extends State<Strictly_Prohibited8> {
         children: <Widget>[
           SizedBox(height: height * 0.02),
           Text(
-            'มีผลการตรวจร่างกายพบว่ามีภาวะเลือดออก (Active Bleeding)',
+            'มีภาวะเลือดออกเเละอวัยวะภายใน\n(Active Internal Bleeding)',
             textAlign: TextAlign.center,
             style: TextStyle(fontSize: height * 0.019),
           ),

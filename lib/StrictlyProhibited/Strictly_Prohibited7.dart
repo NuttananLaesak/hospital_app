@@ -28,7 +28,7 @@ class Strictly_Prohibited7 extends StatelessWidget {
             children: [
               SizedBox(height: height * 0.02),
               Text(
-                'มีความดันโลหิตช่วงก่อนให้รักษาสูง\n(SBP >= 185 mm/Hg)\n(DBP >= 110 mm/Hg)\nเเละไม่สามารถลดความดันโลหิต\nลงได้ก่อนให้ยาละลายลิ่มเลือด',
+                'มีความดันโลหิตช่วงก่อนให้รักษาสูง\n(SBP > 185 mm/Hg)\n(DBP > 110 mm/Hg)\nเเละไม่สามารถลดความดันโลหิต\nลงได้ก่อนให้ยาละลายลิ่มเลือด',
                 style: TextStyle(fontSize: height * 0.019),
                 textAlign: TextAlign.center,
               ),
