@@ -3,8 +3,12 @@ import 'package:flutter/widgets.dart';
 
 class Strictly_Prohibited5 extends StatefulWidget {
   final ValueChanged<int> onChanged;
+  final int initialStrictlyprohibited5;
 
-  const Strictly_Prohibited5({Key? key, required this.onChanged})
+  const Strictly_Prohibited5(
+      {Key? key,
+      required this.onChanged,
+      required this.initialStrictlyprohibited5})
       : super(key: key);
 
   @override
@@ -12,7 +16,13 @@ class Strictly_Prohibited5 extends StatefulWidget {
 }
 
 class _Strictly_Prohibited5State extends State<Strictly_Prohibited5> {
-  int strictlyprohibited5 = -1;
+  late int strictlyprohibited5;
+
+  @override
+  void initState() {
+    super.initState();
+    strictlyprohibited5 = widget.initialStrictlyprohibited5;
+  }
 
   void _handleCheckboxChange(int index) {
     setState(() {

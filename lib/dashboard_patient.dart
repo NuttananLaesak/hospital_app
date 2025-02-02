@@ -127,12 +127,17 @@ class _DashboardPatientState extends State<DashboardPatient> {
                       Image.asset('images/dash.png',
                           width: width * 0.4, height: height * 0.2),
                       SizedBox(height: height * 0.01),
-                      Text(
+                      Expanded(
+                        child: Text(
                           'ชื่อ : ${_patient!.nameController.isNotEmpty == true ? _patient!.nameController : 'ไม่ได้ระบุ'}',
                           style: TextStyle(
                               fontSize: height * 0.024,
                               fontWeight: FontWeight.bold,
-                              color: Colors.black)),
+                              color: Colors.black),
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 1,
+                        ),
+                      )
                     ],
                   ),
                 ),

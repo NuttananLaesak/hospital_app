@@ -1,18 +1,36 @@
 import 'package:flutter/material.dart';
 
-class Indictions2 extends StatelessWidget {
-  final bool ageMore;
-  final bool ageLess;
-  final Function(bool?) ageMoreChanged;
-  final Function(bool?) AgeLessChanged;
+class Indictions2 extends StatefulWidget {
+  final ValueChanged<int> onChanged;
+  final int initialIndications2;
 
-  const Indictions2({
-    Key? key,
-    required this.ageMore,
-    required this.ageLess,
-    required this.ageMoreChanged,
-    required this.AgeLessChanged,
-  }) : super(key: key);
+  const Indictions2(
+      {Key? key, required this.onChanged, required this.initialIndications2})
+      : super(key: key);
+
+  @override
+  State<Indictions2> createState() => _Indictions2State();
+}
+
+class _Indictions2State extends State<Indictions2> {
+  late int indications2;
+
+  @override
+  void initState() {
+    super.initState();
+    indications2 = widget.initialIndications2;
+  }
+
+  void _handleCheckboxChange(int index) {
+    setState(() {
+      if (indications2 == index) {
+        indications2 = -1;
+      } else {
+        indications2 = index;
+      }
+      widget.onChanged(indications2);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -35,9 +53,11 @@ class Indictions2 extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Checkbox(
-                    value: ageMore,
+                    value: indications2 == 1,
                     activeColor: Color(0xFF304FFE),
-                    onChanged: ageMoreChanged,
+                    onChanged: (value) {
+                      _handleCheckboxChange(1);
+                    },
                   ),
                   Text(
                     'มี',
@@ -45,9 +65,11 @@ class Indictions2 extends StatelessWidget {
                   ),
                   SizedBox(width: width * 0.05),
                   Checkbox(
-                    value: ageLess,
+                    value: indications2 == 0,
                     activeColor: Color(0xFF304FFE),
-                    onChanged: AgeLessChanged,
+                    onChanged: (value) {
+                      _handleCheckboxChange(0);
+                    },
                   ),
                   Text(
                     'ไม่มี',

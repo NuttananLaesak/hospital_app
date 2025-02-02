@@ -19,7 +19,11 @@ class _MadicDetailState extends State<MadicDetail> {
   double medic1 = 0.0;
   double medic2 = 0.0;
   double medic3 = 0.0;
-  bool showMedicationError = false;
+  bool showMedication1 = false;
+  bool showMedication2 = false;
+  bool showMedication3 = false;
+  bool showMedication4 = false;
+  bool showMedication5 = false;
 
   Patient? _patient;
 
@@ -48,7 +52,39 @@ class _MadicDetailState extends State<MadicDetail> {
   }
 
   void _checkcalculateWeight() {
-    if (_patient?.indications1 == 1 &&
+    bool indicationsValid1 = (_patient?.indications1 == 0 &&
+        _patient?.indications2 == 0 &&
+        _patient?.indications3 == 0);
+    bool strictlyProhibitedValid1 = _patient?.strictlyprohibited1 == 0 ||
+        _patient?.strictlyprohibited2 == 0 ||
+        _patient?.strictlyprohibited3 == 0 ||
+        _patient?.strictlyprohibited4 == 0 ||
+        _patient?.strictlyprohibited5 == 0 ||
+        _patient?.strictlyprohibited6 == 0 ||
+        _patient?.strictlyprohibited7 == 0 ||
+        _patient?.strictlyprohibited8 == 0 ||
+        _patient?.strictlyprohibited9 == 0 ||
+        _patient?.strictlyprohibited10 == 0 ||
+        _patient?.strictlyprohibited11 == 0 ||
+        _patient?.strictlyprohibited12 == 0 ||
+        _patient?.strictlyprohibited13 == 0 ||
+        _patient?.strictlyprohibited14 == 0;
+    bool strictlyNotProhibitedValid1 = _patient?.strictlynotprohibited1 == 0 ||
+        _patient?.strictlynotprohibited2 == 0 ||
+        _patient?.strictlynotprohibited3 == 0 ||
+        _patient?.strictlynotprohibited4 == 0 ||
+        _patient?.strictlynotprohibited5 == 0 ||
+        _patient?.strictlynotprohibited6 == 0 ||
+        _patient?.additionalprohibitions1 == 0 ||
+        _patient?.additionalprohibitions2 == 0;
+
+    if (indicationsValid1 &&
+        strictlyProhibitedValid1 &&
+        (strictlyNotProhibitedValid1)) {
+      setState(() {
+        showMedication1 = true;
+      });
+    } else if (_patient?.indications1 == 1 &&
         _patient?.indications2 == 1 &&
         _patient?.indications3 == 1 &&
         _patient?.strictlyprohibited1 == 1 &&
@@ -62,13 +98,72 @@ class _MadicDetailState extends State<MadicDetail> {
         _patient?.strictlyprohibited9 == 1 &&
         _patient?.strictlyprohibited10 == 1 &&
         _patient?.strictlyprohibited11 == 1 &&
-        _patient?.additionalprohibitions1 == 1) {
+        _patient?.strictlyprohibited12 == 1 &&
+        _patient?.strictlyprohibited13 == 1 &&
+        _patient?.strictlyprohibited14 == 1 &&
+        (strictlyNotProhibitedValid1)) {
       setState(() {
-        showMedicationError = false;
+        showMedication2 = true;
+      });
+    } else if (_patient?.indications1 == 1 &&
+        _patient?.indications2 == 1 &&
+        _patient?.indications3 == 1 &&
+        _patient?.strictlyprohibited1 == 1 &&
+        _patient?.strictlyprohibited2 == 1 &&
+        _patient?.strictlyprohibited3 == 1 &&
+        _patient?.strictlyprohibited4 == 1 &&
+        _patient?.strictlyprohibited5 == 1 &&
+        _patient?.strictlyprohibited6 == 1 &&
+        _patient?.strictlyprohibited7 == 1 &&
+        _patient?.strictlyprohibited8 == 1 &&
+        _patient?.strictlyprohibited9 == 1 &&
+        _patient?.strictlyprohibited10 == 1 &&
+        _patient?.strictlyprohibited11 == 1 &&
+        _patient?.strictlyprohibited12 == 1 &&
+        _patient?.strictlyprohibited13 == 1 &&
+        _patient?.strictlyprohibited14 == 1 &&
+        _patient?.strictlynotprohibited1 == 1 &&
+        _patient?.strictlynotprohibited2 == 1 &&
+        _patient?.strictlynotprohibited3 == 1 &&
+        _patient?.strictlynotprohibited4 == 1 &&
+        _patient?.strictlynotprohibited5 == 1 &&
+        _patient?.strictlynotprohibited6 == 1 &&
+        _patient?.additionalprohibitions1 == 1 &&
+        _patient?.additionalprohibitions2 == 1) {
+      setState(() {
+        showMedication3 = true;
+      });
+    } else if (_patient?.indications1 == -1 ||
+        _patient?.indications2 == -1 ||
+        _patient?.indications3 == -1 ||
+        _patient?.strictlyprohibited1 == -1 ||
+        _patient?.strictlyprohibited2 == -1 ||
+        _patient?.strictlyprohibited3 == -1 ||
+        _patient?.strictlyprohibited4 == -1 ||
+        _patient?.strictlyprohibited5 == -1 ||
+        _patient?.strictlyprohibited6 == -1 ||
+        _patient?.strictlyprohibited7 == -1 ||
+        _patient?.strictlyprohibited8 == -1 ||
+        _patient?.strictlyprohibited9 == -1 ||
+        _patient?.strictlyprohibited10 == -1 ||
+        _patient?.strictlyprohibited11 == -1 ||
+        _patient?.strictlyprohibited12 == -1 ||
+        _patient?.strictlyprohibited13 == -1 ||
+        _patient?.strictlyprohibited14 == -1 ||
+        _patient?.strictlynotprohibited1 == -1 ||
+        _patient?.strictlynotprohibited2 == -1 ||
+        _patient?.strictlynotprohibited3 == -1 ||
+        _patient?.strictlynotprohibited4 == -1 ||
+        _patient?.strictlynotprohibited5 == -1 ||
+        _patient?.strictlynotprohibited6 == -1 ||
+        _patient?.additionalprohibitions1 == -1 ||
+        _patient?.additionalprohibitions2 == -1) {
+      setState(() {
+        showMedication4 = true;
       });
     } else {
       setState(() {
-        showMedicationError = true;
+        showMedication5 = true;
       });
     }
   }
@@ -191,6 +286,7 @@ class _MadicDetailState extends State<MadicDetail> {
       aftercure: _patient?.aftercure ?? '',
       recordedTime1: _patient?.recordedTime1,
       recordedTime2: _patient?.recordedTime2,
+      rtpa: _patient?.rtpa ?? '',
     );
 
     // อัปเดตใน SharedPreferences
@@ -285,18 +381,20 @@ class _MadicDetailState extends State<MadicDetail> {
                             color: Color(0xFF82B1FF),
                             thickness: 2.0,
                           ),
-                          if (showMedicationError)
+                          if (showMedication1)
                             Column(
                               children: [
+                                SizedBox(height: height * 0.015),
                                 Text(
-                                  'ไม่สามารถคำนวณยาได้เนื่องจาก\nไม่ผ่านข้อบ่งชี้และข้อห้าม',
+                                  'ไม่สามารถให้ยาผู้ป่วยได้',
                                   style: TextStyle(
                                     fontSize: height * 0.02,
+                                    fontWeight: FontWeight.bold,
                                     color: Colors.red,
                                   ),
                                   textAlign: TextAlign.center,
                                 ),
-                                SizedBox(height: height * 0.01),
+                                SizedBox(height: height * 0.025),
                                 ElevatedButton(
                                   onPressed: () {
                                     _navigateToWarningPage();
@@ -328,9 +426,19 @@ class _MadicDetailState extends State<MadicDetail> {
                                 ),
                               ],
                             )
-                          else
+                          else if (showMedication2)
                             Column(
                               children: [
+                                Text(
+                                  'อาจจะให้ยาได้กับผู้ป่วยได้',
+                                  style: TextStyle(
+                                    fontSize: height * 0.022,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.orange,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                ),
+                                Divider(),
                                 Text(
                                   'ปริมาณยาละลายลิ่มเลือด\n(rt-PA) ${(_patient?.medic1 ?? 0.0).toStringAsFixed(2)} มิลลิกรัม',
                                   style: TextStyle(fontSize: height * 0.02),
@@ -349,8 +457,199 @@ class _MadicDetailState extends State<MadicDetail> {
                                   textAlign: TextAlign.center,
                                 ),
                                 Divider(),
+                                SizedBox(height: height * 0.015),
+                                ElevatedButton(
+                                  onPressed: () {
+                                    _calculateWeight();
+                                    _updateMadic().then((_) {
+                                      loadPatientData();
+                                    });
+                                  },
+                                  style: ButtonStyle(
+                                    backgroundColor:
+                                        MaterialStateProperty.all<Color>(
+                                            const Color(0xFF82B1FF)),
+                                    minimumSize:
+                                        MaterialStateProperty.all<Size>(
+                                            const Size(150, 70)),
+                                    shape: MaterialStateProperty.all<
+                                        RoundedRectangleBorder>(
+                                      RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(40.0),
+                                      ),
+                                    ),
+                                  ),
+                                  child: Text(
+                                    'คำนวณยาเเละบันทึก',
+                                    style: TextStyle(
+                                      fontSize: height * 0.022,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.black,
+                                    ),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
+                                SizedBox(height: height * 0.015),
                               ],
-                            ),
+                            )
+                          else if (showMedication3)
+                            Column(
+                              children: [
+                                Text(
+                                  'สามารถให้ยาผู้ป่วยได้',
+                                  style: TextStyle(
+                                    fontSize: height * 0.022,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.green,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                ),
+                                Divider(),
+                                Text(
+                                  'ปริมาณยาละลายลิ่มเลือด\n(rt-PA) ${(_patient?.medic1 ?? 0.0).toStringAsFixed(2)} มิลลิกรัม',
+                                  style: TextStyle(fontSize: height * 0.02),
+                                  textAlign: TextAlign.center,
+                                ),
+                                Divider(),
+                                Text(
+                                  'แบ่งให้ ${(_patient?.medic2 ?? 0.0).toStringAsFixed(2)} มิลลิกรัม\nทางหลอดเลือดดำใน 1 นาที',
+                                  style: TextStyle(fontSize: height * 0.02),
+                                  textAlign: TextAlign.center,
+                                ),
+                                Divider(),
+                                Text(
+                                  'และ ${(_patient?.medic3 ?? 0.0).toStringAsFixed(2)} มิลลิกรัม\nหยดทางหลอดเลือดดำใน 60 นาที',
+                                  style: TextStyle(fontSize: height * 0.02),
+                                  textAlign: TextAlign.center,
+                                ),
+                                Divider(),
+                                SizedBox(height: height * 0.015),
+                                ElevatedButton(
+                                  onPressed: () {
+                                    _calculateWeight();
+                                    _updateMadic().then((_) {
+                                      loadPatientData();
+                                    });
+                                  },
+                                  style: ButtonStyle(
+                                    backgroundColor:
+                                        MaterialStateProperty.all<Color>(
+                                            const Color(0xFF82B1FF)),
+                                    minimumSize:
+                                        MaterialStateProperty.all<Size>(
+                                            const Size(150, 70)),
+                                    shape: MaterialStateProperty.all<
+                                        RoundedRectangleBorder>(
+                                      RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(40.0),
+                                      ),
+                                    ),
+                                  ),
+                                  child: Text(
+                                    'คำนวณยาเเละบันทึก',
+                                    style: TextStyle(
+                                      fontSize: height * 0.022,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.black,
+                                    ),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
+                                SizedBox(height: height * 0.015),
+                              ],
+                            )
+                          else if (showMedication4)
+                            Column(
+                              children: [
+                                SizedBox(height: height * 0.015),
+                                Text(
+                                  'ไม่ได้ระบุหรือระบุไม่ครบ',
+                                  style: TextStyle(
+                                    fontSize: height * 0.02,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.red,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                ),
+                                SizedBox(height: height * 0.025),
+                                ElevatedButton(
+                                  onPressed: () {
+                                    _navigateToWarningPage();
+                                  },
+                                  style: ButtonStyle(
+                                    backgroundColor:
+                                        MaterialStateProperty.all<Color>(
+                                            const Color(0xFF82B1FF)),
+                                    minimumSize:
+                                        MaterialStateProperty.all<Size>(
+                                            Size(width * 0.4, height * 0.05)),
+                                    shape: MaterialStateProperty.all<
+                                        RoundedRectangleBorder>(
+                                      RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(40.0),
+                                      ),
+                                    ),
+                                  ),
+                                  child: Text(
+                                    'ไปยังหน้าข้อบ่งชี้เเละข้อห้าม',
+                                    style: TextStyle(
+                                      fontSize: height * 0.018,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.black,
+                                    ),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
+                              ],
+                            )
+                          else if (showMedication5)
+                            Column(
+                              children: [
+                                SizedBox(height: height * 0.015),
+                                Text(
+                                  'ไม่ตรงคามเงื่อนไขในการตรวจเช็คให้ยา',
+                                  style: TextStyle(
+                                    fontSize: height * 0.02,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.red,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                ),
+                                SizedBox(height: height * 0.025),
+                                ElevatedButton(
+                                  onPressed: () {
+                                    _navigateToWarningPage();
+                                  },
+                                  style: ButtonStyle(
+                                    backgroundColor:
+                                        MaterialStateProperty.all<Color>(
+                                            const Color(0xFF82B1FF)),
+                                    minimumSize:
+                                        MaterialStateProperty.all<Size>(
+                                            Size(width * 0.4, height * 0.05)),
+                                    shape: MaterialStateProperty.all<
+                                        RoundedRectangleBorder>(
+                                      RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(40.0),
+                                      ),
+                                    ),
+                                  ),
+                                  child: Text(
+                                    'ไปยังหน้าข้อบ่งชี้เเละข้อห้าม',
+                                    style: TextStyle(
+                                      fontSize: height * 0.018,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.black,
+                                    ),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
+                              ],
+                            )
                         ],
                       ),
                     ],
@@ -359,34 +658,6 @@ class _MadicDetailState extends State<MadicDetail> {
               ),
             ),
             SizedBox(height: height * 0.025),
-            ElevatedButton(
-              onPressed: () {
-                _calculateWeight();
-                _updateMadic().then((_) {
-                  loadPatientData();
-                });
-              },
-              style: ButtonStyle(
-                backgroundColor:
-                    MaterialStateProperty.all<Color>(const Color(0xFF82B1FF)),
-                minimumSize:
-                    MaterialStateProperty.all<Size>(const Size(150, 70)),
-                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                  RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(40.0),
-                  ),
-                ),
-              ),
-              child: Text(
-                'คำนวณยาเเละบันทึก',
-                style: TextStyle(
-                  fontSize: height * 0.022,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black,
-                ),
-                textAlign: TextAlign.center,
-              ),
-            ),
           ],
         ),
       ),

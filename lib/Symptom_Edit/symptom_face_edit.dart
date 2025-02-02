@@ -1,9 +1,16 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:hospital_app/share_pref.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SymptomFaceEdit extends StatefulWidget {
   final ValueChanged<int> onChanged;
+  final int patientId;
 
-  const SymptomFaceEdit({Key? key, required this.onChanged}) : super(key: key);
+  const SymptomFaceEdit(
+      {Key? key, required this.onChanged, required this.patientId})
+      : super(key: key);
 
   @override
   State<SymptomFaceEdit> createState() => _SymptomFaceEditState();
@@ -11,6 +18,32 @@ class SymptomFaceEdit extends StatefulWidget {
 
 class _SymptomFaceEditState extends State<SymptomFaceEdit> {
   int symptomFace = -1;
+
+  // ignore: unused_field
+  Patient? _patient;
+
+  @override
+  void initState() {
+    super.initState();
+    loadPatientData();
+  }
+
+  Future<void> loadPatientData() async {
+    final prefs = await SharedPreferences.getInstance();
+    List<String>? patientList = prefs.getStringList('patients') ?? [];
+
+    for (var patientData in patientList) {
+      Map<String, dynamic> map = Map.from(json.decode(patientData));
+      Patient patient = Patient.fromMap(map);
+      if (patient.id == widget.patientId) {
+        setState(() {
+          _patient = patient;
+          symptomFace = patient.symptomEye;
+        });
+        break;
+      }
+    }
+  }
 
   void _handleCheckboxChange(int index) {
     setState(() {

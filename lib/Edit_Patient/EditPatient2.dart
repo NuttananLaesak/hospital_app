@@ -151,68 +151,68 @@ class _EditPatient2State extends State<EditPatient2> {
                         ),
                         SizedBox(height: height * 0.02),
                         SymptomHeadEdit(
-                          onChanged: (value) {
-                            setState(() {
-                              _symptomHead = value;
-                            });
-                          },
-                        ),
+                            onChanged: (value) {
+                              setState(() {
+                                _symptomHead = value;
+                              });
+                            },
+                            patientId: widget.patientId),
                         SizedBox(height: height * 0.02),
                         SymptomEyeEdit(
-                          onChanged: (value) {
-                            setState(() {
-                              _symptomEye = value;
-                            });
-                          },
-                        ),
+                            onChanged: (value) {
+                              setState(() {
+                                _symptomEye = value;
+                              });
+                            },
+                            patientId: widget.patientId),
                         SizedBox(height: height * 0.02),
                         SymptomFaceEdit(
-                          onChanged: (value) {
-                            setState(() {
-                              _symptomFace = value;
-                            });
-                          },
-                        ),
+                            onChanged: (value) {
+                              setState(() {
+                                _symptomFace = value;
+                              });
+                            },
+                            patientId: widget.patientId),
                         SizedBox(height: height * 0.02),
                         SymptomArmEdit(
-                          onChanged: (value) {
-                            setState(() {
-                              _symptomArm = value;
-                            });
-                          },
-                        ),
+                            onChanged: (value) {
+                              setState(() {
+                                _symptomArm = value;
+                              });
+                            },
+                            patientId: widget.patientId),
                         SizedBox(height: height * 0.02),
                         SymptomSpeechEdit(
-                          onChanged: (value) {
-                            setState(() {
-                              _symptomSpeech = value;
-                            });
-                          },
-                        ),
+                            onChanged: (value) {
+                              setState(() {
+                                _symptomSpeech = value;
+                              });
+                            },
+                            patientId: widget.patientId),
                         SizedBox(height: height * 0.02),
                         SymptomVisualEdit(
-                          onChanged: (value) {
-                            setState(() {
-                              _symptomVisual = value;
-                            });
-                          },
-                        ),
+                            onChanged: (value) {
+                              setState(() {
+                                _symptomVisual = value;
+                              });
+                            },
+                            patientId: widget.patientId),
                         SizedBox(height: height * 0.02),
                         SymptomAphasiaEdit(
-                          onChanged: (value) {
-                            setState(() {
-                              _symptomAphasia = value;
-                            });
-                          },
-                        ),
+                            onChanged: (value) {
+                              setState(() {
+                                _symptomAphasia = value;
+                              });
+                            },
+                            patientId: widget.patientId),
                         SizedBox(height: height * 0.02),
                         SymptomNegelctEdit(
-                          onChanged: (value) {
-                            setState(() {
-                              _symptomNeglect = value;
-                            });
-                          },
-                        ),
+                            onChanged: (value) {
+                              setState(() {
+                                _symptomNeglect = value;
+                              });
+                            },
+                            patientId: widget.patientId),
                         SizedBox(height: height * 0.02),
                       ],
                     ),

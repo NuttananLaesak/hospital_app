@@ -1,14 +1,14 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:hospital_app/AdditionalProhibitions/AdditionalProhibitions1.dart';
-import 'package:hospital_app/AdditionalProhibitions/AdditionalProhibitions2.dart';
-import 'package:hospital_app/StrictlyNotProhibited/StrictlyNotProhibited1.dart';
-import 'package:hospital_app/StrictlyNotProhibited/StrictlyNotProhibited2.dart';
-import 'package:hospital_app/StrictlyNotProhibited/StrictlyNotProhibited3.dart';
-import 'package:hospital_app/StrictlyNotProhibited/StrictlyNotProhibited4.dart';
-import 'package:hospital_app/StrictlyNotProhibited/StrictlyNotProhibited5.dart';
-import 'package:hospital_app/StrictlyNotProhibited/StrictlyNotProhibited6.dart';
+import 'package:hospital_app/AdditionalProhibitions_Edit/Edit_AdditionalProhibitions1.dart';
+import 'package:hospital_app/AdditionalProhibitions_Edit/Edit_AdditionalProhibitions2.dart';
+import 'package:hospital_app/StrictlyProhibite_Edit.dart/Edit_StrictlyNotProhibited1.dart';
+import 'package:hospital_app/StrictlyProhibite_Edit.dart/Edit_StrictlyNotProhibited2.dart';
+import 'package:hospital_app/StrictlyProhibite_Edit.dart/Edit_StrictlyNotProhibited3.dart';
+import 'package:hospital_app/StrictlyProhibite_Edit.dart/Edit_StrictlyNotProhibited4.dart';
+import 'package:hospital_app/StrictlyProhibite_Edit.dart/Edit_StrictlyNotProhibited5.dart';
+import 'package:hospital_app/StrictlyProhibite_Edit.dart/Edit_StrictlyNotProhibited6.dart';
 import 'package:hospital_app/share_pref.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -65,18 +65,15 @@ class _EditWarning2State extends State<EditWarning2> {
   int strictlynotprohibited4 = -1;
   int strictlynotprohibited5 = -1;
   int strictlynotprohibited6 = -1;
-  late bool nihssLess = false;
-  late bool nihssMore = false;
   int additionalprohibitions1 = -1;
   int additionalprohibitions2 = -1;
-  late bool age2Less = false;
-  late bool age2sMore = false;
   int additionalprohibitions3 = -1;
   int additionalprohibitions4 = -1;
-  int _totalScore = 0;
-  int _age2 = 0;
+  String rtpa = '';
+
   // ignore: unused_field
   Patient? _patient;
+
   @override
   void initState() {
     super.initState();
@@ -93,35 +90,136 @@ class _EditWarning2State extends State<EditWarning2> {
       if (patient.id == widget.patientId) {
         setState(() {
           _patient = patient;
-          _totalScore = patient.totalScore;
-          _age2 = patient.ageController ?? 0;
+          strictlynotprohibited1 = patient.strictlynotprohibited1;
+          strictlynotprohibited2 = patient.strictlynotprohibited2;
+          strictlynotprohibited3 = patient.strictlynotprohibited3;
+          strictlynotprohibited4 = patient.strictlynotprohibited4;
+          strictlynotprohibited5 = patient.strictlynotprohibited5;
+          strictlynotprohibited6 = patient.strictlynotprohibited6;
+          additionalprohibitions1 = patient.additionalprohibitions1;
+          additionalprohibitions2 = patient.additionalprohibitions2;
+          additionalprohibitions3 = patient.additionalprohibitions3;
+          additionalprohibitions4 = patient.additionalprohibitions4;
         });
         break;
       }
-      _initializeAdditionalProhibitions();
     }
   }
 
-  void _initializeAdditionalProhibitions() {
-    int scorenihss = _totalScore;
-    if (scorenihss == 0) {
-      additionalprohibitions1 = -1;
-      nihssLess = false;
-      nihssMore = false;
+  void _checkcalculateWeight() {
+    bool indicationsValid1 = (widget.indications1 == 0 &&
+        widget.indications2 == 0 &&
+        widget.indications3 == 0);
+    bool strictlyProhibitedValid1 = widget.strictlyprohibited1 == 0 ||
+        widget.strictlyprohibited2 == 0 ||
+        widget.strictlyprohibited3 == 0 ||
+        widget.strictlyprohibited4 == 0 ||
+        widget.strictlyprohibited5 == 0 ||
+        widget.strictlyprohibited6 == 0 ||
+        widget.strictlyprohibited7 == 0 ||
+        widget.strictlyprohibited8 == 0 ||
+        widget.strictlyprohibited9 == 0 ||
+        widget.strictlyprohibited10 == 0 ||
+        widget.strictlyprohibited11 == 0 ||
+        widget.strictlyprohibited12 == 0 ||
+        widget.strictlyprohibited13 == 0 ||
+        widget.strictlyprohibited14 == 0;
+    bool strictlyNotProhibitedValid1 = strictlynotprohibited1 == 0 ||
+        strictlynotprohibited2 == 0 ||
+        strictlynotprohibited3 == 0 ||
+        strictlynotprohibited4 == 0 ||
+        strictlynotprohibited5 == 0 ||
+        strictlynotprohibited6 == 0 ||
+        additionalprohibitions1 == 0 ||
+        additionalprohibitions2 == 0;
+
+    if (indicationsValid1 &&
+        strictlyProhibitedValid1 &&
+        (strictlyNotProhibitedValid1)) {
+      setState(() {
+        rtpa = 'ให้ยาไม่ได้';
+      });
+    } else if (widget.indications1 == 1 &&
+        widget.indications2 == 1 &&
+        widget.indications3 == 1 &&
+        widget.strictlyprohibited1 == 1 &&
+        widget.strictlyprohibited2 == 1 &&
+        widget.strictlyprohibited3 == 1 &&
+        widget.strictlyprohibited4 == 1 &&
+        widget.strictlyprohibited5 == 1 &&
+        widget.strictlyprohibited6 == 1 &&
+        widget.strictlyprohibited7 == 1 &&
+        widget.strictlyprohibited8 == 1 &&
+        widget.strictlyprohibited9 == 1 &&
+        widget.strictlyprohibited10 == 1 &&
+        widget.strictlyprohibited11 == 1 &&
+        widget.strictlyprohibited12 == 1 &&
+        widget.strictlyprohibited13 == 1 &&
+        widget.strictlyprohibited14 == 1 &&
+        (strictlyNotProhibitedValid1)) {
+      setState(() {
+        rtpa = 'อาจจะให้ยาได้';
+      });
+    } else if (widget.indications1 == 1 &&
+        widget.indications2 == 1 &&
+        widget.indications3 == 1 &&
+        widget.strictlyprohibited1 == 1 &&
+        widget.strictlyprohibited2 == 1 &&
+        widget.strictlyprohibited3 == 1 &&
+        widget.strictlyprohibited4 == 1 &&
+        widget.strictlyprohibited5 == 1 &&
+        widget.strictlyprohibited6 == 1 &&
+        widget.strictlyprohibited7 == 1 &&
+        widget.strictlyprohibited8 == 1 &&
+        widget.strictlyprohibited9 == 1 &&
+        widget.strictlyprohibited10 == 1 &&
+        widget.strictlyprohibited11 == 1 &&
+        widget.strictlyprohibited12 == 1 &&
+        widget.strictlyprohibited13 == 1 &&
+        widget.strictlyprohibited14 == 1 &&
+        strictlynotprohibited1 == 1 &&
+        strictlynotprohibited2 == 1 &&
+        strictlynotprohibited3 == 1 &&
+        strictlynotprohibited4 == 1 &&
+        strictlynotprohibited5 == 1 &&
+        strictlynotprohibited6 == 1 &&
+        additionalprohibitions1 == 1 &&
+        additionalprohibitions2 == 1) {
+      setState(() {
+        rtpa = 'ให้ยาได้';
+      });
+    } else if (widget.indications1 == -1 ||
+        widget.indications2 == -1 ||
+        widget.indications3 == -1 ||
+        widget.strictlyprohibited1 == -1 ||
+        widget.strictlyprohibited2 == -1 ||
+        widget.strictlyprohibited3 == -1 ||
+        widget.strictlyprohibited4 == -1 ||
+        widget.strictlyprohibited5 == -1 ||
+        widget.strictlyprohibited6 == -1 ||
+        widget.strictlyprohibited7 == -1 ||
+        widget.strictlyprohibited8 == -1 ||
+        widget.strictlyprohibited9 == -1 ||
+        widget.strictlyprohibited10 == -1 ||
+        widget.strictlyprohibited11 == -1 ||
+        widget.strictlyprohibited12 == -1 ||
+        widget.strictlyprohibited13 == -1 ||
+        widget.strictlyprohibited14 == -1 ||
+        strictlynotprohibited1 == -1 ||
+        strictlynotprohibited2 == -1 ||
+        strictlynotprohibited3 == -1 ||
+        strictlynotprohibited4 == -1 ||
+        strictlynotprohibited5 == -1 ||
+        strictlynotprohibited6 == -1 ||
+        additionalprohibitions1 == -1 ||
+        additionalprohibitions2 == -1) {
+      setState(() {
+        rtpa = 'ระบุไม่ครบ';
+      });
     } else {
-      nihssLess = scorenihss <= 24;
-      nihssMore = scorenihss >= 25;
-      additionalprohibitions1 = nihssLess ? 1 : 0;
-    }
-    int age2 = _age2;
-    if (age2 == 0) {
-      additionalprohibitions3 = -1;
-      age2Less = false;
-      age2sMore = false;
-    } else {
-      age2Less = age2 <= 79;
-      age2sMore = age2 >= 80;
-      additionalprohibitions3 = age2Less ? 1 : 0;
+      setState(() {
+        rtpa = 'ไม่ตรงตามเงื่อนไข';
+      });
     }
   }
 
@@ -225,6 +323,7 @@ class _EditWarning2State extends State<EditWarning2> {
       aftercure: _patient?.aftercure ?? '',
       recordedTime1: _patient?.recordedTime1,
       recordedTime2: _patient?.recordedTime2,
+      rtpa: rtpa,
     );
 
     // อัปเดตใน SharedPreferences
@@ -233,32 +332,6 @@ class _EditWarning2State extends State<EditWarning2> {
 
     Navigator.pop(context);
     Navigator.pop(context);
-  }
-
-  void updateAdditionalProhibitions1(bool? value, bool isnihssLess) {
-    setState(() {
-      if (isnihssLess) {
-        nihssLess = value ?? false;
-        nihssMore = !nihssLess;
-      } else {
-        nihssMore = value ?? false;
-        nihssLess = !nihssMore;
-      }
-      additionalprohibitions1 = nihssLess ? 1 : 0;
-    });
-  }
-
-  void updateAdditionalProhibitions3(bool? value, bool isage2Less) {
-    setState(() {
-      if (isage2Less) {
-        age2Less = value ?? false;
-        age2sMore = !age2Less;
-      } else {
-        age2sMore = value ?? false;
-        age2Less = !age2sMore;
-      }
-      additionalprohibitions3 = age2Less ? 1 : 0;
-    });
   }
 
   @override
@@ -318,7 +391,8 @@ class _EditWarning2State extends State<EditWarning2> {
                           textAlign: TextAlign.center,
                         ),
                         SizedBox(height: height * 0.04),
-                        StrictlyNotProhibited1(
+                        EditStrictlyNotProhibited1(
+                          patientId: widget.patientId,
                           onChanged: (value) {
                             setState(() {
                               strictlynotprohibited1 = value;
@@ -326,7 +400,8 @@ class _EditWarning2State extends State<EditWarning2> {
                           },
                         ),
                         SizedBox(height: height * 0.02),
-                        StrictlyNotProhibited3(
+                        EditStrictlyNotProhibited3(
+                          patientId: widget.patientId,
                           onChanged: (value) {
                             setState(() {
                               strictlynotprohibited3 = value;
@@ -334,7 +409,8 @@ class _EditWarning2State extends State<EditWarning2> {
                           },
                         ),
                         SizedBox(height: height * 0.02),
-                        StrictlyNotProhibited4(
+                        EditStrictlyNotProhibited4(
+                          patientId: widget.patientId,
                           onChanged: (value) {
                             setState(() {
                               strictlynotprohibited4 = value;
@@ -342,7 +418,8 @@ class _EditWarning2State extends State<EditWarning2> {
                           },
                         ),
                         SizedBox(height: height * 0.02),
-                        StrictlyNotProhibited5(
+                        EditStrictlyNotProhibited5(
+                          patientId: widget.patientId,
                           onChanged: (value) {
                             setState(() {
                               strictlynotprohibited5 = value;
@@ -350,7 +427,8 @@ class _EditWarning2State extends State<EditWarning2> {
                           },
                         ),
                         SizedBox(height: height * 0.02),
-                        StrictlyNotProhibited6(
+                        EditStrictlyNotProhibited6(
+                          patientId: widget.patientId,
                           onChanged: (value) {
                             setState(() {
                               strictlynotprohibited6 = value;
@@ -358,7 +436,8 @@ class _EditWarning2State extends State<EditWarning2> {
                           },
                         ),
                         SizedBox(height: height * 0.02),
-                        StrictlyNotProhibited2(
+                        EditStrictlyNotProhibited2(
+                          patientId: widget.patientId,
                           onChanged: (value) {
                             setState(() {
                               strictlynotprohibited2 = value;
@@ -366,7 +445,8 @@ class _EditWarning2State extends State<EditWarning2> {
                           },
                         ),
                         SizedBox(height: height * 0.02),
-                        AdditionalProhibitions2(
+                        EditAdditionalProhibitions2(
+                          patientId: widget.patientId,
                           onChanged: (value) {
                             setState(() {
                               additionalprohibitions2 = value;
@@ -374,13 +454,13 @@ class _EditWarning2State extends State<EditWarning2> {
                           },
                         ),
                         SizedBox(height: height * 0.02),
-                        AdditionalProhibitions1(
-                          nihssLess: nihssLess,
-                          nihssMore: nihssMore,
-                          nihssLessChanged: (value) =>
-                              updateAdditionalProhibitions1(value, true),
-                          nihssMoreChanged: (value) =>
-                              updateAdditionalProhibitions1(value, false),
+                        EditAdditionalProhibitions1(
+                          patientId: widget.patientId,
+                          onChanged: (value) {
+                            setState(() {
+                              additionalprohibitions1 = value;
+                            });
+                          },
                         ),
                         SizedBox(height: height * 0.03),
                       ],
@@ -395,6 +475,7 @@ class _EditWarning2State extends State<EditWarning2> {
               children: [
                 ElevatedButton(
                   onPressed: () {
+                    _checkcalculateWeight();
                     _updateWarning();
                   },
                   style: ButtonStyle(

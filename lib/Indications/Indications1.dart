@@ -1,18 +1,36 @@
 import 'package:flutter/material.dart';
 
-class Indications1 extends StatelessWidget {
-  final bool hourLess;
-  final bool hourMore;
-  final Function(bool?) hourLessChanged;
-  final Function(bool?) hourMoreChanged;
+class Indications1 extends StatefulWidget {
+  final ValueChanged<int> onChanged;
+  final int initialIndications1;
 
-  const Indications1({
-    Key? key,
-    required this.hourLess,
-    required this.hourMore,
-    required this.hourLessChanged,
-    required this.hourMoreChanged,
-  }) : super(key: key);
+  const Indications1(
+      {Key? key, required this.onChanged, required this.initialIndications1})
+      : super(key: key);
+
+  @override
+  State<Indications1> createState() => _Indications1State();
+}
+
+class _Indications1State extends State<Indications1> {
+  late int indications1;
+
+  @override
+  void initState() {
+    super.initState();
+    indications1 = widget.initialIndications1;
+  }
+
+  void _handleCheckboxChange(int index) {
+    setState(() {
+      if (indications1 == index) {
+        indications1 = -1;
+      } else {
+        indications1 = index;
+      }
+      widget.onChanged(indications1);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -36,9 +54,11 @@ class Indications1 extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Checkbox(
-                    value: hourLess,
+                    value: indications1 == 1,
                     activeColor: Color(0xFF304FFE),
-                    onChanged: hourLessChanged,
+                    onChanged: (value) {
+                      _handleCheckboxChange(1);
+                    },
                   ),
                   Text(
                     'มี',
@@ -46,9 +66,11 @@ class Indications1 extends StatelessWidget {
                   ),
                   SizedBox(width: width * 0.05),
                   Checkbox(
-                    value: hourMore,
+                    value: indications1 == 0,
                     activeColor: Color(0xFF304FFE),
-                    onChanged: hourMoreChanged,
+                    onChanged: (value) {
+                      _handleCheckboxChange(0);
+                    },
                   ),
                   Text(
                     'ไม่มี',

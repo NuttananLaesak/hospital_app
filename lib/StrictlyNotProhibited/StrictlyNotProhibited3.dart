@@ -2,8 +2,12 @@ import 'package:flutter/material.dart';
 
 class StrictlyNotProhibited3 extends StatefulWidget {
   final ValueChanged<int> onChanged;
+  final int initialStrictlynotprohibited3;
 
-  const StrictlyNotProhibited3({Key? key, required this.onChanged})
+  const StrictlyNotProhibited3(
+      {Key? key,
+      required this.onChanged,
+      required this.initialStrictlynotprohibited3})
       : super(key: key);
 
   @override
@@ -11,7 +15,13 @@ class StrictlyNotProhibited3 extends StatefulWidget {
 }
 
 class _StrictlyNotProhibited3State extends State<StrictlyNotProhibited3> {
-  int strictlynotprohibited3 = -1;
+  late int strictlynotprohibited3;
+
+  @override
+  void initState() {
+    super.initState();
+    strictlynotprohibited3 = widget.initialStrictlynotprohibited3;
+  }
 
   void _handleCheckboxChange(int index) {
     setState(() {

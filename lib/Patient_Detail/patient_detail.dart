@@ -203,7 +203,7 @@ class _PatientDetailState extends State<PatientDetail> {
                           ),
                           Divider(),
                           Text(
-                            'น้ำหนัก : ${_patient?.weightController.isNotEmpty == true ? _patient!.weightController : 'ไม่ได้ระบุ'}',
+                            'น้ำหนัก : ${_patient?.weightController.isNotEmpty == true ? _patient!.weightController : 'ไม่ได้ระบุ'} กิโลกรัม',
                             style: TextStyle(
                               fontSize: height * 0.02,
                             ),
@@ -315,7 +315,7 @@ class _PatientDetailState extends State<PatientDetail> {
                             thickness: 2.0,
                           ),
                           Text(
-                            'ระยะเวลาเมีอมีอาการมาโรงพยาบาล\nใช้เวลา ${_patient?.timeDifference1!.toStringAsFixed(2) ?? 'ไม่ระบุ'} ชั่วโมง',
+                            'ระยะเวลาเมีอมีอาการมาโรงพยาบาล\nใช้เวลา ${_patient?.timeDifference1!.toInt()} ชั่วโมง ${_patient?.timeDifference1!.toStringAsFixed(2).substring(2)} นาที',
                             style: TextStyle(
                               fontSize: height * 0.02,
                             ),
@@ -323,7 +323,8 @@ class _PatientDetailState extends State<PatientDetail> {
                           ),
                           Divider(),
                           Text(
-                            'ระยะเวลาเมื่อมาโรงพยาบาลเเล้วฉีดยา\nใช้เวลา ${_patient?.timeDifference2!.toStringAsFixed(2) ?? 'ไม่ระบุ'} ชั่วโมง',
+                            'ระยะเวลาเมื่อมาโรงพยาบาลเเล้วฉีดยา\nใช้เวลา ${_patient?.timeDifference2!.toInt()} ชั่วโมง ${_patient?.timeDifference2!.toStringAsFixed(2).substring(2)} นาที',
+                            // 'ระยะเวลาเมื่อมาโรงพยาบาลเเล้วฉีดยา\nใช้เวลา ${_patient?.timeDifference2!.toStringAsFixed(2) ?? 'ไม่ระบุ'} ชั่วโมง',
                             style: TextStyle(
                               fontSize: height * 0.02,
                             ),

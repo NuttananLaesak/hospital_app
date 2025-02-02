@@ -2,10 +2,8 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:hospital_app/Add_Patient/ct_brain.dart';
-import 'package:hospital_app/Add_Patient/disease_selection.dart';
-import 'package:hospital_app/Provider/Paddpatient3.dart';
+import 'package:hospital_app/Symptom_Edit/edit_disease_selection.dart';
 import 'package:hospital_app/share_pref.dart';
-import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class EditPatient3 extends StatefulWidget {
@@ -61,8 +59,6 @@ class EditPatient3 extends StatefulWidget {
 }
 
 class _EditPatient3State extends State<EditPatient3> {
-  late String initialctselectedDiseases;
-  late int initialonDiseasesScore;
   // ignore: unused_field
   String _selectedDiseases = '';
   // ignore: unused_field
@@ -89,6 +85,7 @@ class _EditPatient3State extends State<EditPatient3> {
         setState(() {
           _patient = patient;
           _selectedDiseases = patient.selectedDiseases;
+          _onDiseasesScore = patient.scoreDiseases;
           ctBrainScore = patient.ctBrain;
           ctBrainText = patient.ctBrainText;
         });
@@ -127,10 +124,10 @@ class _EditPatient3State extends State<EditPatient3> {
       symptomVisual: widget.symptomVisual,
       symptomAphasia: widget.symptomAphasia,
       symptomNeglect: widget.symptomNeglect,
-      selectedDiseases: _patient?.selectedDiseases ?? '',
-      scoreDiseases: _patient?.scoreDiseases ?? 0,
-      ctBrain: _patient?.ctBrain,
-      ctBrainText: _patient?.ctBrainText,
+      selectedDiseases: _selectedDiseases,
+      scoreDiseases: _onDiseasesScore,
+      ctBrain: ctBrainScore,
+      ctBrainText: ctBrainText,
       totalScore: _patient?.totalScore ?? 0,
       selectedScore1: _patient?.selectedScore1 ?? 0,
       selectedScore2: _patient?.selectedScore2 ?? 0,
@@ -197,6 +194,7 @@ class _EditPatient3State extends State<EditPatient3> {
       aftercure: _patient?.aftercure ?? '',
       recordedTime1: _patient?.recordedTime1,
       recordedTime2: _patient?.recordedTime2,
+      rtpa: _patient?.rtpa ?? '',
     );
 
     // อัปเดตใน SharedPreferences
@@ -212,7 +210,6 @@ class _EditPatient3State extends State<EditPatient3> {
   Widget build(BuildContext context) {
     final double height = MediaQuery.of(context).size.height;
     final double width = MediaQuery.of(context).size.width;
-    final paddPatient3 = Provider.of<Paddpatient3>(context);
 
     return Scaffold(
       appBar: PreferredSize(
@@ -265,16 +262,14 @@ class _EditPatient3State extends State<EditPatient3> {
                           ),
                         ),
                         SizedBox(height: height * 0.02),
-                        DiseaseSelection(
+                        EditDiseaseSelection(
+                          patientId: widget.patientId,
                           onDiseasesSelected: (selectedDiseases) {
-                            paddPatient3
-                                .updateSelectedDiseases(selectedDiseases);
+                            this._selectedDiseases = selectedDiseases;
                           },
-                          initialValue1: initialctselectedDiseases,
                           onDiseasesScore: (score) {
-                            paddPatient3.updateOnDiseasesScore(score);
+                            this._onDiseasesScore = score;
                           },
-                          initialValue2: initialonDiseasesScore,
                         ),
                         SizedBox(height: height * 0.02),
                       ],

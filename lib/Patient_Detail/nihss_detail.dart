@@ -150,7 +150,15 @@ class _NihssDetailState extends State<NihssDetail> {
                             color: Color(0xFF82B1FF),
                             thickness: 2.0,
                           ),
-                          SizedBox(height: height * 0.03),
+                          SizedBox(height: height * 0.01),
+                          Text(
+                            '*หากข้อการเเก้ไขข้อใหนให้เลือกข้อนั้น*',
+                            style: TextStyle(
+                                fontSize: height * 0.02,
+                                color: Colors.green,
+                                fontWeight: FontWeight.bold),
+                          ),
+                          SizedBox(height: height * 0.01),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [

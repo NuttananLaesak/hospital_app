@@ -1,18 +1,38 @@
 import 'package:flutter/material.dart';
 
-class Strictly_Prohibited7 extends StatelessWidget {
-  final bool bloodLess;
-  final bool bloodMore;
-  final Function(bool?) bloodMoreChanged;
-  final Function(bool?) bloodLessChanged;
+class Strictly_Prohibited7 extends StatefulWidget {
+  final ValueChanged<int> onChanged;
+  final int initialStrictlyprohibited7;
 
-  const Strictly_Prohibited7({
-    Key? key,
-    required this.bloodLess,
-    required this.bloodMore,
-    required this.bloodLessChanged,
-    required this.bloodMoreChanged,
-  }) : super(key: key);
+  const Strictly_Prohibited7(
+      {Key? key,
+      required this.onChanged,
+      required this.initialStrictlyprohibited7})
+      : super(key: key);
+
+  @override
+  State<Strictly_Prohibited7> createState() => _Strictly_Prohibited7State();
+}
+
+class _Strictly_Prohibited7State extends State<Strictly_Prohibited7> {
+  late int strictlyprohibited7;
+
+  @override
+  void initState() {
+    super.initState();
+    strictlyprohibited7 = widget.initialStrictlyprohibited7;
+  }
+
+  void _handleCheckboxChange(int index) {
+    setState(() {
+      if (strictlyprohibited7 == index) {
+        strictlyprohibited7 = -1;
+      } else {
+        strictlyprohibited7 = index;
+      }
+      widget.onChanged(strictlyprohibited7);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -36,9 +56,11 @@ class Strictly_Prohibited7 extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Checkbox(
-                    value: bloodMore,
+                    value: strictlyprohibited7 == 0,
                     activeColor: Color(0xFF304FFE),
-                    onChanged: bloodMoreChanged,
+                    onChanged: (value) {
+                      _handleCheckboxChange(0);
+                    },
                   ),
                   Text(
                     'มี',
@@ -46,9 +68,11 @@ class Strictly_Prohibited7 extends StatelessWidget {
                   ),
                   SizedBox(width: width * 0.05),
                   Checkbox(
-                    value: bloodLess,
+                    value: strictlyprohibited7 == 1,
                     activeColor: Color(0xFF304FFE),
-                    onChanged: bloodLessChanged,
+                    onChanged: (value) {
+                      _handleCheckboxChange(1);
+                    },
                   ),
                   Text(
                     'ไม่มี',

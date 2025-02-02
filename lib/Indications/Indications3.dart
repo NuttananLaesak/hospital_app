@@ -3,15 +3,24 @@ import 'package:flutter/widgets.dart';
 
 class Indictions3 extends StatefulWidget {
   final ValueChanged<int> onChanged;
+  final int initialIndications3;
 
-  const Indictions3({Key? key, required this.onChanged}) : super(key: key);
+  const Indictions3(
+      {Key? key, required this.onChanged, required this.initialIndications3})
+      : super(key: key);
 
   @override
   State<Indictions3> createState() => _Indictions3State();
 }
 
 class _Indictions3State extends State<Indictions3> {
-  int indications3 = -1;
+  late int indications3;
+
+  @override
+  void initState() {
+    super.initState();
+    indications3 = widget.initialIndications3;
+  }
 
   void _handleCheckboxChange(int index) {
     setState(() {

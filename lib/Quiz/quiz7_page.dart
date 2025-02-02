@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:hospital_app/Image_Viwer.dart';
+import 'package:hospital_app/Provider/Pquiz.dart';
 import 'package:hospital_app/Quiz/quiz8_page.dart';
+import 'package:provider/provider.dart';
 
 class Question7Page extends StatefulWidget {
   final TextEditingController nameController;
@@ -15,68 +18,48 @@ class Question7Page extends StatefulWidget {
   final TextEditingController dateTimeController3;
   final double? timeDifference1;
   final double? timeDifference2;
-
-  final String selectedDiseases;
-  final int? ctBrain;
-  final String? ctBrainText;
   final int totalScore;
-  final int selectedScore1;
-  final String selectedText1;
-  final int selectedScore2;
-  final String selectedText2;
-  final int selectedScore3;
-  final String selectedText3;
-  final int selectedScore4;
-  final String selectedText4;
-  final int selectedScore5;
-  final String selectedText5;
-  final int selectedScore6;
-  final String selectedText6;
 
-  Question7Page(
-      {required this.nameController,
-      required this.hospitalController,
-      required this.ageController,
-      required this.gender,
-      required this.weightController,
-      required this.systolicBloodPressureController,
-      required this.diastolicBloodPressureController,
-      required this.sugarController,
-      required this.dateTimeController1,
-      required this.dateTimeController2,
-      required this.dateTimeController3,
-      required this.timeDifference1,
-      required this.timeDifference2,
-      required this.selectedDiseases,
-      required this.ctBrain,
-      required this.ctBrainText,
-      required this.totalScore,
-      required this.selectedScore1,
-      required this.selectedText1,
-      required this.selectedScore2,
-      required this.selectedText2,
-      required this.selectedScore3,
-      required this.selectedText3,
-      required this.selectedScore4,
-      required this.selectedText4,
-      required this.selectedScore5,
-      required this.selectedText5,
-      required this.selectedScore6,
-      required this.selectedText6});
+  Question7Page({
+    required this.nameController,
+    required this.hospitalController,
+    required this.ageController,
+    required this.gender,
+    required this.weightController,
+    required this.systolicBloodPressureController,
+    required this.diastolicBloodPressureController,
+    required this.sugarController,
+    required this.dateTimeController1,
+    required this.dateTimeController2,
+    required this.dateTimeController3,
+    required this.timeDifference1,
+    required this.timeDifference2,
+    required this.totalScore,
+  });
 
   @override
   State<Question7Page> createState() => _Question7PageState();
 }
 
 class _Question7PageState extends State<Question7Page> {
-  int selectedScore7 = 0;
+  int selectedScore7 = -1;
   String selectedText7 = "";
 
+  @override
+  void initState() {
+    super.initState();
+    final quiz = Provider.of<QuizModel>(context, listen: false);
+    selectedScore7 = quiz.selectedScore7;
+  }
+
   void _selectAnswer(int score, String text) {
+    final quiz = Provider.of<QuizModel>(context, listen: false);
+    quiz.updateScore7(score, text);
     setState(() {
       selectedScore7 = score;
       selectedText7 = text;
     });
+
     _nextPage();
   }
 
@@ -101,28 +84,21 @@ class _Question7PageState extends State<Question7Page> {
             dateTimeController3: widget.dateTimeController3,
             timeDifference1: widget.timeDifference1,
             timeDifference2: widget.timeDifference2,
-            selectedDiseases: widget.selectedDiseases,
-            ctBrain: widget.ctBrain,
-            ctBrainText: widget.ctBrainText,
             totalScore: widget.totalScore + selectedScore7,
-            selectedScore1: widget.selectedScore1,
-            selectedText1: widget.selectedText1,
-            selectedScore2: widget.selectedScore2,
-            selectedText2: widget.selectedText2,
-            selectedScore3: widget.selectedScore3,
-            selectedText3: widget.selectedText3,
-            selectedScore4: widget.selectedScore4,
-            selectedText4: widget.selectedText4,
-            selectedScore5: widget.selectedScore5,
-            selectedText5: widget.selectedText5,
-            selectedScore6: widget.selectedScore6,
-            selectedText6: widget.selectedText6,
-            selectedScore7: selectedScore7,
-            selectedText7: selectedText7,
           ),
         ),
       );
     }
+  }
+
+  void _showFullScreenImage() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) =>
+            FullScreenImageViewer(imagePath: 'images/nihss.png'),
+      ),
+    );
   }
 
   @override
@@ -199,9 +175,12 @@ class _Question7PageState extends State<Question7Page> {
                           children: [
                             Padding(
                               padding: EdgeInsets.all(screenHeight * 0.0),
-                              child: Image.asset('images/nihss.png',
-                                  width: screenWidth * 0.4,
-                                  height: screenHeight * 0.21),
+                              child: GestureDetector(
+                                onTap: _showFullScreenImage,
+                                child: Image.asset('images/nihss.png',
+                                    width: screenWidth * 0.4,
+                                    height: screenHeight * 0.21),
+                              ),
                             ),
                             Text(
                               questionText,
@@ -217,15 +196,16 @@ class _Question7PageState extends State<Question7Page> {
                               itemBuilder: (BuildContext context, int index) {
                                 String text = _questions[index];
                                 int score = _scores[index];
+                                bool isSelected = selectedScore7 == score;
                                 return GestureDetector(
                                   onTap: () => _selectAnswer(score, text),
                                   child: Container(
                                     decoration: BoxDecoration(
-                                      color: selectedText7.isEmpty
-                                          ? const Color(0xFFC5CAE9)
-                                          : selectedText7 == text
-                                              ? const Color(0xFF81C784)
-                                              : const Color(0xFFC5CAE9),
+                                      color: isSelected
+                                          ? const Color(
+                                              0xFF81C784) // สีเขียวเมื่อเลือกแล้ว
+                                          : const Color(
+                                              0xFFC5CAE9), // สีเริ่มต้นเมื่อยังไม่เลือก
                                       borderRadius: BorderRadius.circular(30),
                                     ),
                                     padding:

@@ -1,10 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:hospital_app/Image_Viwer.dart';
 import 'package:hospital_app/Provider/Pquiz.dart';
 import 'package:hospital_app/Quiz/quiz2_page.dart';
 import 'package:provider/provider.dart';
-import 'package:photo_view/photo_view.dart';
 
 class Question1Page extends StatefulWidget {
   final TextEditingController nameController;
@@ -21,10 +21,6 @@ class Question1Page extends StatefulWidget {
   final double? timeDifference1;
   final double? timeDifference2;
 
-  final String selectedDiseases;
-  final int? ctBrain;
-  final String? ctBrainText;
-
   const Question1Page({
     Key? key,
     required this.nameController,
@@ -40,9 +36,6 @@ class Question1Page extends StatefulWidget {
     required this.dateTimeController3,
     required this.timeDifference1,
     required this.timeDifference2,
-    required this.selectedDiseases,
-    required this.ctBrain,
-    required this.ctBrainText,
   }) : super(key: key);
 
   @override
@@ -50,7 +43,7 @@ class Question1Page extends StatefulWidget {
 }
 
 class _Question1PageState extends State<Question1Page> {
-  int selectedScore1 = 0;
+  int selectedScore1 = -1;
   String selectedText1 = "";
 
   @override
@@ -92,11 +85,6 @@ class _Question1PageState extends State<Question1Page> {
             dateTimeController3: widget.dateTimeController3,
             timeDifference1: widget.timeDifference1,
             timeDifference2: widget.timeDifference2,
-            selectedDiseases: widget.selectedDiseases,
-            ctBrain: widget.ctBrain,
-            ctBrainText: widget.ctBrainText,
-            selectedScore1: selectedScore1,
-            selectedText1: selectedText1,
           ),
         ),
       );
@@ -116,10 +104,9 @@ class _Question1PageState extends State<Question1Page> {
   @override
   Widget build(BuildContext context) {
     final double height = MediaQuery.of(context).size.height;
-    final quiz = Provider.of<QuizModel>(context, listen: false);
 
     String questionText =
-        "ข้อที่ 1a ระดับความรู้สึก\n(Level of Consciousness, LOC)${selectedScore1}${quiz.selectedScore1}";
+        "ข้อที่ 1a ระดับความรู้สึก\n(Level of Consciousness, LOC)";
     List<String> _questions = [
       "รู้สึกตัวดี",
       "ไม่รู้สึกตัว เเต่สามารถปลุกได้",
@@ -262,28 +249,6 @@ class _Question1PageState extends State<Question1Page> {
             ],
           );
         },
-      ),
-    );
-  }
-}
-
-class FullScreenImageViewer extends StatelessWidget {
-  final String imagePath;
-
-  FullScreenImageViewer({required this.imagePath});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('ภาพประกอบ'),
-        centerTitle: true,
-      ),
-      body: PhotoView(
-        imageProvider: AssetImage(imagePath),
-        backgroundDecoration: BoxDecoration(
-          color: Colors.transparent, // พื้นหลังสีดำเพื่อให้ดูชัดเจน
-        ),
       ),
     );
   }

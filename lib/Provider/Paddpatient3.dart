@@ -26,4 +26,12 @@ class Paddpatient3 extends ChangeNotifier {
     _onDiseasesScore = newScore;
     notifyListeners();
   }
+
+  void resetCtBrainAndnDiseasesScore() {
+    _ctBrainScore = null;
+    _ctBrainText = null;
+    _selectedDiseases = '';
+    _onDiseasesScore = -1;
+    notifyListeners();
+  }
 }

@@ -139,10 +139,6 @@ class _Add_Patient2State extends State<Add_Patient2> {
                           },
                           initialValue1: initialSymptomHead,
                         ),
-                        Text(
-                          "อาการ Head: ${paddPatient2.symptomHead}",
-                          style: TextStyle(fontSize: height * 0.022),
-                        ),
                         SizedBox(height: height * 0.02),
                         SymptomEye(
                           onChanged: (value) {
@@ -151,10 +147,6 @@ class _Add_Patient2State extends State<Add_Patient2> {
                             });
                           },
                           initialValue2: initialSymptomEye,
-                        ),
-                        Text(
-                          "อาการ Eye: ${paddPatient2.symptomEye}",
-                          style: TextStyle(fontSize: height * 0.022),
                         ),
                         SizedBox(height: height * 0.02),
                         SymptomFace(
@@ -165,10 +157,6 @@ class _Add_Patient2State extends State<Add_Patient2> {
                           },
                           initialValue3: initialSymptomFace,
                         ),
-                        Text(
-                          "อาการ Face: ${paddPatient2.symptomFace}",
-                          style: TextStyle(fontSize: height * 0.022),
-                        ),
                         SizedBox(height: height * 0.02),
                         SymptomArm(
                           onChanged: (value) {
@@ -178,10 +166,6 @@ class _Add_Patient2State extends State<Add_Patient2> {
                           },
                           initialValue4: initialSymptomArm,
                         ),
-                        Text(
-                          "อาการ Arm: ${paddPatient2.symptomArm}",
-                          style: TextStyle(fontSize: height * 0.022),
-                        ),
                         SizedBox(height: height * 0.02),
                         SymptomSpeech(
                           onChanged: (value) {
@@ -190,10 +174,6 @@ class _Add_Patient2State extends State<Add_Patient2> {
                             });
                           },
                           initialValue5: initialSymptomSpeech,
-                        ),
-                        Text(
-                          "อาการ Speech: ${paddPatient2.symptomSpeech}",
-                          style: TextStyle(fontSize: height * 0.022),
                         ),
                         SizedBox(height: height * 0.02),
                       ],
@@ -239,10 +219,6 @@ class _Add_Patient2State extends State<Add_Patient2> {
                           },
                           initialValue6: initialSymptomVisual,
                         ),
-                        Text(
-                          "อาการ Visual: ${paddPatient2.symptomVisual}",
-                          style: TextStyle(fontSize: height * 0.022),
-                        ),
                         SizedBox(height: height * 0.02),
                       ],
                     ),
@@ -287,10 +263,6 @@ class _Add_Patient2State extends State<Add_Patient2> {
                           },
                           initialValue7: initialSymptomAphasia,
                         ),
-                        Text(
-                          "อาการ Aphasia: ${paddPatient2.symptomAphasia}",
-                          style: TextStyle(fontSize: height * 0.022),
-                        ),
                         SizedBox(height: height * 0.02),
                       ],
                     ),
@@ -334,10 +306,6 @@ class _Add_Patient2State extends State<Add_Patient2> {
                             });
                           },
                           initialValue8: initialSymptomNeglect,
-                        ),
-                        Text(
-                          "อาการ Neglect: ${paddPatient2.symptomNeglect}",
-                          style: TextStyle(fontSize: height * 0.022),
                         ),
                         SizedBox(height: height * 0.02),
                       ],

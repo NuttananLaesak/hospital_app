@@ -1,5 +1,5 @@
 import 'dart:convert';
-
+import 'package:hospital_app/Image_Viwer.dart';
 import 'package:flutter/material.dart';
 import 'package:hospital_app/share_pref.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -170,6 +170,7 @@ class _EditNihss1State extends State<EditNihss1> {
       aftercure: _patient?.aftercure ?? '',
       recordedTime1: _patient?.recordedTime1,
       recordedTime2: _patient?.recordedTime2,
+      rtpa: _patient?.rtpa ?? '',
     );
 
     // อัปเดตใน SharedPreferences
@@ -177,6 +178,16 @@ class _EditNihss1State extends State<EditNihss1> {
     await prefs.setStringList('patients', patientList);
 
     Navigator.pop(context);
+  }
+
+  void _showFullScreenImage() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) =>
+            FullScreenImageViewer(imagePath: 'images/nihss.png'),
+      ),
+    );
   }
 
   @override
@@ -252,9 +263,12 @@ class _EditNihss1State extends State<EditNihss1> {
                           children: [
                             Padding(
                               padding: EdgeInsets.all(screenHeight * 0.0),
-                              child: Image.asset('images/nihss.png',
-                                  width: screenWidth * 0.4,
-                                  height: screenHeight * 0.21),
+                              child: GestureDetector(
+                                onTap: _showFullScreenImage,
+                                child: Image.asset('images/nihss.png',
+                                    width: screenWidth * 0.4,
+                                    height: screenHeight * 0.21),
+                              ),
                             ),
                             Text(
                               questionText,

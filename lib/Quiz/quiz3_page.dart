@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:hospital_app/Image_Viwer.dart';
+import 'package:hospital_app/Provider/Pquiz.dart';
 import 'package:hospital_app/Quiz/quiz4_page.dart';
+import 'package:provider/provider.dart';
 
 class Question3Page extends StatefulWidget {
   final TextEditingController nameController;
@@ -15,52 +18,48 @@ class Question3Page extends StatefulWidget {
   final TextEditingController dateTimeController3;
   final double? timeDifference1;
   final double? timeDifference2;
-
-  final String selectedDiseases;
-  final int? ctBrain;
-  final String? ctBrainText;
   final int totalScore;
-  final int selectedScore1;
-  final String selectedText1;
-  final int selectedScore2;
-  final String selectedText2;
 
-  Question3Page(
-      {required this.nameController,
-      required this.hospitalController,
-      required this.ageController,
-      required this.gender,
-      required this.weightController,
-      required this.systolicBloodPressureController,
-      required this.diastolicBloodPressureController,
-      required this.sugarController,
-      required this.dateTimeController1,
-      required this.dateTimeController2,
-      required this.dateTimeController3,
-      required this.timeDifference1,
-      required this.timeDifference2,
-      required this.selectedDiseases,
-      required this.ctBrain,
-      required this.ctBrainText,
-      required this.totalScore,
-      required this.selectedScore1,
-      required this.selectedText1,
-      required this.selectedScore2,
-      required this.selectedText2});
+  Question3Page({
+    required this.nameController,
+    required this.hospitalController,
+    required this.ageController,
+    required this.gender,
+    required this.weightController,
+    required this.systolicBloodPressureController,
+    required this.diastolicBloodPressureController,
+    required this.sugarController,
+    required this.dateTimeController1,
+    required this.dateTimeController2,
+    required this.dateTimeController3,
+    required this.timeDifference1,
+    required this.timeDifference2,
+    required this.totalScore,
+  });
 
   @override
   State<Question3Page> createState() => _Question3PageState();
 }
 
 class _Question3PageState extends State<Question3Page> {
-  int selectedScore3 = 0;
+  int selectedScore3 = -1;
   String selectedText3 = "";
 
+  @override
+  void initState() {
+    super.initState();
+    final quiz = Provider.of<QuizModel>(context, listen: false);
+    selectedScore3 = quiz.selectedScore3;
+  }
+
   void _selectAnswer(int score, String text) {
+    final quiz = Provider.of<QuizModel>(context, listen: false);
+    quiz.updateScore3(score, text);
     setState(() {
       selectedScore3 = score;
       selectedText3 = text;
     });
+
     _nextPage();
   }
 
@@ -85,20 +84,21 @@ class _Question3PageState extends State<Question3Page> {
             dateTimeController3: widget.dateTimeController3,
             timeDifference1: widget.timeDifference1,
             timeDifference2: widget.timeDifference2,
-            selectedDiseases: widget.selectedDiseases,
-            ctBrain: widget.ctBrain,
-            ctBrainText: widget.ctBrainText,
             totalScore: widget.totalScore + selectedScore3,
-            selectedScore1: widget.selectedScore1,
-            selectedText1: widget.selectedText1,
-            selectedScore2: widget.selectedScore2,
-            selectedText2: widget.selectedText2,
-            selectedScore3: selectedScore3,
-            selectedText3: selectedText3,
           ),
         ),
       );
     }
+  }
+
+  void _showFullScreenImage() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) =>
+            FullScreenImageViewer(imagePath: 'images/nihss.png'),
+      ),
+    );
   }
 
   @override
@@ -173,9 +173,12 @@ class _Question3PageState extends State<Question3Page> {
                           children: [
                             Padding(
                               padding: EdgeInsets.all(screenHeight * 0.0),
-                              child: Image.asset('images/nihss.png',
-                                  width: screenWidth * 0.4,
-                                  height: screenHeight * 0.21),
+                              child: GestureDetector(
+                                onTap: _showFullScreenImage,
+                                child: Image.asset('images/nihss.png',
+                                    width: screenWidth * 0.4,
+                                    height: screenHeight * 0.21),
+                              ),
                             ),
                             Text(
                               questionText,
@@ -191,15 +194,16 @@ class _Question3PageState extends State<Question3Page> {
                               itemBuilder: (BuildContext context, int index) {
                                 String text = _questions[index];
                                 int score = _scores[index];
+                                bool isSelected = selectedScore3 == score;
                                 return GestureDetector(
                                   onTap: () => _selectAnswer(score, text),
                                   child: Container(
                                     decoration: BoxDecoration(
-                                      color: selectedText3.isEmpty
-                                          ? const Color(0xFFC5CAE9)
-                                          : selectedText3 == text
-                                              ? const Color(0xFF81C784)
-                                              : const Color(0xFFC5CAE9),
+                                      color: isSelected
+                                          ? const Color(
+                                              0xFF81C784) // สีเขียวเมื่อเลือกแล้ว
+                                          : const Color(
+                                              0xFFC5CAE9), // สีเริ่มต้นเมื่อยังไม่เลือก
                                       borderRadius: BorderRadius.circular(30),
                                     ),
                                     padding:

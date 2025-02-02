@@ -49,4 +49,16 @@ class Paddpatient2 extends ChangeNotifier {
     symptomNeglect = value;
     notifyListeners();
   }
+
+  void resetSymptom() {
+    symptomHead = -1;
+    symptomEye = -1;
+    symptomFace = -1;
+    symptomArm = -1;
+    symptomSpeech = -1;
+    symptomVisual = -1;
+    symptomAphasia = -1;
+    symptomNeglect = -1;
+    notifyListeners();
+  }
 }

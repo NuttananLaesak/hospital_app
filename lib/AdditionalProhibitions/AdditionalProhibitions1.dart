@@ -1,18 +1,39 @@
 import 'package:flutter/material.dart';
 
-class AdditionalProhibitions1 extends StatelessWidget {
-  final bool nihssLess;
-  final bool nihssMore;
-  final Function(bool?) nihssLessChanged;
-  final Function(bool?) nihssMoreChanged;
+class AdditionalProhibitions1 extends StatefulWidget {
+  final ValueChanged<int> onChanged;
+  final int initialAdditionalprohibitions1;
 
-  const AdditionalProhibitions1({
-    Key? key,
-    required this.nihssLess,
-    required this.nihssMore,
-    required this.nihssLessChanged,
-    required this.nihssMoreChanged,
-  }) : super(key: key);
+  const AdditionalProhibitions1(
+      {Key? key,
+      required this.onChanged,
+      required this.initialAdditionalprohibitions1})
+      : super(key: key);
+
+  @override
+  State<AdditionalProhibitions1> createState() =>
+      _AdditionalProhibitions1State();
+}
+
+class _AdditionalProhibitions1State extends State<AdditionalProhibitions1> {
+  late int additionalprohibitions1;
+
+  @override
+  void initState() {
+    super.initState();
+    additionalprohibitions1 = widget.initialAdditionalprohibitions1;
+  }
+
+  void _handleCheckboxChange(int index) {
+    setState(() {
+      if (additionalprohibitions1 == index) {
+        additionalprohibitions1 = -1;
+      } else {
+        additionalprohibitions1 = index;
+      }
+      widget.onChanged(additionalprohibitions1);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -36,9 +57,11 @@ class AdditionalProhibitions1 extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Checkbox(
-                    value: nihssMore,
+                    value: additionalprohibitions1 == 0,
                     activeColor: Color(0xFF304FFE),
-                    onChanged: nihssMoreChanged,
+                    onChanged: (value) {
+                      _handleCheckboxChange(0);
+                    },
                   ),
                   Text(
                     'มี',
@@ -46,9 +69,11 @@ class AdditionalProhibitions1 extends StatelessWidget {
                   ),
                   SizedBox(width: width * 0.05),
                   Checkbox(
-                    value: nihssLess,
+                    value: additionalprohibitions1 == 1,
                     activeColor: Color(0xFF304FFE),
-                    onChanged: nihssLessChanged,
+                    onChanged: (value) {
+                      _handleCheckboxChange(1);
+                    },
                   ),
                   Text(
                     'ไม่มี',

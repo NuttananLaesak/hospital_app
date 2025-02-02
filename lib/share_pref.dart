@@ -91,6 +91,7 @@ class Patient {
   final String aftercure;
   final String? recordedTime1;
   final String? recordedTime2;
+  final String? rtpa;
 
   Patient(
       {required this.id,
@@ -184,7 +185,8 @@ class Patient {
       required this.beforecure,
       required this.aftercure,
       required this.recordedTime1,
-      required this.recordedTime2});
+      required this.recordedTime2,
+      required this.rtpa});
 
   Map<String, dynamic> toMap() {
     return {
@@ -280,6 +282,7 @@ class Patient {
       'aftercure': aftercure,
       'recordedTime1': recordedTime1,
       'recordedTime2': recordedTime2,
+      'rtpa': rtpa
     };
   }
 
@@ -377,6 +380,7 @@ class Patient {
       aftercure: map['aftercure'],
       recordedTime1: map['recordedTime1'],
       recordedTime2: map['recordedTime2'],
+      rtpa: map['rtpa'],
     );
   }
 }

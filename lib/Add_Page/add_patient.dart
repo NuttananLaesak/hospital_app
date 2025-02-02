@@ -10,6 +10,12 @@ import 'package:hospital_app/Add_Patient/hospital_input.dart';
 import 'package:hospital_app/Add_Patient/name_input.dart';
 import 'package:hospital_app/Add_Patient/sugar_input.dart';
 import 'package:hospital_app/Add_Patient/weight_input.dart';
+import 'package:hospital_app/Provider/Paddpatient2.dart';
+import 'package:hospital_app/Provider/Paddpatient3.dart';
+import 'package:hospital_app/Provider/Paddpatient4.dart';
+import 'package:hospital_app/Provider/Paddpatient5.dart';
+import 'package:hospital_app/Provider/Pquiz.dart';
+import 'package:provider/provider.dart';
 
 class AddPatient extends StatefulWidget {
   const AddPatient({super.key});
@@ -133,6 +139,11 @@ class _AddPatientState extends State<AddPatient> {
   Widget build(BuildContext context) {
     final double height = MediaQuery.of(context).size.height;
     final double width = MediaQuery.of(context).size.width;
+    final paddPatient2 = Provider.of<Paddpatient2>(context, listen: false);
+    final paddPatient3 = Provider.of<Paddpatient3>(context, listen: false);
+    final quiz = Provider.of<QuizModel>(context, listen: false);
+    final paddpatient4 = Provider.of<Paddpatient4>(context, listen: false);
+    final paddpatient5 = Provider.of<Paddpatient5>(context, listen: false);
 
     return Scaffold(
       backgroundColor: Color(0xFF82B1FF),
@@ -146,6 +157,17 @@ class _AddPatientState extends State<AddPatient> {
             'เพิ่มข้อมูลผู้ป่วย',
             style: TextStyle(
                 fontSize: height * 0.026, fontWeight: FontWeight.bold),
+          ),
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back),
+            onPressed: () {
+              paddPatient2.resetSymptom();
+              paddPatient3.resetCtBrainAndnDiseasesScore();
+              quiz.resetScoresAndTexts();
+              paddpatient4.resetIndicationsAndStrictlyprohibited();
+              paddpatient5.resetAdditionalprohibitions();
+              Navigator.pop(context);
+            },
           ),
           shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.only(

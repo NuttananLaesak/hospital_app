@@ -143,6 +143,7 @@ class _CureDetialState extends State<CureDetial> {
       aftercure: aftercure.text,
       recordedTime1: _patient?.recordedTime1,
       recordedTime2: _patient?.recordedTime2,
+      rtpa: _patient?.rtpa ?? '',
     );
 
     // อัปเดตใน SharedPreferences
@@ -255,6 +256,31 @@ class _CureDetialState extends State<CureDetial> {
                 child: ElevatedButton(
                   onPressed: () {
                     _updateCurePatient();
+                    final snackBar = SnackBar(
+                      content: Text(
+                        'บันทึกผลการรักษาแล้ว',
+                        style: TextStyle(
+                          fontSize: height * 0.018, // ขนาดตัวอักษร
+                          fontWeight: FontWeight.bold, // ตัวหนา
+                          color: Colors.white, // สีตัวอักษร
+                        ),
+                        textAlign: TextAlign.center, // จัดข้อความตรงกลาง
+                      ),
+                      backgroundColor:
+                          Colors.green.withOpacity(0.8), // พื้นหลังสีเขียวใส
+                      duration: Duration(seconds: 1), // ระยะเวลาการแสดงผล
+                      behavior:
+                          SnackBarBehavior.floating, // ให้ SnackBar ลอยขึ้นมา
+                      shape: RoundedRectangleBorder(
+                        // ทำมุมโค้งให้ SnackBar
+                        borderRadius: BorderRadius.circular(24),
+                      ),
+                      margin: EdgeInsets.symmetric(
+                          horizontal: width * 0.02,
+                          vertical: height * 0.02), // ขอบห่างจากขอบจอ
+                    );
+
+                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
                   },
                   style: ButtonStyle(
                     backgroundColor: MaterialStateProperty.all<Color>(

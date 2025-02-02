@@ -1,9 +1,10 @@
+import 'dart:io';
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:hospital_app/share_pref.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:path_provider/path_provider.dart';
 
 class ResultDetail extends StatefulWidget {
   final int patientId;
@@ -589,13 +590,6 @@ class _ResultDetailState extends State<ResultDetail> {
                         buildRow(
                           height,
                           width,
-                          'มีอาการของหลอดเลือดสมองตีบภายในระยะเวลา 4.5 ชั่วโมง\n',
-                          checkIndication(_patient?.indications1),
-                        ),
-                        Divider(),
-                        buildRow(
-                          height,
-                          width,
                           'มีอายุเท่ากับหรือมากกว่า 18 ปี',
                           checkIndication(_patient?.indications2),
                         ),
@@ -603,9 +597,17 @@ class _ResultDetailState extends State<ResultDetail> {
                         buildRow(
                           height,
                           width,
-                          'ผล CT brain ไม่พบว่ามีเลือดออกในเนื้อสมองหรือชั้นใต้เยื่อหุ้มสมอง',
+                          'มีอาการของหลอดเลือดสมองตีบ\nภายในระยะเวลา 4.5 ชั่วโมง',
+                          checkIndication(_patient?.indications1),
+                        ),
+                        Divider(),
+                        buildRow(
+                          height,
+                          width,
+                          'ผล CT brain ไม่พบว่ามีเลือดออก\nในเนื้อสมองหรือชั้นใต้เยื่อหุ้มสมอง',
                           checkIndication(_patient?.indications3),
                         ),
+                        Divider(),
                         SizedBox(height: height * 0.04),
                         Divider(
                           color: Color(0xFF82B1FF),
@@ -625,21 +627,14 @@ class _ResultDetailState extends State<ResultDetail> {
                         buildRow(
                           height,
                           width,
-                          'มีอาการบาดเจ็บที่ศรีษะอย่างรุนเเรงหรือมีประวัติเป็นโรคหลอดเลือดสมองใน 3 เดือน',
-                          checkProhibited(_patient?.strictlyprohibited1),
+                          'มีความดันโลหิตช่วงก่อนให้รักษาสูง\n(SBP > 185 mm/Hg)(DBP > 110 mm/Hg)',
+                          checkProhibited(_patient?.strictlyprohibited7),
                         ),
                         Divider(),
                         buildRow(
                           height,
                           width,
-                          'มีอาการสงสัยว่ามีเลือดออกชั้นใต้ของ\nเยื่อหุ้มสมอง',
-                          checkProhibited(_patient?.strictlyprohibited2),
-                        ),
-                        Divider(),
-                        buildRow(
-                          height,
-                          width,
-                          'มีประวัติเคยมีเลือดออกในกระโหลกศรีษะ',
+                          'มีประวัติเคยมีเลือดออกในสมองมาก่อน',
                           checkProhibited(_patient?.strictlyprohibited3),
                         ),
                         Divider(),
@@ -653,36 +648,43 @@ class _ResultDetailState extends State<ResultDetail> {
                         buildRow(
                           height,
                           width,
-                          'มีการเเทงหลอกเลือดเเดงขนาดใหญ่ในตำเเหน่งที่ไม่สามารถกดได้ภายใน7วัน',
-                          checkProhibited(_patient?.strictlyprohibited5),
+                          'มีอาการบาดเจ็บที่ศรีษะอย่างรุนเเรงหรือมีประวัติเป็นโรคหลอดเลือดสมองใน 3 เดือน',
+                          checkProhibited(_patient?.strictlyprohibited1),
                         ),
                         Divider(),
                         buildRow(
                           height,
                           width,
-                          'มีการได้รับการผ่าตัดกระโหลกศรีษะหรือกระดูกสันหลังภายใน 3 เดือน',
-                          checkProhibited(_patient?.strictlyprohibited6),
+                          'มีประวัติได้รับยาต้านการเเข็งตัวของเลือด \nโดยมีค่า PT > 15 วินาที หรือมีค่า INR > 1.7',
+                          checkProhibited(_patient?.strictlyprohibited9),
                         ),
                         Divider(),
                         buildRow(
                           height,
                           width,
                           'มีความดันโลหิตสูงเเละไม่สามารถลดความดันโลหิตลงได้ก่อนให้ยาละลายลิ่มเลือด',
-                          checkProhibited(_patient?.strictlyprohibited7),
+                          checkProhibited(_patient?.strictlyprohibited12),
                         ),
                         Divider(),
                         buildRow(
                           height,
                           width,
-                          'มีผลการตรวจร่างกายพบว่ามีภาวะเลือดออก (Active Bleeding)',
-                          checkProhibited(_patient?.strictlyprohibited8),
+                          'ได้รับยา heparin ภายใน 48 ชั่วโมงเเละ\nมีค่า partial-thromboplastin time ผิดปกติ',
+                          checkProhibited(_patient?.strictlyprohibited13),
                         ),
                         Divider(),
                         buildRow(
                           height,
                           width,
-                          'มีภาวะเลือดออกง่าย',
-                          checkProhibited(_patient?.strictlyprohibited9),
+                          'มีปริมาณเกล็ดเลือดน้อยกว่า \n100,000 ต่อลูกบาศก์มิลลิเมตร',
+                          checkProhibited(_patient?.strictlyprohibited14),
+                        ),
+                        Divider(),
+                        buildRow(
+                          height,
+                          width,
+                          'CT brain พบมีสมองขาดเลือดมากกว่าขนาด 1/3 ชอง cerebral hemisphere',
+                          checkProhibited(_patient?.strictlyprohibited11),
                         ),
                         Divider(),
                         buildRow(
@@ -695,8 +697,28 @@ class _ResultDetailState extends State<ResultDetail> {
                         buildRow(
                           height,
                           width,
-                          'CT brain พบมีสมองขาดเลือดมากกว่าขนาด 1/3 ชอง cerebral hemisphere',
-                          checkProhibited(_patient?.strictlyprohibited11),
+                          'มีการได้รับการผ่าตัดกระโหลกศรีษะ \nหรือกระดูกสันหลังภายใน 3 เดือน',
+                          checkProhibited(_patient?.strictlyprohibited6),
+                        ),
+                        Divider(),
+                        buildRow(
+                          height,
+                          width,
+                          'มีภาวะเลือดออกเเละอวัยวะภายใน\n(Active Internal Bleeding)',
+                          checkProhibited(_patient?.strictlyprohibited8),
+                        ),
+                        Divider(),
+                        buildRow(
+                          height,
+                          width,
+                          'มีภาวะสงสัยเลือดออกชั้นใต้เยื่อหุ้มสมอง\n(Subarachnoid Hemorrhage)',
+                          checkProhibited(_patient?.strictlyprohibited2),
+                        ),
+                        buildRow(
+                          height,
+                          width,
+                          'มีการเเทงหลอกเลือดเเดงขนาดใหญ่ใน\nตำเเหน่งที่ไม่สามารถกดได้ภายใน 7 วัน',
+                          checkProhibited(_patient?.strictlyprohibited5),
                         ),
                         Divider(),
                         SizedBox(height: height * 0.04),
@@ -725,14 +747,7 @@ class _ResultDetailState extends State<ResultDetail> {
                         buildRow(
                           height,
                           width,
-                          'มีการตั้งครรภ์',
-                          checkProhibited(_patient?.strictlynotprohibited2),
-                        ),
-                        Divider(),
-                        buildRow(
-                          height,
-                          width,
-                          'มีอาการชักตอนเริ่มต้นเเละภายหลังจากชักยังมีอาการอ่อนเเรงอยู่',
+                          'มีอาการชักตอนเริ่มต้นเเละภายหลัง\nจากชักยังมีอาการอ่อนเเรงอยู่',
                           checkProhibited(_patient?.strictlynotprohibited3),
                         ),
                         Divider(),
@@ -753,55 +768,32 @@ class _ResultDetailState extends State<ResultDetail> {
                         buildRow(
                           height,
                           width,
-                          'มีประวัติ Recent Myocardial Infracytion ภายใน 3 เดือน',
+                          'มีประวัติกล้ามเนื้อหัวใจขาดเลือด\nภายใน 3 เดือน',
                           checkProhibited(_patient?.strictlynotprohibited6),
                         ),
                         Divider(),
-                        SizedBox(height: height * 0.04),
-                        Divider(
-                          color: Color(0xFF82B1FF),
-                          thickness: 2.0,
-                        ),
-                        Text(
-                          'ข้อห้ามเพิ่มเติมในกรณีผู้ป่วยมีอาการมากกว่า 3 - 4.5 ชั่วโมง',
-                          style: TextStyle(
-                            fontSize: height * 0.025,
-                            fontWeight: FontWeight.bold,
-                          ),
-                          textAlign: TextAlign.center,
-                        ),
-                        Divider(
-                          color: Color(0xFF82B1FF),
-                          thickness: 2.0,
-                        ),
                         buildRow(
                           height,
                           width,
-                          'NIHSS มากกว่า 25 คะเเนน',
-                          checkProhibited(_patient?.additionalprohibitions1),
+                          'มีการตั้งครรภ์',
+                          checkProhibited(_patient?.strictlynotprohibited2),
                         ),
                         Divider(),
                         buildRow(
                           height,
                           width,
-                          'เป็นเบาหวานร่วมกับเคยมีโรคหลอดเลือดสมองอุดตันมาก่อน',
+                          'เคยเป็นโรคหลอดเลือดสมองตีบหรือ\nหลอดเลือดสมองอุดตันภายใน 3 เดือน',
                           checkProhibited(_patient?.additionalprohibitions2),
                         ),
                         Divider(),
                         buildRow(
                           height,
                           width,
-                          'มีอายุมากกว่า 80 ปี',
-                          checkProhibited(_patient?.additionalprohibitions3),
+                          'มีคะเเนน NIHSS มากกว่า 25 คะเเนน',
+                          checkProhibited(_patient?.additionalprohibitions1),
                         ),
                         Divider(),
-                        buildRow(
-                          height,
-                          width,
-                          'มีประวัติได้รับยาละลายลิ่มเลือด \n(Warfarin) โดยไม่พิจารณา INR',
-                          checkProhibited(_patient?.additionalprohibitions4),
-                        ),
-                        Divider(),
+                        SizedBox(height: height * 0.04),
                         Divider(
                           color: Color(0xFF82B1FF),
                           thickness: 2.0,
@@ -834,19 +826,19 @@ class _ResultDetailState extends State<ResultDetail> {
                           Column(
                             children: [
                               Text(
-                                'ปริมาณยาละลายลิ่มเลือด\n(rt-PA) ${_patient?.medic1.toStringAsFixed(2) ?? 'ไม่ระบุ'} มิลลิกรัม',
+                                'ปริมาณยาละลายลิ่มเลือด\n(rt-PA) ${_patient?.medic1.toStringAsFixed(2) ?? 'ไม่ได้ระบุ'} มิลลิกรัม',
                                 style: TextStyle(fontSize: height * 0.02),
                                 textAlign: TextAlign.center,
                               ),
                               Divider(),
                               Text(
-                                'แบ่งให้ ${_patient?.medic2.toStringAsFixed(2) ?? 'ไม่ระบุ'} มิลลิกรัม\nทางหลอดเลือดใน 1 นาที',
+                                'แบ่งให้ ${_patient?.medic2.toStringAsFixed(2) ?? 'ไม่ได้ระบุ'} มิลลิกรัม\nทางหลอดเลือดใน 1 นาที',
                                 style: TextStyle(fontSize: height * 0.02),
                                 textAlign: TextAlign.center,
                               ),
                               Divider(),
                               Text(
-                                'และ ${_patient?.medic3.toStringAsFixed(2) ?? 'ไม่ระบุ'} มิลลิกรัม\nหยดทางหลอดเลือดใน 60 นาที',
+                                'และ ${_patient?.medic3.toStringAsFixed(2) ?? 'ไม่ได้ระบุ'} มิลลิกรัม\nหยดทางหลอดเลือดใน 60 นาที',
                                 style: TextStyle(fontSize: height * 0.02),
                                 textAlign: TextAlign.center,
                               ),
@@ -882,7 +874,7 @@ class _ResultDetailState extends State<ResultDetail> {
                                     (_patient != null &&
                                             _patient!.beforecure.isNotEmpty)
                                         ? _patient!.beforecure
-                                        : 'ไม่ระบุ',
+                                        : 'ไม่ได้ระบุ',
                                     style: TextStyle(fontSize: height * 0.02),
                                   ),
                                 ],
@@ -901,7 +893,7 @@ class _ResultDetailState extends State<ResultDetail> {
                                     (_patient != null &&
                                             _patient!.aftercure.isNotEmpty)
                                         ? _patient!.aftercure
-                                        : 'ไม่ระบุ',
+                                        : 'ไม่ได้ระบุ',
                                     style: TextStyle(fontSize: height * 0.02),
                                   ),
                                 ],
@@ -960,7 +952,41 @@ ${_patient?.dateTimeController3.isNotEmpty == true ? _patient!.dateTimeControlle
 5. พูดลำบาก/พูดไม่ชัด: ${CheckSymptom1(_patient?.symptomSpeech)}
 6. การมองเห็น: ${CheckSymptom3(_patient?.symptomVisual ?? -1)}
 7. การเข้าใจภาษา: ${CheckSymptom4(_patient?.symptomAphasia ?? -1)}
-8. ไม่สนใจร่างกายหนึ่งด้าน: ${CheckSymptom1(_patient?.symptomNeglect)}
+8. ไม่สนใจร่างกายหนึ่งด้าน: ${CheckSymptom1(_patient?.symptomNeglect ?? -1)}
+
+ระดับโรคหลอดเลือดสมอง
+NIHSS ${_patient?.totalScore} คะเเนน'
+'ระดับความรุนเเรง ${_patient?.nihssLevel}'
+      
+ข้อบ่งชี้
+1. มีอายุเท่ากับหรือมากกว่า 18 ปี:${checkIndication(_patient?.indications2)},
+2. มีอาการของหลอดเลือดสมองตีบ\nภายในระยะเวลา 4.5 ชั่วโมง:${checkIndication(_patient?.indications1)},
+3. ผล CT brain ไม่พบว่ามีเลือดออก\nในเนื้อสมองหรือชั้นใต้เยื่อหุ้มสมอง:${checkIndication(_patient?.indications3)},
+                      
+ข้อห้ามอย่างเด็ดขาด
+1. มีความดันโลหิตช่วงก่อนให้รักษาสูง(SBP > 185 mm/Hg)(DBP > 110 mm/Hg):${checkProhibited(_patient?.strictlyprohibited7)}
+2. มีประวัติเคยมีเลือดออกในสมองมาก่อน:${checkProhibited(_patient?.strictlyprohibited3)}
+4. มีอาการบาดเจ็บที่ศรีษะอย่างรุนเเรงหรือมีประวัติเป็นโรคหลอดเลือดสมองใน 3 เดือน:${checkProhibited(_patient?.strictlyprohibited1)}
+5. มีประวัติได้รับยาต้านการเเข็งตัวของเลือดโดยมีค่า PT > 15 วินาที หรือมีค่า INR > 1.7:${checkProhibited(_patient?.strictlyprohibited9)}
+6. มีความดันโลหิตสูงเเละไม่สามารถลดความดันโลหิตลงได้ก่อนให้ยาละลายลิ่มเลือด:${checkProhibited(_patient?.strictlyprohibited12)}
+7. ได้รับยา heparin ภายใน 48 ชั่วโมงเเละ\nมีค่า partial-thromboplastin time ผิดปกติ:${checkProhibited(_patient?.strictlyprohibited13)}
+8. มีปริมาณเกล็ดเลือดน้อยกว่า \n100,000 ต่อลูกบาศก์มิลลิเมตร:${checkProhibited(_patient?.strictlyprohibited14)}
+9. CT brain พบมีสมองขาดเลือดมากกว่าขนาด 1/3 ชอง cerebral hemisphere${checkProhibited(_patient?.strictlyprohibited11)}
+10. มีระดับน้ำตาลในเลือดเท่ากับหรือ\nน้อยกว่า 50 mg/dl:${checkProhibited(_patient?.strictlyprohibited10)}
+11. มีการได้รับการผ่าตัดกระโหลกศรีษะ \nหรือกระดูกสันหลังภายใน 3 เดือน:${checkProhibited(_patient?.strictlyprohibited6)}
+12. มีภาวะเลือดออกเเละอวัยวะภายใน\n(Active Internal Bleeding):${checkProhibited(_patient?.strictlyprohibited8)}
+13. มีภาวะสงสัยเลือดออกชั้นใต้เยื่อหุ้มสมอง\n(Subarachnoid Hemorrhage):${checkProhibited(_patient?.strictlyprohibited2)}
+14. มีการเเทงหลอกเลือดเเดงขนาดใหญ่ใน\nตำเเหน่งที่ไม่สามารถกดได้ภายใน 7 วัน:${checkProhibited(_patient?.strictlyprohibited5)}
+                        
+ข้อห้ามที่ไม่ถือว่าห้ามอย่างเด็ดขาด
+1. มีอาการทางประสาทดีขึ้นอย่างรวดเร็วจนเกือบเป็นปกติหรือมีอาการอย่างเดียวไม่รุนเเรง:${checkProhibited(_patient?.strictlynotprohibited1)}
+2. มีอาการชักตอนเริ่มต้นเเละภายหลัง\nจากชักยังมีอาการอ่อนเเรงอยู่:${checkProhibited(_patient?.strictlynotprohibited3)}
+3. เคยมีประวัติการผ่าตัดใหญ่หรือ\nมีอุบัติเหตุรุนเเรงภายใน 14 วัน:${checkProhibited(_patient?.strictlynotprohibited4)}
+4. มีเลือดออกในทางเดินอาหารหรือ\nทางเดินปัสสสาวะภายใน 21 วัน:${checkProhibited(_patient?.strictlynotprohibited5)}
+5. มีประวัติกล้ามเนื้อหัวใจขาดเลือด\nภายใน 3 เดือน:${checkProhibited(_patient?.strictlynotprohibited6)}
+6. มีการตั้งครรภ์:${checkProhibited(_patient?.strictlynotprohibited2)}
+7. เคยเป็นโรคหลอดเลือดสมองตีบหรือ\nหลอดเลือดสมองอุดตันภายใน 3 เดือน:${checkProhibited(_patient?.strictlynotprohibited2)}
+8. มีคะเเนน NIHSS มากกว่า 25 คะเเนน:${checkProhibited(_patient?.strictlynotprohibited1)}
 
 การให้ยาผู้ป่วย
 ปริมาณยาละลายลิ่มเลือด
@@ -976,9 +1002,38 @@ ${_patient?.beforecure ?? 'ไม่ระบุ'}
 หลังการรักษา
 ${_patient?.aftercure ?? 'ไม่ระบุ'}
       ''';
-            await Share.share(patientDetails);
-          } else {
-            await Share.share('ไม่มีข้อมูลผู้ป่วย');
+
+// สร้างไฟล์ใน directory ของแอป
+            final directory = await getApplicationDocumentsDirectory();
+
+// ตั้งชื่อไฟล์ให้ชัดเจน
+            final fileName =
+                'Patient_Info_${_patient?.nameController ?? 'Unknown'}.txt';
+            final path = '${directory.path}/$fileName';
+            final file = File(path);
+
+// เขียนข้อความลงในไฟล์
+            await file.writeAsString(patientDetails);
+
+// แชร์ไฟล์ที่มีชื่อที่ตั้งไว้โดยใช้ shareXFiles
+            await Share.shareXFiles(
+              [XFile(file.path)],
+              text: 'ดูข้อมูลผู้ป่วยที่นี่',
+              subject: 'ข้อมูลผู้ป่วย',
+            );
+            //   // สร้างไฟล์ใน directory ของแอป
+            //   final directory = await getApplicationDocumentsDirectory();
+            //   final path =
+            //       '${directory.path}/ข้อมูลผู้ป่วคุณ${_patient?.nameController ?? 'ไม่ระบุ'}.txt';
+            //   final file = File(path);
+
+            //   // เขียนข้อความลงในไฟล์
+            //   await file.writeAsString(patientDetails);
+
+            //   // แชร์ไฟล์
+            //   await Share.shareFiles([file.path], text: 'ดูข้อมูลผู้ป่วยที่นี่');
+            // } else {
+            //   await Share.share('ไม่มีข้อมูลผู้ป่วย');
           }
         },
       ),

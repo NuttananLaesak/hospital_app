@@ -2,23 +2,23 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:hospital_app/Edit_Patient/EditWarning2.dart';
-import 'package:hospital_app/Indications/Indications1.dart';
-import 'package:hospital_app/Indications/Indications2.dart';
-import 'package:hospital_app/Indications/Indications3.dart';
-import 'package:hospital_app/StrictlyProhibited/Strictly_Prohibited1.dart';
-import 'package:hospital_app/StrictlyProhibited/Strictly_Prohibited10.dart';
-import 'package:hospital_app/StrictlyProhibited/Strictly_Prohibited11.dart';
-import 'package:hospital_app/StrictlyProhibited/Strictly_Prohibited12.dart';
-import 'package:hospital_app/StrictlyProhibited/Strictly_Prohibited13.dart';
-import 'package:hospital_app/StrictlyProhibited/Strictly_Prohibited14.dart';
-import 'package:hospital_app/StrictlyProhibited/Strictly_Prohibited2.dart';
-import 'package:hospital_app/StrictlyProhibited/Strictly_Prohibited3.dart';
-import 'package:hospital_app/StrictlyProhibited/Strictly_Prohibited4.dart';
-import 'package:hospital_app/StrictlyProhibited/Strictly_Prohibited5.dart';
-import 'package:hospital_app/StrictlyProhibited/Strictly_Prohibited6.dart';
-import 'package:hospital_app/StrictlyProhibited/Strictly_Prohibited7.dart';
-import 'package:hospital_app/StrictlyProhibited/Strictly_Prohibited8.dart';
-import 'package:hospital_app/StrictlyProhibited/Strictly_Prohibited9.dart';
+import 'package:hospital_app/StrictlyProhibite_Edit.dart/Edit_Indications1.dart';
+import 'package:hospital_app/StrictlyProhibite_Edit.dart/Edit_Indications2.dart';
+import 'package:hospital_app/StrictlyProhibite_Edit.dart/Edit_Indications3.dart';
+import 'package:hospital_app/StrictlyProhibite_Edit.dart/Edit_StrictlyProhibited1.dart';
+import 'package:hospital_app/StrictlyProhibite_Edit.dart/Edit_StrictlyProhibited10.dart';
+import 'package:hospital_app/StrictlyProhibite_Edit.dart/Edit_StrictlyProhibited11.dart';
+import 'package:hospital_app/StrictlyProhibite_Edit.dart/Edit_StrictlyProhibited12.dart';
+import 'package:hospital_app/StrictlyProhibite_Edit.dart/Edit_StrictlyProhibited13.dart';
+import 'package:hospital_app/StrictlyProhibite_Edit.dart/Edit_StrictlyProhibited14.dart';
+import 'package:hospital_app/StrictlyProhibite_Edit.dart/Edit_StrictlyProhibited2.dart';
+import 'package:hospital_app/StrictlyProhibite_Edit.dart/Edit_StrictlyProhibited3.dart';
+import 'package:hospital_app/StrictlyProhibite_Edit.dart/Edit_StrictlyProhibited4.dart';
+import 'package:hospital_app/StrictlyProhibite_Edit.dart/Edit_StrictlyProhibited5.dart';
+import 'package:hospital_app/StrictlyProhibite_Edit.dart/Edit_StrictlyProhibited6.dart';
+import 'package:hospital_app/StrictlyProhibite_Edit.dart/Edit_StrictlyProhibited7.dart';
+import 'package:hospital_app/StrictlyProhibite_Edit.dart/Edit_StrictlyProhibited8.dart';
+import 'package:hospital_app/StrictlyProhibite_Edit.dart/Edit_StrictlyProhibited9.dart';
 import 'package:hospital_app/share_pref.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -32,11 +32,7 @@ class EditWarning1 extends StatefulWidget {
 }
 
 class _EditWarning1State extends State<EditWarning1> {
-  late bool ageMore;
-  late bool ageLess;
   int indications1 = -1;
-  late bool hourLess;
-  late bool hourMore;
   int indications2 = -1;
   int indications3 = -1;
   int strictlyprohibited1 = -1;
@@ -45,23 +41,11 @@ class _EditWarning1State extends State<EditWarning1> {
   int strictlyprohibited4 = -1;
   int strictlyprohibited5 = -1;
   int strictlyprohibited6 = -1;
-  late bool bloodLess;
-  late bool bloodMore;
   int strictlyprohibited7 = -1;
   int strictlyprohibited8 = -1;
   int strictlyprohibited9 = -1;
-  late bool sugarLess;
-  late bool sugarMore;
   int strictlyprohibited10 = -1;
-  late bool ctLess;
-  late bool ctMore;
   int strictlyprohibited11 = -1;
-  double _timeDifference1 = 0;
-  int _age = 0;
-  int _sblood = 0;
-  int _dblood = 0;
-  int _sugar = 0;
-  int _ctBrain = -1;
   int strictlyprohibited12 = -1;
   int strictlyprohibited13 = -1;
   int strictlyprohibited14 = -1;
@@ -73,55 +57,6 @@ class _EditWarning1State extends State<EditWarning1> {
   void initState() {
     super.initState();
     loadPatientData();
-
-    if (_timeDifference1 == 0) {
-      indications1 = -1;
-      hourLess = false;
-      hourMore = false;
-    } else {
-      hourLess = _timeDifference1 <= 4.5;
-      hourMore = _timeDifference1 >= 4.6;
-      indications1 = hourLess ? 1 : 0;
-    }
-    if (_age == 0) {
-      indications2 = -1;
-      ageLess = false;
-      ageMore = false;
-    } else {
-      ageMore = _age >= 18;
-      ageLess = _age < 18;
-      indications2 = ageMore ? 1 : 0;
-    }
-
-    if (_sblood == 0 || _dblood == 0) {
-      strictlyprohibited7 = -1;
-      bloodLess = false;
-      bloodMore = false;
-    } else {
-      bloodLess = _sblood <= 184 && _dblood <= 109;
-      bloodMore = _sblood >= 185 || _dblood >= 110;
-      strictlyprohibited7 = bloodLess ? 1 : 0;
-    }
-
-    if (_sugar == 0) {
-      strictlyprohibited10 = -1;
-      sugarLess = false;
-      sugarMore = false;
-    } else {
-      sugarMore = _sugar >= 51;
-      sugarLess = _sugar <= 50;
-      strictlyprohibited10 = sugarMore ? 1 : 0;
-    }
-
-    if (_ctBrain == -1) {
-      strictlyprohibited11 = -1;
-      ctLess = false;
-      ctMore = false;
-    } else {
-      ctLess = _ctBrain <= 2;
-      ctMore = _ctBrain == 3;
-      strictlyprohibited11 = ctLess ? 1 : 0;
-    }
   }
 
   Future<void> loadPatientData() async {
@@ -134,94 +69,27 @@ class _EditWarning1State extends State<EditWarning1> {
       if (patient.id == widget.patientId) {
         setState(() {
           _patient = patient;
-
-          _timeDifference1 = patient.timeDifference1 ?? 0.0;
-          _age = patient.ageController ?? 0;
-          try {
-            _sblood = int.parse(patient.systolicBloodPressureController);
-          } catch (e) {
-            _sblood = 0;
-          }
-          try {
-            _dblood = int.parse(patient.diastolicBloodPressureController);
-          } catch (e) {
-            _dblood = 0;
-          }
-          try {
-            _sugar = int.parse(patient.sugarController);
-          } catch (e) {
-            _sugar = 0;
-          }
-          _ctBrain = patient.ctBrain ?? -1;
+          indications1 = patient.indications1;
+          indications2 = patient.indications2;
+          indications3 = patient.indications3;
+          strictlyprohibited1 = patient.strictlyprohibited1;
+          strictlyprohibited2 = patient.strictlyprohibited2;
+          strictlyprohibited3 = patient.strictlyprohibited3;
+          strictlyprohibited4 = patient.strictlyprohibited4;
+          strictlyprohibited5 = patient.strictlyprohibited5;
+          strictlyprohibited6 = patient.strictlyprohibited6;
+          strictlyprohibited7 = patient.strictlyprohibited7;
+          strictlyprohibited8 = patient.strictlyprohibited8;
+          strictlyprohibited9 = patient.strictlyprohibited9;
+          strictlyprohibited10 = patient.strictlyprohibited10;
+          strictlyprohibited11 = patient.strictlyprohibited11;
+          strictlyprohibited12 = patient.strictlyprohibited12;
+          strictlyprohibited13 = patient.strictlyprohibited13;
+          strictlyprohibited14 = patient.strictlyprohibited14;
         });
         break;
       }
     }
-  }
-
-  void updateIndications1(bool? value, bool isHourLess) {
-    setState(() {
-      if (isHourLess) {
-        hourLess = value ?? false;
-        hourMore = !hourLess;
-      } else {
-        hourMore = value ?? false;
-        hourLess = !hourMore;
-      }
-      indications1 = hourLess ? 1 : 0;
-    });
-  }
-
-  void updateIndications2(bool? value, bool isAgeMore) {
-    setState(() {
-      if (isAgeMore) {
-        ageMore = value ?? false;
-        ageLess = !ageMore;
-      } else {
-        ageLess = value ?? false;
-        ageMore = !ageLess;
-      }
-      indications2 = ageMore ? 1 : 0;
-    });
-  }
-
-  void updateStrictlyProhibited7(bool? value, bool isBloodLess) {
-    setState(() {
-      if (isBloodLess) {
-        bloodLess = value ?? false;
-        bloodMore = !bloodLess;
-      } else {
-        bloodMore = value ?? false;
-        bloodLess = !bloodMore;
-      }
-      strictlyprohibited7 = bloodLess ? 1 : 0;
-    });
-  }
-
-  void updateStrictlyProhibited10(bool? value, bool isSugarMore) {
-    setState(() {
-      if (isSugarMore) {
-        sugarMore = value ?? false;
-        sugarLess = !sugarMore;
-      } else {
-        sugarLess = value ?? false;
-        sugarMore = !sugarLess;
-      }
-      strictlyprohibited10 = sugarMore ? 1 : 0;
-    });
-  }
-
-  void updateStrictlyProhibited11(bool? value, bool isCtMore) {
-    setState(() {
-      if (isCtMore) {
-        ctLess = value ?? false;
-        ctMore = !ctLess;
-      } else {
-        ctMore = value ?? false;
-        ctLess = !ctMore;
-      }
-      strictlyprohibited11 = ctLess ? 1 : 0;
-    });
   }
 
   @override
@@ -282,25 +150,26 @@ class _EditWarning1State extends State<EditWarning1> {
                           textAlign: TextAlign.center,
                         ),
                         SizedBox(height: height * 0.04),
-                        Indictions2(
-                          ageMore: ageMore,
-                          ageLess: ageLess,
-                          ageMoreChanged: (value) =>
-                              updateIndications2(value, true),
-                          AgeLessChanged: (value) =>
-                              updateIndications2(value, false),
+                        EditIndictions2(
+                          patientId: widget.patientId,
+                          onChanged: (value) {
+                            setState(() {
+                              indications2 = value;
+                            });
+                          },
                         ),
                         SizedBox(height: height * 0.02),
-                        Indications1(
-                          hourLess: hourLess,
-                          hourMore: hourMore,
-                          hourLessChanged: (value) =>
-                              updateIndications1(value, true),
-                          hourMoreChanged: (value) =>
-                              updateIndications1(value, false),
+                        EditIndications1(
+                          patientId: widget.patientId,
+                          onChanged: (value) {
+                            setState(() {
+                              indications1 = value;
+                            });
+                          },
                         ),
                         SizedBox(height: height * 0.02),
-                        Indictions3(
+                        EditIndictions3(
+                          patientId: widget.patientId,
                           onChanged: (value) {
                             setState(() {
                               indications3 = value;
@@ -344,16 +213,17 @@ class _EditWarning1State extends State<EditWarning1> {
                           ),
                         ),
                         SizedBox(height: height * 0.04),
-                        Strictly_Prohibited7(
-                          bloodLess: bloodLess,
-                          bloodMore: bloodMore,
-                          bloodLessChanged: (value) =>
-                              updateStrictlyProhibited7(value, true),
-                          bloodMoreChanged: (value) =>
-                              updateStrictlyProhibited7(value, false),
+                        EditStrictly_Prohibited7(
+                          patientId: widget.patientId,
+                          onChanged: (value) {
+                            setState(() {
+                              strictlyprohibited7 = value;
+                            });
+                          },
                         ),
                         SizedBox(height: height * 0.02),
-                        Strictly_Prohibited3(
+                        EditStrictly_Prohibited3(
+                          patientId: widget.patientId,
                           onChanged: (value) {
                             setState(() {
                               strictlyprohibited3 = value;
@@ -361,7 +231,8 @@ class _EditWarning1State extends State<EditWarning1> {
                           },
                         ),
                         SizedBox(height: height * 0.02),
-                        Strictly_Prohibited4(
+                        EditStrictly_Prohibited4(
+                          patientId: widget.patientId,
                           onChanged: (value) {
                             setState(() {
                               strictlyprohibited4 = value;
@@ -369,7 +240,8 @@ class _EditWarning1State extends State<EditWarning1> {
                           },
                         ),
                         SizedBox(height: height * 0.02),
-                        Strictly_Prohibited1(
+                        EditStrictly_Prohibited1(
+                          patientId: widget.patientId,
                           onChanged: (value) {
                             setState(() {
                               strictlyprohibited1 = value;
@@ -377,7 +249,8 @@ class _EditWarning1State extends State<EditWarning1> {
                           },
                         ),
                         SizedBox(height: height * 0.02),
-                        Strictly_Prohibited9(
+                        EditStrictly_Prohibited9(
+                          patientId: widget.patientId,
                           onChanged: (value) {
                             setState(() {
                               strictlyprohibited9 = value;
@@ -385,7 +258,8 @@ class _EditWarning1State extends State<EditWarning1> {
                           },
                         ),
                         SizedBox(height: height * 0.02),
-                        Strictly_Prohibited12(
+                        EditStrictly_Prohibited12(
+                          patientId: widget.patientId,
                           onChanged: (value) {
                             setState(() {
                               strictlyprohibited12 = value;
@@ -393,7 +267,8 @@ class _EditWarning1State extends State<EditWarning1> {
                           },
                         ),
                         SizedBox(height: height * 0.02),
-                        Strictly_Prohibited13(
+                        EditStrictly_Prohibited13(
+                          patientId: widget.patientId,
                           onChanged: (value) {
                             setState(() {
                               strictlyprohibited13 = value;
@@ -401,7 +276,8 @@ class _EditWarning1State extends State<EditWarning1> {
                           },
                         ),
                         SizedBox(height: height * 0.02),
-                        Strictly_Prohibited14(
+                        EditStrictly_Prohibited14(
+                          patientId: widget.patientId,
                           onChanged: (value) {
                             setState(() {
                               strictlyprohibited14 = value;
@@ -409,25 +285,26 @@ class _EditWarning1State extends State<EditWarning1> {
                           },
                         ),
                         SizedBox(height: height * 0.02),
-                        Strictly_Prohibited11(
-                          ctLess: ctLess,
-                          ctMore: ctMore,
-                          ctLessChanged: (value) =>
-                              updateStrictlyProhibited11(value, true),
-                          ctMoreChanged: (value) =>
-                              updateStrictlyProhibited11(value, false),
+                        EditStrictly_Prohibited11(
+                          patientId: widget.patientId,
+                          onChanged: (value) {
+                            setState(() {
+                              strictlyprohibited11 = value;
+                            });
+                          },
                         ),
                         SizedBox(height: height * 0.02),
-                        Strictly_Prohibited10(
-                          sugarLess: sugarLess,
-                          sugarMore: sugarMore,
-                          sugarMoreChanged: (value) =>
-                              updateStrictlyProhibited10(value, true),
-                          sugarLessChanged: (value) =>
-                              updateStrictlyProhibited10(value, false),
+                        EditStrictly_Prohibited10(
+                          patientId: widget.patientId,
+                          onChanged: (value) {
+                            setState(() {
+                              strictlyprohibited10 = value;
+                            });
+                          },
                         ),
                         SizedBox(height: height * 0.02),
-                        Strictly_Prohibited6(
+                        EditStrictly_Prohibited6(
+                          patientId: widget.patientId,
                           onChanged: (value) {
                             setState(() {
                               strictlyprohibited6 = value;
@@ -435,7 +312,8 @@ class _EditWarning1State extends State<EditWarning1> {
                           },
                         ),
                         SizedBox(height: height * 0.02),
-                        Strictly_Prohibited8(
+                        EditStrictly_Prohibited8(
+                          patientId: widget.patientId,
                           onChanged: (value) {
                             setState(() {
                               strictlyprohibited8 = value;
@@ -443,7 +321,8 @@ class _EditWarning1State extends State<EditWarning1> {
                           },
                         ),
                         SizedBox(height: height * 0.02),
-                        Strictly_Prohibited2(
+                        EditStrictly_Prohibited2(
+                          patientId: widget.patientId,
                           onChanged: (value) {
                             setState(() {
                               strictlyprohibited2 = value;
@@ -451,7 +330,8 @@ class _EditWarning1State extends State<EditWarning1> {
                           },
                         ),
                         SizedBox(height: height * 0.02),
-                        Strictly_Prohibited5(
+                        EditStrictly_Prohibited5(
+                          patientId: widget.patientId,
                           onChanged: (value) {
                             setState(() {
                               strictlyprohibited5 = value;

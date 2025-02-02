@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:hospital_app/Image_Viwer.dart';
+import 'package:hospital_app/Provider/Pquiz.dart';
 import 'package:hospital_app/Quiz/quiz3_page.dart';
+import 'package:provider/provider.dart';
 
 class Question2Page extends StatefulWidget {
   final TextEditingController nameController;
@@ -16,49 +19,50 @@ class Question2Page extends StatefulWidget {
   final double? timeDifference1;
   final double? timeDifference2;
 
-  final String selectedDiseases;
-  final int? ctBrain;
-  final String? ctBrainText;
-  final int selectedScore1;
-  final String selectedText1;
-
-  Question2Page(
-      {required this.nameController,
-      required this.hospitalController,
-      required this.ageController,
-      required this.gender,
-      required this.weightController,
-      required this.systolicBloodPressureController,
-      required this.diastolicBloodPressureController,
-      required this.sugarController,
-      required this.dateTimeController1,
-      required this.dateTimeController2,
-      required this.dateTimeController3,
-      required this.timeDifference1,
-      required this.timeDifference2,
-      required this.selectedDiseases,
-      required this.ctBrain,
-      required this.ctBrainText,
-      required this.selectedScore1,
-      required this.selectedText1});
+  Question2Page({
+    required this.nameController,
+    required this.hospitalController,
+    required this.ageController,
+    required this.gender,
+    required this.weightController,
+    required this.systolicBloodPressureController,
+    required this.diastolicBloodPressureController,
+    required this.sugarController,
+    required this.dateTimeController1,
+    required this.dateTimeController2,
+    required this.dateTimeController3,
+    required this.timeDifference1,
+    required this.timeDifference2,
+  });
 
   @override
   _Question2PageState createState() => _Question2PageState();
 }
 
 class _Question2PageState extends State<Question2Page> {
-  int selectedScore2 = 0;
+  int selectedScore2 = -1;
   String selectedText2 = "";
 
+  @override
+  void initState() {
+    super.initState();
+    final quiz = Provider.of<QuizModel>(context, listen: false);
+    selectedScore2 = quiz.selectedScore2;
+  }
+
   void _selectAnswer(int score, String text) {
+    final quiz = Provider.of<QuizModel>(context, listen: false);
+    quiz.updateScore2(score, text);
     setState(() {
       selectedScore2 = score;
       selectedText2 = text;
     });
+
     _nextPage();
   }
 
   void _nextPage() {
+    final quiz = Provider.of<QuizModel>(context, listen: false);
     if (selectedText2.isNotEmpty) {
       Navigator.push(
         context,
@@ -79,18 +83,21 @@ class _Question2PageState extends State<Question2Page> {
             dateTimeController3: widget.dateTimeController3,
             timeDifference1: widget.timeDifference1,
             timeDifference2: widget.timeDifference2,
-            selectedDiseases: widget.selectedDiseases,
-            ctBrain: widget.ctBrain,
-            ctBrainText: widget.ctBrainText,
-            totalScore: widget.selectedScore1 + selectedScore2,
-            selectedScore1: widget.selectedScore1,
-            selectedText1: widget.selectedText1,
-            selectedScore2: selectedScore2,
-            selectedText2: selectedText2,
+            totalScore: quiz.selectedScore1 + selectedScore2,
           ),
         ),
       );
     }
+  }
+
+  void _showFullScreenImage() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) =>
+            FullScreenImageViewer(imagePath: 'images/nihss.png'),
+      ),
+    );
   }
 
   @override
@@ -164,9 +171,12 @@ class _Question2PageState extends State<Question2Page> {
                           children: [
                             Padding(
                               padding: EdgeInsets.all(screenHeight * 0.0),
-                              child: Image.asset('images/nihss.png',
-                                  width: screenWidth * 0.4,
-                                  height: screenHeight * 0.21),
+                              child: GestureDetector(
+                                onTap: _showFullScreenImage,
+                                child: Image.asset('images/nihss.png',
+                                    width: screenWidth * 0.4,
+                                    height: screenHeight * 0.21),
+                              ),
                             ),
                             Text(
                               questionText,
@@ -182,15 +192,16 @@ class _Question2PageState extends State<Question2Page> {
                               itemBuilder: (BuildContext context, int index) {
                                 String text = _questions[index];
                                 int score = _scores[index];
+                                bool isSelected = selectedScore2 == score;
                                 return GestureDetector(
                                   onTap: () => _selectAnswer(score, text),
                                   child: Container(
                                     decoration: BoxDecoration(
-                                      color: selectedText2.isEmpty
-                                          ? const Color(0xFFC5CAE9)
-                                          : selectedText2 == text
-                                              ? const Color(0xFF81C784)
-                                              : const Color(0xFFC5CAE9),
+                                      color: isSelected
+                                          ? const Color(
+                                              0xFF81C784) // สีเขียวเมื่อเลือกแล้ว
+                                          : const Color(
+                                              0xFFC5CAE9), // สีเริ่มต้นเมื่อยังไม่เลือก
                                       borderRadius: BorderRadius.circular(30),
                                     ),
                                     padding:

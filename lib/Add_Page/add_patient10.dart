@@ -2,6 +2,8 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:hospital_app/Provider/Paddpatient2.dart';
 import 'package:hospital_app/Provider/Paddpatient3.dart';
+import 'package:hospital_app/Provider/Paddpatient4.dart';
+import 'package:hospital_app/Provider/Paddpatient5.dart';
 import 'package:hospital_app/Provider/Pquiz.dart';
 import 'package:hospital_app/share_pref.dart';
 import 'package:provider/provider.dart';
@@ -22,158 +24,37 @@ class AddPatient10 extends StatefulWidget {
   final TextEditingController dateTimeController3;
   final double? timeDifference1;
   final double? timeDifference2;
-
-  final String selectedDiseases;
-  final int? ctBrain;
-  final String? ctBrainText;
   final int totalScore;
-  final int selectedScore1;
-  final String selectedText1;
-  final int selectedScore2;
-  final String selectedText2;
-  final int selectedScore3;
-  final String selectedText3;
-  final int selectedScore4;
-  final String selectedText4;
-  final int selectedScore5;
-  final String selectedText5;
-  final int selectedScore6;
-  final String selectedText6;
-  final int selectedScore7;
-  final String selectedText7;
-  final int selectedScore8;
-  final String selectedText8;
-  final int selectedScore9;
-  final String selectedText9;
-  final int selectedScore10;
-  final String selectedText10;
-  final int selectedScore11;
-  final String selectedText11;
-  final int selectedScore12;
-  final String selectedText12;
-  final int selectedScore13;
-  final String selectedText13;
-  final int selectedScore14;
-  final String selectedText14;
-  final int selectedScore15;
-  final String selectedText15;
   final String nihssLevel;
-  final int indications1;
-  final int indications2;
-  final int indications3;
-  final int strictlyprohibited1;
-  final int strictlyprohibited2;
-  final int strictlyprohibited3;
-  final int strictlyprohibited4;
-  final int strictlyprohibited5;
-  final int strictlyprohibited6;
-  final int strictlyprohibited7;
-  final int strictlyprohibited8;
-  final int strictlyprohibited9;
-  final int strictlyprohibited10;
-  final int strictlyprohibited11;
-  final int strictlyprohibited12;
-  final int strictlyprohibited13;
-  final int strictlyprohibited14;
-  final int strictlynotprohibited1;
-  final int strictlynotprohibited2;
-  final int strictlynotprohibited3;
-  final int strictlynotprohibited4;
-  final int strictlynotprohibited5;
-  final int strictlynotprohibited6;
-  final int additionalprohibitions1;
-  final int additionalprohibitions2;
-  final int additionalprohibitions3;
-  final int additionalprohibitions4;
   final double medic1;
   final double medic2;
   final double medic3;
   final TextEditingController beforecure;
   final TextEditingController aftercure;
 
-  const AddPatient10(
-      {Key? key,
-      required this.nameController,
-      required this.hospitalController,
-      required this.ageController,
-      required this.gender,
-      required this.weightController,
-      required this.systolicBloodPressureController,
-      required this.diastolicBloodPressureController,
-      required this.sugarController,
-      required this.dateTimeController1,
-      required this.dateTimeController2,
-      required this.dateTimeController3,
-      required this.timeDifference1,
-      required this.timeDifference2,
-      required this.selectedDiseases,
-      required this.ctBrain,
-      required this.ctBrainText,
-      required this.totalScore,
-      required this.selectedScore1,
-      required this.selectedText1,
-      required this.selectedScore2,
-      required this.selectedText2,
-      required this.selectedScore3,
-      required this.selectedText3,
-      required this.selectedScore4,
-      required this.selectedText4,
-      required this.selectedScore5,
-      required this.selectedText5,
-      required this.selectedScore6,
-      required this.selectedText6,
-      required this.selectedScore7,
-      required this.selectedText7,
-      required this.selectedScore8,
-      required this.selectedText8,
-      required this.selectedScore9,
-      required this.selectedText9,
-      required this.selectedScore10,
-      required this.selectedText10,
-      required this.selectedScore11,
-      required this.selectedText11,
-      required this.selectedScore12,
-      required this.selectedText12,
-      required this.selectedScore13,
-      required this.selectedText13,
-      required this.selectedScore14,
-      required this.selectedText14,
-      required this.selectedScore15,
-      required this.selectedText15,
-      required this.nihssLevel,
-      required this.indications1,
-      required this.indications2,
-      required this.indications3,
-      required this.strictlyprohibited1,
-      required this.strictlyprohibited2,
-      required this.strictlyprohibited3,
-      required this.strictlyprohibited4,
-      required this.strictlyprohibited5,
-      required this.strictlyprohibited6,
-      required this.strictlyprohibited7,
-      required this.strictlyprohibited8,
-      required this.strictlyprohibited9,
-      required this.strictlyprohibited10,
-      required this.strictlyprohibited11,
-      required this.strictlyprohibited12,
-      required this.strictlyprohibited13,
-      required this.strictlyprohibited14,
-      required this.strictlynotprohibited1,
-      required this.strictlynotprohibited2,
-      required this.strictlynotprohibited3,
-      required this.strictlynotprohibited4,
-      required this.strictlynotprohibited5,
-      required this.strictlynotprohibited6,
-      required this.additionalprohibitions1,
-      required this.additionalprohibitions2,
-      required this.additionalprohibitions3,
-      required this.additionalprohibitions4,
-      required this.medic1,
-      required this.medic2,
-      required this.medic3,
-      required this.beforecure,
-      required this.aftercure})
-      : super(key: key);
+  const AddPatient10({
+    Key? key,
+    required this.nameController,
+    required this.hospitalController,
+    required this.ageController,
+    required this.gender,
+    required this.weightController,
+    required this.systolicBloodPressureController,
+    required this.diastolicBloodPressureController,
+    required this.sugarController,
+    required this.dateTimeController1,
+    required this.dateTimeController2,
+    required this.dateTimeController3,
+    required this.timeDifference1,
+    required this.timeDifference2,
+    required this.totalScore,
+    required this.nihssLevel,
+    required this.medic1,
+    required this.medic2,
+    required this.medic3,
+    required this.beforecure,
+    required this.aftercure,
+  }) : super(key: key);
 
   @override
   State<AddPatient10> createState() => _AddPatient10State();
@@ -182,6 +63,66 @@ class AddPatient10 extends StatefulWidget {
 class _AddPatient10State extends State<AddPatient10> {
   String? recordedTime1; // ตัวแปรสำหรับเก็บเวลา
   String? recordedTime2; // ตัวแปรสำหรับเก็บเวลา
+  late int initialIndications1;
+  late int initialIndications2;
+  late int initialIndications3;
+  late int initialStrictlyprohibited1;
+  late int initialStrictlyprohibited2;
+  late int initialStrictlyprohibited3;
+  late int initialStrictlyprohibited4;
+  late int initialStrictlyprohibited5;
+  late int initialStrictlyprohibited6;
+  late int initialStrictlyprohibited7;
+  late int initialStrictlyprohibited8;
+  late int initialStrictlyprohibited9;
+  late int initialStrictlyprohibited10;
+  late int initialStrictlyprohibited11;
+  late int initialStrictlyprohibited12;
+  late int initialStrictlyprohibited13;
+  late int initialStrictlyprohibited14;
+  late int initialStrictlynotprohibited1;
+  late int initialStrictlynotprohibited2;
+  late int initialStrictlynotprohibited3;
+  late int initialStrictlynotprohibited4;
+  late int initialStrictlynotprohibited5;
+  late int initialStrictlynotprohibited6;
+  late int initialAdditionalprohibitions1;
+  late int initialAdditionalprohibitions2;
+  late int initialAdditionalprohibitions3;
+  String rtpa = '';
+
+  @override
+  void initState() {
+    super.initState();
+    final paddPatient4 = Provider.of<Paddpatient4>(context, listen: false);
+    final paddPatient5 = Provider.of<Paddpatient5>(context, listen: false);
+    initialIndications1 = paddPatient4.indications1;
+    initialIndications2 = paddPatient4.indications2;
+    initialIndications3 = paddPatient4.indications3;
+    initialStrictlyprohibited1 = paddPatient4.strictlyprohibited1;
+    initialStrictlyprohibited2 = paddPatient4.strictlyprohibited2;
+    initialStrictlyprohibited3 = paddPatient4.strictlyprohibited3;
+    initialStrictlyprohibited4 = paddPatient4.strictlyprohibited4;
+    initialStrictlyprohibited5 = paddPatient4.strictlyprohibited5;
+    initialStrictlyprohibited6 = paddPatient4.strictlyprohibited6;
+    initialStrictlyprohibited7 = paddPatient4.strictlyprohibited7;
+    initialStrictlyprohibited8 = paddPatient4.strictlyprohibited8;
+    initialStrictlyprohibited9 = paddPatient4.strictlyprohibited9;
+    initialStrictlyprohibited10 = paddPatient4.strictlyprohibited10;
+    initialStrictlyprohibited11 = paddPatient4.strictlyprohibited11;
+    initialStrictlyprohibited12 = paddPatient4.strictlyprohibited12;
+    initialStrictlyprohibited13 = paddPatient4.strictlyprohibited13;
+    initialStrictlyprohibited14 = paddPatient4.strictlyprohibited14;
+    initialStrictlynotprohibited1 = paddPatient5.strictlynotprohibited1;
+    initialStrictlynotprohibited2 = paddPatient5.strictlynotprohibited2;
+    initialStrictlynotprohibited3 = paddPatient5.strictlynotprohibited3;
+    initialStrictlynotprohibited4 = paddPatient5.strictlynotprohibited4;
+    initialStrictlynotprohibited5 = paddPatient5.strictlynotprohibited5;
+    initialStrictlynotprohibited6 = paddPatient5.strictlynotprohibited6;
+    initialAdditionalprohibitions1 = paddPatient5.additionalprohibitions1;
+    initialAdditionalprohibitions2 = paddPatient5.additionalprohibitions2;
+    initialAdditionalprohibitions3 = paddPatient5.additionalprohibitions3;
+  }
 
   void _recordTime() {
     // รับเวลาปัจจุบัน
@@ -205,6 +146,8 @@ class _AddPatient10State extends State<AddPatient10> {
     final paddPatient2 = Provider.of<Paddpatient2>(context, listen: false);
     final paddPatient3 = Provider.of<Paddpatient3>(context, listen: false);
     final quiz = Provider.of<QuizModel>(context, listen: false);
+    final paddpatient4 = Provider.of<Paddpatient4>(context, listen: false);
+    final paddpatient5 = Provider.of<Paddpatient5>(context, listen: false);
 
     Patient patient = Patient(
       id: newId,
@@ -236,64 +179,64 @@ class _AddPatient10State extends State<AddPatient10> {
       ctBrain: paddPatient3.ctBrainScore,
       ctBrainText: paddPatient3.ctBrainText,
       totalScore: widget.totalScore,
-      selectedScore1: widget.selectedScore1,
-      selectedScore2: widget.selectedScore2,
-      selectedScore3: widget.selectedScore3,
-      selectedScore4: widget.selectedScore4,
-      selectedScore5: widget.selectedScore5,
-      selectedScore6: widget.selectedScore6,
-      selectedScore7: widget.selectedScore7,
-      selectedScore8: widget.selectedScore8,
-      selectedScore9: widget.selectedScore9,
-      selectedScore10: widget.selectedScore10,
-      selectedScore11: widget.selectedScore11,
-      selectedScore12: widget.selectedScore12,
-      selectedScore13: widget.selectedScore13,
-      selectedScore14: widget.selectedScore14,
-      selectedScore15: widget.selectedScore15,
-      selectedText1: widget.selectedText1,
-      selectedText2: widget.selectedText2,
-      selectedText3: widget.selectedText3,
-      selectedText4: widget.selectedText4,
-      selectedText5: widget.selectedText5,
-      selectedText6: widget.selectedText6,
-      selectedText7: widget.selectedText7,
-      selectedText8: widget.selectedText8,
-      selectedText9: widget.selectedText9,
-      selectedText10: widget.selectedText10,
-      selectedText11: widget.selectedText11,
-      selectedText12: widget.selectedText12,
-      selectedText13: widget.selectedText13,
-      selectedText14: widget.selectedText14,
-      selectedText15: widget.selectedText15,
+      selectedScore1: quiz.selectedScore1,
+      selectedScore2: quiz.selectedScore2,
+      selectedScore3: quiz.selectedScore3,
+      selectedScore4: quiz.selectedScore4,
+      selectedScore5: quiz.selectedScore5,
+      selectedScore6: quiz.selectedScore6,
+      selectedScore7: quiz.selectedScore7,
+      selectedScore8: quiz.selectedScore8,
+      selectedScore9: quiz.selectedScore9,
+      selectedScore10: quiz.selectedScore10,
+      selectedScore11: quiz.selectedScore11,
+      selectedScore12: quiz.selectedScore12,
+      selectedScore13: quiz.selectedScore13,
+      selectedScore14: quiz.selectedScore14,
+      selectedScore15: quiz.selectedScore15,
+      selectedText1: quiz.selectedText1,
+      selectedText2: quiz.selectedText2,
+      selectedText3: quiz.selectedText3,
+      selectedText4: quiz.selectedText4,
+      selectedText5: quiz.selectedText5,
+      selectedText6: quiz.selectedText6,
+      selectedText7: quiz.selectedText7,
+      selectedText8: quiz.selectedText8,
+      selectedText9: quiz.selectedText9,
+      selectedText10: quiz.selectedText10,
+      selectedText11: quiz.selectedText11,
+      selectedText12: quiz.selectedText12,
+      selectedText13: quiz.selectedText13,
+      selectedText14: quiz.selectedText14,
+      selectedText15: quiz.selectedText15,
       nihssLevel: widget.nihssLevel,
-      indications1: widget.indications1,
-      indications2: widget.indications2,
-      indications3: widget.indications3,
-      strictlyprohibited1: widget.strictlyprohibited1,
-      strictlyprohibited2: widget.strictlyprohibited2,
-      strictlyprohibited3: widget.strictlyprohibited3,
-      strictlyprohibited4: widget.strictlyprohibited4,
-      strictlyprohibited5: widget.strictlyprohibited5,
-      strictlyprohibited6: widget.strictlyprohibited6,
-      strictlyprohibited7: widget.strictlyprohibited7,
-      strictlyprohibited8: widget.strictlyprohibited8,
-      strictlyprohibited9: widget.strictlyprohibited9,
-      strictlyprohibited10: widget.strictlyprohibited10,
-      strictlyprohibited11: widget.strictlyprohibited11,
-      strictlyprohibited12: widget.strictlyprohibited12,
-      strictlyprohibited13: widget.strictlyprohibited13,
-      strictlyprohibited14: widget.strictlyprohibited14,
-      strictlynotprohibited1: widget.strictlynotprohibited1,
-      strictlynotprohibited2: widget.strictlynotprohibited2,
-      strictlynotprohibited3: widget.strictlynotprohibited3,
-      strictlynotprohibited4: widget.strictlynotprohibited4,
-      strictlynotprohibited5: widget.strictlynotprohibited5,
-      strictlynotprohibited6: widget.strictlynotprohibited6,
-      additionalprohibitions1: widget.additionalprohibitions1,
-      additionalprohibitions2: widget.additionalprohibitions2,
-      additionalprohibitions3: widget.additionalprohibitions3,
-      additionalprohibitions4: widget.additionalprohibitions4,
+      indications1: paddpatient4.indications1,
+      indications2: paddpatient4.indications2,
+      indications3: paddpatient4.indications3,
+      strictlyprohibited1: paddpatient4.strictlyprohibited1,
+      strictlyprohibited2: paddpatient4.strictlyprohibited2,
+      strictlyprohibited3: paddpatient4.strictlyprohibited3,
+      strictlyprohibited4: paddpatient4.strictlyprohibited4,
+      strictlyprohibited5: paddpatient4.strictlyprohibited5,
+      strictlyprohibited6: paddpatient4.strictlyprohibited6,
+      strictlyprohibited7: paddpatient4.strictlyprohibited7,
+      strictlyprohibited8: paddpatient4.strictlyprohibited8,
+      strictlyprohibited9: paddpatient4.strictlyprohibited9,
+      strictlyprohibited10: paddpatient4.strictlyprohibited10,
+      strictlyprohibited11: paddpatient4.strictlyprohibited11,
+      strictlyprohibited12: paddpatient4.strictlyprohibited12,
+      strictlyprohibited13: paddpatient4.strictlyprohibited13,
+      strictlyprohibited14: paddpatient4.strictlyprohibited14,
+      strictlynotprohibited1: paddpatient5.strictlynotprohibited1,
+      strictlynotprohibited2: paddpatient5.strictlynotprohibited2,
+      strictlynotprohibited3: paddpatient5.strictlynotprohibited3,
+      strictlynotprohibited4: paddpatient5.strictlynotprohibited4,
+      strictlynotprohibited5: paddpatient5.strictlynotprohibited5,
+      strictlynotprohibited6: paddpatient5.strictlynotprohibited6,
+      additionalprohibitions1: paddpatient5.additionalprohibitions1,
+      additionalprohibitions2: paddpatient5.additionalprohibitions2,
+      additionalprohibitions3: paddpatient5.additionalprohibitions3,
+      additionalprohibitions4: paddpatient5.additionalprohibitions4,
       medic1: widget.medic1,
       medic2: widget.medic2,
       medic3: widget.medic3,
@@ -301,24 +244,18 @@ class _AddPatient10State extends State<AddPatient10> {
       aftercure: widget.aftercure.text,
       recordedTime1: recordedTime1,
       recordedTime2: recordedTime2,
+      rtpa: rtpa,
     );
 
     // แปลงเป็น JSON และเพิ่มในลิสต์
     patientList.add(json.encode(patient.toMap()));
     await prefs.setStringList('patients', patientList);
 
-    paddPatient2.setSymptomHead(-1);
-    paddPatient2.setSymptomEye(-1);
-    paddPatient2.setSymptomFace(-1);
-    paddPatient2.setSymptomArm(-1);
-    paddPatient2.setSymptomSpeech(-1);
-    paddPatient2.setSymptomVisual(-1);
-    paddPatient2.setSymptomAphasia(-1);
-    paddPatient2.setSymptomNeglect(-1);
-    paddPatient3.updateCtBrainScore(null, null);
-    paddPatient3.updateSelectedDiseases('');
-    paddPatient3.updateOnDiseasesScore(-1);
-    quiz.updateScore1(-1, '');
+    paddPatient2.resetSymptom();
+    paddPatient3.resetCtBrainAndnDiseasesScore();
+    quiz.resetScoresAndTexts();
+    paddpatient4.resetIndicationsAndStrictlyprohibited();
+    paddpatient5.resetAdditionalprohibitions();
   }
 
   Future<List<Patient>> loadPatients() async {
@@ -331,9 +268,127 @@ class _AddPatient10State extends State<AddPatient10> {
     }).toList();
   }
 
+  void _updatertpa() {
+    bool indicationsValid1 = (initialIndications1 == 0 &&
+        initialIndications2 == 0 &&
+        initialIndications3 == 0);
+    bool strictlyProhibitedValid1 = initialStrictlyprohibited1 == 0 ||
+        initialStrictlyprohibited2 == 0 ||
+        initialStrictlyprohibited3 == 0 ||
+        initialStrictlyprohibited4 == 0 ||
+        initialStrictlyprohibited5 == 0 ||
+        initialStrictlyprohibited6 == 0 ||
+        initialStrictlyprohibited7 == 0 ||
+        initialStrictlyprohibited8 == 0 ||
+        initialStrictlyprohibited9 == 0 ||
+        initialStrictlyprohibited10 == 0 ||
+        initialStrictlyprohibited11 == 0 ||
+        initialStrictlyprohibited12 == 0 ||
+        initialStrictlyprohibited13 == 0 ||
+        initialStrictlyprohibited14 == 0;
+    bool strictlyNotProhibitedValid1 = initialStrictlynotprohibited1 == 0 ||
+        initialStrictlynotprohibited2 == 0 ||
+        initialStrictlynotprohibited3 == 0 ||
+        initialStrictlynotprohibited4 == 0 ||
+        initialStrictlynotprohibited5 == 0 ||
+        initialStrictlynotprohibited6 == 0 ||
+        initialAdditionalprohibitions1 == 0 ||
+        initialAdditionalprohibitions2 == 0;
+
+    if (indicationsValid1 &&
+        strictlyProhibitedValid1 &&
+        (strictlyNotProhibitedValid1)) {
+      setState(() {
+        rtpa = 'ให้ยาไม่ได้';
+      });
+    } else if (initialIndications1 == 1 &&
+        initialIndications2 == 1 &&
+        initialIndications3 == 1 &&
+        initialStrictlyprohibited1 == 1 &&
+        initialStrictlyprohibited2 == 1 &&
+        initialStrictlyprohibited3 == 1 &&
+        initialStrictlyprohibited4 == 1 &&
+        initialStrictlyprohibited5 == 1 &&
+        initialStrictlyprohibited6 == 1 &&
+        initialStrictlyprohibited7 == 1 &&
+        initialStrictlyprohibited8 == 1 &&
+        initialStrictlyprohibited9 == 1 &&
+        initialStrictlyprohibited10 == 1 &&
+        initialStrictlyprohibited11 == 1 &&
+        initialStrictlyprohibited12 == 1 &&
+        initialStrictlyprohibited13 == 1 &&
+        initialStrictlyprohibited14 == 1 &&
+        (strictlyNotProhibitedValid1)) {
+      setState(() {
+        rtpa = 'อาจจะให้ยาได้';
+      });
+    } else if (initialIndications1 == 1 &&
+        initialIndications2 == 1 &&
+        initialIndications3 == 1 &&
+        initialStrictlyprohibited1 == 1 &&
+        initialStrictlyprohibited2 == 1 &&
+        initialStrictlyprohibited3 == 1 &&
+        initialStrictlyprohibited4 == 1 &&
+        initialStrictlyprohibited5 == 1 &&
+        initialStrictlyprohibited6 == 1 &&
+        initialStrictlyprohibited7 == 1 &&
+        initialStrictlyprohibited8 == 1 &&
+        initialStrictlyprohibited9 == 1 &&
+        initialStrictlyprohibited10 == 1 &&
+        initialStrictlyprohibited11 == 1 &&
+        initialStrictlyprohibited12 == 1 &&
+        initialStrictlyprohibited13 == 1 &&
+        initialStrictlyprohibited14 == 1 &&
+        initialStrictlynotprohibited1 == 1 &&
+        initialStrictlynotprohibited2 == 1 &&
+        initialStrictlynotprohibited3 == 1 &&
+        initialStrictlynotprohibited4 == 1 &&
+        initialStrictlynotprohibited5 == 1 &&
+        initialStrictlynotprohibited6 == 1 &&
+        initialAdditionalprohibitions1 == 1 &&
+        initialAdditionalprohibitions2 == 1) {
+      setState(() {
+        rtpa = 'ให้ยาได้';
+      });
+    } else if (initialIndications1 == -1 ||
+        initialIndications2 == -1 ||
+        initialIndications3 == -1 ||
+        initialStrictlyprohibited1 == -1 ||
+        initialStrictlyprohibited2 == -1 ||
+        initialStrictlyprohibited3 == -1 ||
+        initialStrictlyprohibited4 == -1 ||
+        initialStrictlyprohibited5 == -1 ||
+        initialStrictlyprohibited6 == -1 ||
+        initialStrictlyprohibited7 == -1 ||
+        initialStrictlyprohibited8 == -1 ||
+        initialStrictlyprohibited9 == -1 ||
+        initialStrictlyprohibited10 == -1 ||
+        initialStrictlyprohibited11 == -1 ||
+        initialStrictlyprohibited12 == -1 ||
+        initialStrictlyprohibited13 == -1 ||
+        initialStrictlyprohibited14 == -1 ||
+        initialStrictlynotprohibited1 == -1 ||
+        initialStrictlynotprohibited2 == -1 ||
+        initialStrictlynotprohibited3 == -1 ||
+        initialStrictlynotprohibited4 == -1 ||
+        initialStrictlynotprohibited5 == -1 ||
+        initialStrictlynotprohibited6 == -1 ||
+        initialAdditionalprohibitions1 == -1 ||
+        initialAdditionalprohibitions2 == -1) {
+      setState(() {
+        rtpa = 'ระบุไม่ครบ';
+      });
+    } else {
+      setState(() {
+        rtpa = 'ไม่ตรงตามเงื่อนไข';
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final double height = MediaQuery.of(context).size.height;
+    final paddPatient3 = Provider.of<Paddpatient3>(context, listen: false);
 
     return Scaffold(
       extendBodyBehindAppBar: true,
@@ -471,12 +526,12 @@ class _AddPatient10State extends State<AddPatient10> {
                 ),
                 SizedBox(height: spacing * 1.5),
                 Text(
-                  'โรคประจำตัว: ${widget.selectedDiseases.isNotEmpty ? widget.selectedDiseases : 'ไม่ระบุ'}',
+                  'โรคประจำตัว: ${paddPatient3.selectedDiseases.isNotEmpty ? paddPatient3.selectedDiseases : 'ไม่ระบุ'}',
                   style: TextStyle(fontSize: fontSizeContent),
                 ),
                 SizedBox(height: spacing * 1.5),
                 Text(
-                  'CT brain : ${widget.ctBrain != null ? widget.ctBrainText : 'ไม่ระบุ'}',
+                  'CT brain : ${paddPatient3.ctBrainScore != null ? paddPatient3.ctBrainText : 'ไม่ระบุ'}',
                   style: TextStyle(fontSize: fontSizeContent),
                 ),
                 SizedBox(height: spacing * 1.5),
@@ -487,6 +542,7 @@ class _AddPatient10State extends State<AddPatient10> {
                     ElevatedButton(
                       onPressed: () async {
                         _recordTime();
+                        _updatertpa();
                         savePatientData();
                         Navigator.of(context).pushNamedAndRemoveUntil(
                             '/patientList', (route) => false);

@@ -126,18 +126,6 @@ class _AddPatient3State extends State<AddPatient3> {
                           },
                           initialValue2: initialonDiseasesScore,
                         ),
-                        Text(
-                          'Disease Score: ${paddPatient3.onDiseasesScore}',
-                          style: TextStyle(
-                            fontSize: height * 0.018,
-                          ),
-                        ),
-                        Text(
-                          'Disease Text: ${paddPatient3.selectedDiseases}',
-                          style: TextStyle(
-                            fontSize: height * 0.018,
-                          ),
-                        ),
                         SizedBox(height: height * 0.02),
                       ],
                     ),
@@ -184,12 +172,6 @@ class _AddPatient3State extends State<AddPatient3> {
                           },
                         ),
                         SizedBox(height: height * 0.02),
-                        Text(
-                          'CT Score: ${paddPatient3.ctBrainScore}',
-                          style: TextStyle(
-                            fontSize: height * 0.018,
-                          ),
-                        ),
                       ],
                     ),
                   ),
@@ -221,9 +203,6 @@ class _AddPatient3State extends State<AddPatient3> {
                           dateTimeController3: widget.dateTimeController3,
                           timeDifference1: widget.timeDifference1,
                           timeDifference2: widget.timeDifference2,
-                          selectedDiseases: selectedDiseases,
-                          ctBrain: paddPatient3.ctBrainScore,
-                          ctBrainText: paddPatient3.ctBrainText,
                         ),
                       ),
                     );

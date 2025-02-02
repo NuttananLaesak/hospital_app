@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:hospital_app/Provider/Paddpatient2.dart';
 import 'package:hospital_app/Provider/Paddpatient3.dart';
+import 'package:hospital_app/Provider/Paddpatient4.dart';
+import 'package:hospital_app/Provider/Paddpatient5.dart';
 import 'package:hospital_app/Provider/Pquiz.dart';
 import 'package:hospital_app/get_start.dart';
 import 'package:hospital_app/patient_list.dart';
@@ -13,6 +15,8 @@ void main() {
         ChangeNotifierProvider(create: (_) => Paddpatient2()),
         ChangeNotifierProvider(create: (_) => Paddpatient3()),
         ChangeNotifierProvider(create: (_) => QuizModel()),
+        ChangeNotifierProvider(create: (_) => Paddpatient4()),
+        ChangeNotifierProvider(create: (_) => Paddpatient5()),
         // Add other providers here
       ],
       child: MyApp(),

@@ -366,9 +366,10 @@ class _PatientListPageState extends State<PatientListPage> {
                             gradient: LinearGradient(
                                 begin: Alignment.centerLeft,
                                 end: Alignment.centerRight,
-                                colors: [Color(0xFF82B1FF), Color(0xFF82B1FF)]),
+                                colors: [Colors.white, Colors.white]),
                             borderRadius: BorderRadius.circular(12),
-                            border: Border.all(color: Colors.black, width: 0.0),
+                            border: Border.all(
+                                color: Color(0xFF82B1FF), width: 5.0),
                             boxShadow: [
                               BoxShadow(
                                   color: Colors.black26,
@@ -376,86 +377,120 @@ class _PatientListPageState extends State<PatientListPage> {
                                   offset: Offset(0, 2))
                             ]),
                         child: ListTile(
-                          leading: Container(
-                              width: height * 0.055,
-                              height: height * 0.055,
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(12),
-                                  image: const DecorationImage(
-                                      image: AssetImage('images/1.1.png'),
-                                      fit: BoxFit.cover))),
                           title: Center(
-                              child: Text(
-                                  patient.nameController.isNotEmpty
-                                      ? patient.nameController
-                                      : 'ไม่ระบุ',
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'NIHSS ${patient.totalScore}',
                                   style: TextStyle(
-                                      fontSize: height * 0.022,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.black))),
+                                    fontSize: height * 0.0175,
+                                    fontWeight: FontWeight.bold,
+                                    color: scoreColor, // สีตัวอักษร
+                                  ),
+                                ),
+                                SizedBox(width: width * 0.0175),
+                                Text(
+                                  '(${patient.nihssLevel})',
+                                  style: TextStyle(
+                                    fontSize: height * 0.0175,
+                                    fontWeight: FontWeight.bold,
+                                    color: scoreColor, // สีตัวอักษร
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
                           subtitle: Column(children: [
-                            Text(
-                                patient.hospitalController.isNotEmpty
-                                    ? patient.hospitalController
-                                    : '-',
-                                style: TextStyle(
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: Text(
+                                    patient.nameController.isNotEmpty
+                                        ? 'ชื่อ ${patient.nameController}'
+                                        : 'ชื่อ ไม่ระบุ',
+                                    style: TextStyle(
+                                        fontSize: height * 0.017,
+                                        color: Colors.black),
+                                    overflow: TextOverflow.ellipsis,
+                                    maxLines: 1,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: Text(
+                                    patient.hospitalController.isNotEmpty
+                                        ? 'โรงพยาบาล ${patient.hospitalController}'
+                                        : 'โรงพยาบาล',
+                                    style: TextStyle(
+                                        fontSize: height * 0.017,
+                                        color: Colors.black),
+                                    overflow: TextOverflow.ellipsis,
+                                    maxLines: 1,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                Text(
+                                  patient.gender.isNotEmpty
+                                      ? 'เพศ${patient.gender} '
+                                      : 'เพศ ',
+                                  style: TextStyle(
+                                      fontSize: height * 0.017,
+                                      color: Colors.black),
+                                ),
+                                Text(
+                                  patient.ageController != null
+                                      ? 'อายุ${patient.ageController}ปี '
+                                      : 'อายุ ',
+                                  style: TextStyle(
                                     fontSize: height * 0.017,
-                                    color: Colors.black)),
-                            Stack(
-                              children: [
-                                // Text ที่อยู่ข้างล่างสุด ซึ่งจะทำหน้าที่เป็นกรอบสีดำ
-                                Text(
-                                  'NIHSS : ${patient.totalScore}',
-                                  style: TextStyle(
-                                    fontSize: height * 0.015,
-                                    fontWeight: FontWeight.bold,
-                                    foreground: Paint()
-                                      ..style = PaintingStyle.stroke
-                                      ..strokeWidth = 2
-                                      ..color = Colors.black, // สีกรอบสีดำ
+                                    color: Colors.black,
                                   ),
                                 ),
-                                // Text ที่อยู่ข้างบนสุดเป็นข้อความปกติ
                                 Text(
-                                  'NIHSS : ${patient.totalScore}',
+                                  patient.weightController.isNotEmpty
+                                      // ignore: unnecessary_null_comparison
+                                      ? (patient.weightController != null &&
+                                              patient
+                                                  .weightController.isNotEmpty
+                                          ? 'น้ำหนัก${patient.weightController}กก.'
+                                          : 'น้ำหนัก')
+                                      : 'น้ำหนัก',
                                   style: TextStyle(
-                                    fontSize: height * 0.015,
-                                    fontWeight: FontWeight.bold,
-                                    color: scoreColor, // สีตัวอักษร
+                                    fontSize: height * 0.017,
+                                    color: Colors.black,
                                   ),
                                 ),
                               ],
                             ),
-                            Stack(
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
                               children: [
-                                // Text ที่อยู่ข้างล่างสุด ซึ่งจะทำหน้าที่เป็นกรอบสีดำ
                                 Text(
-                                  '${patient.nihssLevel}',
+                                  'RTPA ${patient.rtpa}',
                                   style: TextStyle(
-                                    fontSize: height * 0.015,
-                                    fontWeight: FontWeight.bold,
-                                    foreground: Paint()
-                                      ..style = PaintingStyle.stroke
-                                      ..strokeWidth = 2
-                                      ..color = Colors.black, // สีกรอบสีดำ
-                                  ),
-                                ),
-                                // Text ที่อยู่ข้างบนสุดเป็นข้อความปกติ
-                                Text(
-                                  '${patient.nihssLevel}',
-                                  style: TextStyle(
-                                    fontSize: height * 0.015,
-                                    fontWeight: FontWeight.bold,
-                                    color: scoreColor, // สีตัวอักษร
+                                    fontSize: height * 0.017,
+                                    color: Colors.black,
                                   ),
                                 ),
                               ],
                             ),
-                            Text(
-                              '${patient.recordedTime1} ${patient.recordedTime2}',
-                              style: TextStyle(
-                                  fontSize: height * 0.014,
-                                  color: Colors.black),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Text(
+                                  '${patient.recordedTime1} ${patient.recordedTime2}',
+                                  style: TextStyle(
+                                      fontSize: height * 0.014,
+                                      color: Colors.black),
+                                ),
+                              ],
                             ),
                           ]),
                           trailing: IconButton(
@@ -524,21 +559,27 @@ class _PatientListPageState extends State<PatientListPage> {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-              title: Text('ยืนยันการลบ'),
+              title: Text(
+                'ยืนยันการลบ',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
               content: Text('คุณแน่ใจหรือว่าต้องการลบผู้ป่วยนี้?'),
               actions: <Widget>[
                 TextButton(
-                    child: Text('ลบ', style: TextStyle(color: Colors.black)),
+                    child: Text('ลบ',
+                        style: TextStyle(
+                            color: Colors.red, fontWeight: FontWeight.bold)),
                     onPressed: () {
                       _deletePatient(index); // เรียกฟังก์ชันลบ
                       Navigator.of(context).pop(); // ปิด popup
                     }),
                 TextButton(
-                    child:
-                        Text('ยกเลิก', style: TextStyle(color: Colors.black)),
+                    child: Text('ยกเลิก',
+                        style: TextStyle(
+                            color: Colors.blue, fontWeight: FontWeight.bold)),
                     onPressed: () {
                       Navigator.of(context).pop(); // ปิด popup โดยไม่ลบ
-                    })
+                    }),
               ]);
         });
   }
