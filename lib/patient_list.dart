@@ -390,12 +390,16 @@ class _PatientListPageState extends State<PatientListPage> {
                                   ),
                                 ),
                                 SizedBox(width: width * 0.0175),
-                                Text(
-                                  '(${patient.nihssLevel})',
-                                  style: TextStyle(
-                                    fontSize: height * 0.0175,
-                                    fontWeight: FontWeight.bold,
-                                    color: scoreColor, // สีตัวอักษร
+                                Expanded(
+                                  child: Text(
+                                    '(${patient.nihssLevel})',
+                                    style: TextStyle(
+                                      fontSize: height * 0.0175,
+                                      fontWeight: FontWeight.bold,
+                                      color: scoreColor, // สีตัวอักษร
+                                    ),
+                                    overflow: TextOverflow.ellipsis,
+                                    maxLines: 1,
                                   ),
                                 ),
                               ],
