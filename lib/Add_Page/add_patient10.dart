@@ -299,7 +299,7 @@ class _AddPatient10State extends State<AddPatient10> {
         strictlyProhibitedValid1 &&
         (strictlyNotProhibitedValid1)) {
       setState(() {
-        rtpa = 'ให้ยาไม่ได้';
+        rtpa = 'ให้ยาไม่ได้ มีข้อห้าม';
       });
     } else if (initialIndications1 == 1 &&
         initialIndications2 == 1 &&
@@ -348,7 +348,7 @@ class _AddPatient10State extends State<AddPatient10> {
         initialAdditionalprohibitions1 == 1 &&
         initialAdditionalprohibitions2 == 1) {
       setState(() {
-        rtpa = 'ให้ยาได้';
+        rtpa = 'ให้ยาได้ ไม่มีข้อห้าม';
       });
     } else if (initialIndications1 == -1 ||
         initialIndications2 == -1 ||

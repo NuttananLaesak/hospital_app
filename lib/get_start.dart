@@ -63,7 +63,7 @@ class _GetStartState extends State<GetStart> {
                           width: screenWidth * 0.8,
                           height: screenHeight * 0.4,
                           child: Image.asset(
-                            'images/doctor.png',
+                            'images/starter.png',
                             fit: BoxFit.contain,
                           ),
                         ),

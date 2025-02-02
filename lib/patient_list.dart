@@ -20,6 +20,7 @@ class _PatientListPageState extends State<PatientListPage> {
   TextEditingController _searchController = TextEditingController();
   String? _selectedGender;
   String? _selectedSeverity;
+  String? _selectedRTPA;
 
   @override
   void initState() {
@@ -50,12 +51,19 @@ class _PatientListPageState extends State<PatientListPage> {
       _filteredPatients = _patients.where((patient) {
         bool matchesName =
             patient.nameController.toLowerCase().startsWith(searchText);
+        bool matchesHospital =
+            (patient.hospitalController.toLowerCase()).startsWith(searchText);
         bool matchesGender =
             _selectedGender == null || patient.gender == _selectedGender;
         bool matchesSeverity = _selectedSeverity == null ||
             _getSeverity(patient.totalScore) == _selectedSeverity;
+        bool matchesRPTA =
+            _selectedRTPA == null || (patient.rtpa) == _selectedRTPA;
 
-        return matchesName && matchesGender && matchesSeverity;
+        return (matchesName || matchesHospital) &&
+            matchesGender &&
+            matchesSeverity &&
+            matchesRPTA;
       }).toList();
     });
   }
@@ -177,7 +185,7 @@ class _PatientListPageState extends State<PatientListPage> {
                                 icon: Icon(Icons.restore))
                           ])),
                       Padding(
-                          padding: EdgeInsets.only(bottom: height * 0.04),
+                          padding: EdgeInsets.only(bottom: height * 0.02),
                           child: Row(children: [
                             Expanded(
                                 child: Container(
@@ -234,6 +242,57 @@ class _PatientListPageState extends State<PatientListPage> {
                                 icon: Icon(Icons.restore))
                           ])),
                       // เพิ่มปุ่มปิด Drawer
+                      Padding(
+                          padding: EdgeInsets.only(bottom: height * 0.04),
+                          child: Row(children: [
+                            Expanded(
+                                child: Container(
+                                    decoration: BoxDecoration(
+                                        border: Border.all(
+                                            color: Colors.black54, width: 1),
+                                        borderRadius:
+                                            BorderRadius.circular(16)),
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal: width * 0.025),
+                                    child: DropdownButton<String>(
+                                        hint: Text('RTPA',
+                                            style: TextStyle(
+                                                color: Colors.black54)),
+                                        value: _selectedRTPA,
+                                        items: [
+                                          DropdownMenuItem(
+                                              value: 'ให้ยาไม่ได้ มีข้อห้าม',
+                                              child: Text(
+                                                  'ให้ยาไม่ได้ มีข้อห้าม')),
+                                          DropdownMenuItem(
+                                              value: 'อาจจะให้ยาได้',
+                                              child: Text('อาจจะให้ยาได้')),
+                                          DropdownMenuItem(
+                                              value: 'ให้ยาได้ ไม่มีข้อห้าม',
+                                              child: Text(
+                                                  'ให้ยาได้ ไม่มีข้อห้าม')),
+                                        ],
+                                        onChanged: (value) {
+                                          setState(() {
+                                            _selectedRTPA = value;
+                                            _filterPatients(); // เรียกใช้ฟังก์ชันกรอง
+                                          });
+                                        },
+                                        style: TextStyle(
+                                            color: Colors.black,
+                                            fontSize: height * 0.017),
+                                        dropdownColor: Colors.white,
+                                        underline: SizedBox(),
+                                        isExpanded: true))),
+                            IconButton(
+                                onPressed: () {
+                                  setState(() {
+                                    _selectedRTPA = null;
+                                    _filterPatients();
+                                  });
+                                },
+                                icon: Icon(Icons.restore))
+                          ])),
 
                       Row(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -505,6 +564,7 @@ class _PatientListPageState extends State<PatientListPage> {
                           onTap: () {
                             _selectedGender = null;
                             _selectedSeverity = null;
+                            _selectedRTPA = null;
                             _searchController.clear(); // ล้างช่องค้นหา
                             Navigator.push(
                               context,
@@ -553,6 +613,7 @@ class _PatientListPageState extends State<PatientListPage> {
     setState(() {
       _selectedGender = null;
       _selectedSeverity = null;
+      _selectedRTPA = null;
       _filteredPatients = _patients; // คืนค่าผู้ป่วยทั้งหมด
       _searchController.clear(); // ล้างช่องค้นหา
     });

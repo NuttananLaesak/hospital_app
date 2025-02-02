@@ -152,7 +152,7 @@ class _NihssDetailState extends State<NihssDetail> {
                           ),
                           SizedBox(height: height * 0.01),
                           Text(
-                            '*หากข้อการเเก้ไขข้อใหนให้เลือกข้อนั้น*',
+                            '*หากต้องการเเก้ไขข้อใหนให้เลือกข้อนั้น*',
                             style: TextStyle(
                                 fontSize: height * 0.02,
                                 color: Colors.green,

@@ -386,7 +386,7 @@ class _MadicDetailState extends State<MadicDetail> {
                               children: [
                                 SizedBox(height: height * 0.015),
                                 Text(
-                                  'ไม่สามารถให้ยาผู้ป่วยได้',
+                                  'ไม่สามารถให้ยาผู้ป่วยได้\nมีข้อห้าม',
                                   style: TextStyle(
                                     fontSize: height * 0.02,
                                     fontWeight: FontWeight.bold,
@@ -497,7 +497,7 @@ class _MadicDetailState extends State<MadicDetail> {
                             Column(
                               children: [
                                 Text(
-                                  'สามารถให้ยาผู้ป่วยได้',
+                                  'สามารถให้ยาผู้ป่วยได้\nไม่มีข้อห้าม',
                                   style: TextStyle(
                                     fontSize: height * 0.022,
                                     fontWeight: FontWeight.bold,

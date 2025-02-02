@@ -5,6 +5,7 @@ import 'package:hospital_app/share_pref.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:flutter/services.dart';
 
 class ResultDetail extends StatefulWidget {
   final int patientId;
@@ -169,6 +170,110 @@ class _ResultDetailState extends State<ResultDetail> {
       }
     }
 
+    String patientDetails = '''
+ข้อมูลผู้ป่วยโรคหลอดเลือดสมอง
+
+ข้อมูลเบื้องต้น
+ชื่อ: ${_patient?.nameController.isNotEmpty == true ? _patient!.nameController : 'ไม่ได้ระบุ'}
+โรงพยาบาล: ${_patient?.hospitalController.isNotEmpty == true ? _patient!.hospitalController : 'ไม่ได้ระบุ'}
+อายุ: ${_patient?.ageController == null ? 'ไม่ได้ระบุ' : _patient!.ageController == 0 ? 'ไม่ได้ระบุ' : _patient!.ageController} ปี
+เพศ: ${_patient?.gender.isNotEmpty == true ? _patient!.gender : 'ไม่ได้ระบุ'}
+น้ำหนัก: ${_patient?.weightController.isNotEmpty == true ? _patient!.weightController : 'ไม่ได้ระบุ'}' กิโลกรัม
+ความดันโลหิต: ${_patient?.systolicBloodPressureController ?? 'ไม่ระบุ'}/${_patient?.diastolicBloodPressureController ?? 'ไม่ระบุ'} (mg/dl)
+ระดับน้ำตาลในเลือด: ${_patient?.sugarController.isNotEmpty == true ? _patient!.sugarController : 'ไม่ได้ระบุ'} (mg/dl)
+โรคประจำตัว: ${_patient?.selectedDiseases.isNotEmpty == true ? _patient!.selectedDiseases : 'ไม่ได้ระบุ'}
+CT Brain: ${_patient?.ctBrainText?.isNotEmpty == true ? _patient!.ctBrainText : 'ไม่ได้ระบุ'}
+
+วันที่เเละเวลาที่บันทึกข้อมูล
+เวลาที่เริ่มมีอาการ
+${_patient?.dateTimeController1.isNotEmpty == true ? _patient!.dateTimeController1 : 'ไม่ได้ระบุ'}
+เวลาที่มาถึงโรงพยาบาล
+${_patient?.dateTimeController2.isNotEmpty == true ? _patient!.dateTimeController2 : 'ไม่ได้ระบุ'}
+เวลาที่ใช้ยาละลายลิ่มเลือด
+${_patient?.dateTimeController3.isNotEmpty == true ? _patient!.dateTimeController3 : 'ไม่ได้ระบุ'}
+
+ระยะเวลาที่ใช้
+ระยะเวลาเมื่อมีอาการมาโรงพยาบาล
+ใช้เวลา ${_patient?.timeDifference1?.toStringAsFixed(2) ?? 'ไม่ระบุ'} ชั่วโมง'
+ระยะเวลาเมื่อมาโรงพยาบาลเเล้วฉีดยา
+ใช้เวลา ${_patient?.timeDifference2?.toStringAsFixed(2) ?? 'ไม่ระบุ'} ชั่วโมง'
+
+อาการ
+1. เวียนศรีษะ เดินเซ: ${CheckSymptom1(_patient?.symptomHead)}
+2. อาการตาดับทันทีทันใด: ${CheckSymptom1(_patient?.symptomEye)}
+3. หน้าเบี้ยวฉียบพลัน: ${CheckSymptom2(_patient?.symptomFace ?? -1)}
+4. อ่อนแอแขน/ขาเฉียบพลัน: ${CheckSymptom2(_patient?.symptomArm ?? -1)}
+5. พูดลำบาก/พูดไม่ชัด: ${CheckSymptom1(_patient?.symptomSpeech)}
+6. การมองเห็น: ${CheckSymptom3(_patient?.symptomVisual ?? -1)}
+7. การเข้าใจภาษา: ${CheckSymptom4(_patient?.symptomAphasia ?? -1)}
+8. ไม่สนใจร่างกายหนึ่งด้าน: ${CheckSymptom1(_patient?.symptomNeglect ?? -1)}
+
+ระดับโรคหลอดเลือดสมอง
+NIHSS ${_patient?.totalScore} คะเเนน'
+'ระดับความรุนเเรง ${_patient?.nihssLevel}'
+
+คะเเนนเเต่ล่ะข้อของเเบบประเมินโรคหลอดเลือดสมองะ
+ข้อที่ 1a ระดับความรู้สึก(Level of Consciousness, LOC): ${_patient?.selectedText1}(${_patient?.selectedScore1})
+ข้อที่ 1b สามารถบอกเดือนและอายุได้(LOC Questions): ${_patient?.selectedText2}(${_patient?.selectedScore2})
+ข้อที่ 1c สามารถหลับตา-ลืมได้เเละกำมือ-คลายมือได้ (LOC Commands): ${_patient?.selectedText3}(${_patient?.selectedScore3})
+ข้อที่ 2 การเคลื่อนไหวของตา(Best Gaze): ${_patient?.selectedText4}(${_patient?.selectedScore4})
+ข้อที่ 3 การมองเห็น(Visual Fields): ${_patient?.selectedText5}(${_patient?.selectedScore5})
+ข้อที่ 4 การเคลื่อนไหวของกล้ามเนื้อใบหน้า (Facial Palsy): ${_patient?.selectedText6}(${_patient?.selectedScore6})
+ข้อที่ 5a กำลังของกล้ามเนื้อเเขนซ้าย(Motor Left Arm): ${_patient?.selectedText7}(${_patient?.selectedScore7})
+ข้อที่ 5b กำลังของกล้ามเนื้อเเขนขวา(Motor Right Arm): ${_patient?.selectedText8}(${_patient?.selectedScore8})
+ข้อที่ 6a กำลังของกล้ามเนื้อขาซ้าย(Motor Left Leg): ${_patient?.selectedText9}(${_patient?.selectedScore9})
+ข้อที่ 6b กำลังของกล้ามเนื้อขาขวา(Motor Right Leg): ${_patient?.selectedText10}(${_patient?.selectedScore10})
+ข้อที่ 7 การประสานของเเขนขา(Limb Ataxia): ${_patient?.selectedText11}(${_patient?.selectedScore11})
+ข้อที่ 8 การรับความรู้สึก(Sensory): ${_patient?.selectedText12}(${_patient?.selectedScore12})
+ข้อที่ 9 ความสามารถด้านภาษา(Best Language): ${_patient?.selectedText13}(${_patient?.selectedScore13})
+ข้อที่ 10 การออกเสียง (Dysarthia): ${_patient?.selectedText14}(${_patient?.selectedScore14})
+ข้อที่ 11 การขาดความสนใจในด้านใดด้านหนึ่งของร่างกาย\n(Extinetion and Inattention): ${_patient?.selectedText15}(${_patient?.selectedScore15})
+
+ข้อบ่งชี้
+1. มีอายุเท่ากับหรือมากกว่า 18 ปี:${checkIndication(_patient?.indications2)},
+2. มีอาการของหลอดเลือดสมองตีบ\nภายในระยะเวลา 4.5 ชั่วโมง:${checkIndication(_patient?.indications1)},
+3. ผล CT brain ไม่พบว่ามีเลือดออก\nในเนื้อสมองหรือชั้นใต้เยื่อหุ้มสมอง:${checkIndication(_patient?.indications3)},
+
+ข้อห้ามอย่างเด็ดขาด
+1. มีความดันโลหิตช่วงก่อนให้รักษาสูง(SBP > 185 mm/Hg)(DBP > 110 mm/Hg):${checkProhibited(_patient?.strictlyprohibited7)}
+2. มีประวัติเคยมีเลือดออกในสมองมาก่อน:${checkProhibited(_patient?.strictlyprohibited3)}
+4. มีอาการบาดเจ็บที่ศรีษะอย่างรุนเเรงหรือมีประวัติเป็นโรคหลอดเลือดสมองใน 3 เดือน:${checkProhibited(_patient?.strictlyprohibited1)}
+5. มีประวัติได้รับยาต้านการเเข็งตัวของเลือดโดยมีค่า PT > 15 วินาที หรือมีค่า INR > 1.7:${checkProhibited(_patient?.strictlyprohibited9)}
+6. มีความดันโลหิตสูงเเละไม่สามารถลดความดันโลหิตลงได้ก่อนให้ยาละลายลิ่มเลือด:${checkProhibited(_patient?.strictlyprohibited12)}
+7. ได้รับยา heparin ภายใน 48 ชั่วโมงเเละ\nมีค่า partial-thromboplastin time ผิดปกติ:${checkProhibited(_patient?.strictlyprohibited13)}
+8. มีปริมาณเกล็ดเลือดน้อยกว่า \n100,000 ต่อลูกบาศก์มิลลิเมตร:${checkProhibited(_patient?.strictlyprohibited14)}
+9. CT brain พบมีสมองขาดเลือดมากกว่าขนาด 1/3 ชอง cerebral hemisphere${checkProhibited(_patient?.strictlyprohibited11)}
+10. มีระดับน้ำตาลในเลือดเท่ากับหรือ\nน้อยกว่า 50 mg/dl:${checkProhibited(_patient?.strictlyprohibited10)}
+11. มีการได้รับการผ่าตัดกระโหลกศรีษะ \nหรือกระดูกสันหลังภายใน 3 เดือน:${checkProhibited(_patient?.strictlyprohibited6)}
+12. มีภาวะเลือดออกเเละอวัยวะภายใน\n(Active Internal Bleeding):${checkProhibited(_patient?.strictlyprohibited8)}
+13. มีภาวะสงสัยเลือดออกชั้นใต้เยื่อหุ้มสมอง\n(Subarachnoid Hemorrhage):${checkProhibited(_patient?.strictlyprohibited2)}
+14. มีการเเทงหลอกเลือดเเดงขนาดใหญ่ใน\nตำเเหน่งที่ไม่สามารถกดได้ภายใน 7 วัน:${checkProhibited(_patient?.strictlyprohibited5)}
+
+ข้อห้ามที่ไม่ถือว่าห้ามอย่างเด็ดขาด
+1. มีอาการทางประสาทดีขึ้นอย่างรวดเร็วจนเกือบเป็นปกติหรือมีอาการอย่างเดียวไม่รุนเเรง:${checkProhibited(_patient?.strictlynotprohibited1)}
+2. มีอาการชักตอนเริ่มต้นเเละภายหลัง\nจากชักยังมีอาการอ่อนเเรงอยู่:${checkProhibited(_patient?.strictlynotprohibited3)}
+3. เคยมีประวัติการผ่าตัดใหญ่หรือ\nมีอุบัติเหตุรุนเเรงภายใน 14 วัน:${checkProhibited(_patient?.strictlynotprohibited4)}
+4. มีเลือดออกในทางเดินอาหารหรือ\nทางเดินปัสสสาวะภายใน 21 วัน:${checkProhibited(_patient?.strictlynotprohibited5)}
+5. มีประวัติกล้ามเนื้อหัวใจขาดเลือด\nภายใน 3 เดือน:${checkProhibited(_patient?.strictlynotprohibited6)}
+6. มีการตั้งครรภ์:${checkProhibited(_patient?.strictlynotprohibited2)}
+7. เคยเป็นโรคหลอดเลือดสมองตีบหรือ\nหลอดเลือดสมองอุดตันภายใน 3 เดือน:${checkProhibited(_patient?.strictlynotprohibited2)}
+8. มีคะเเนน NIHSS มากกว่า 25 คะเเนน:${checkProhibited(_patient?.strictlynotprohibited1)}
+
+การให้ยาผู้ป่วย
+ปริมาณยาละลายลิ่มเลือด
+(rt-PA) ${_patient?.medic1.toStringAsFixed(2) ?? 'ไม่ระบุ'} มิลลิกรัม
+แบ่งให้ ${_patient?.medic2.toStringAsFixed(2) ?? 'ไม่ระบุ'} มิลลิกรัม
+ทางหลอดเลือดใน 1 นาที'
+'และ ${_patient?.medic3.toStringAsFixed(2) ?? 'ไม่ระบุ'} มิลลิกรัม
+หยดทางหลอดเลือดใน 60 นาที',
+
+ผลการรักษา
+ก่อนการรักษา
+${_patient?.beforecure ?? 'ไม่ระบุ'}
+หลังการรักษา
+${_patient?.aftercure ?? 'ไม่ระบุ'}
+      ''';
+
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(height * 0.07),
@@ -178,8 +283,24 @@ class _ResultDetailState extends State<ResultDetail> {
           title: Text(
             'รายงานผล',
             style: TextStyle(
-                fontSize: height * 0.026, fontWeight: FontWeight.bold),
+              fontSize: height * 0.026,
+              fontWeight: FontWeight.bold,
+            ),
           ),
+          actions: [
+            GestureDetector(
+              onTap: () async {
+                // คัดลอกข้อมูลไปที่คลิปบอร์ด
+                await Clipboard.setData(ClipboardData(text: patientDetails));
+              },
+              child: Image.asset(
+                'images/clipboard.png',
+                width: 33, // ปรับขนาดไอคอนตามต้องการ
+                height: 33,
+              ),
+            ),
+            SizedBox(width: 20), // ให้ระยะห่างระหว่างปุ่มและขอบขวาของ AppBar
+          ],
           shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.only(
               bottomLeft: Radius.circular(20),
@@ -911,131 +1032,34 @@ class _ResultDetailState extends State<ResultDetail> {
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: const Color(0xFF82B1FF),
-        child: const Icon(Icons.send),
-        onPressed: () async {
-          if (_patient != null) {
-            String patientDetails = '''
-ข้อมูลผู้ป่วยโรคหลอดเลือดสมอง
-
-ข้อมูลเบื้องต้น
-ชื่อ: ${_patient?.nameController.isNotEmpty == true ? _patient!.nameController : 'ไม่ได้ระบุ'}
-โรงพยาบาล: ${_patient?.hospitalController.isNotEmpty == true ? _patient!.hospitalController : 'ไม่ได้ระบุ'}
-อายุ: ${_patient?.ageController == null ? 'ไม่ได้ระบุ' : _patient!.ageController == 0 ? 'ไม่ได้ระบุ' : _patient!.ageController} ปี
-เพศ: ${_patient?.gender.isNotEmpty == true ? _patient!.gender : 'ไม่ได้ระบุ'}
-น้ำหนัก: ${_patient?.weightController.isNotEmpty == true ? _patient!.weightController : 'ไม่ได้ระบุ'}' กิโลกรัม
-ความดันโลหิต: ${_patient?.systolicBloodPressureController ?? 'ไม่ระบุ'}/${_patient?.diastolicBloodPressureController ?? 'ไม่ระบุ'} (mg/dl)
-ระดับน้ำตาลในเลือด: ${_patient?.sugarController.isNotEmpty == true ? _patient!.sugarController : 'ไม่ได้ระบุ'} (mg/dl)
-โรคประจำตัว: ${_patient?.selectedDiseases.isNotEmpty == true ? _patient!.selectedDiseases : 'ไม่ได้ระบุ'}
-CT Brain: ${_patient?.ctBrainText?.isNotEmpty == true ? _patient!.ctBrainText : 'ไม่ได้ระบุ'}
-
-วันที่เเละเวลาที่บันทึกข้อมูล
-เวลาที่เริ่มมีอาการ
-${_patient?.dateTimeController1.isNotEmpty == true ? _patient!.dateTimeController1 : 'ไม่ได้ระบุ'}
-เวลาที่มาถึงโรงพยาบาล
-${_patient?.dateTimeController2.isNotEmpty == true ? _patient!.dateTimeController2 : 'ไม่ได้ระบุ'}
-เวลาที่ใช้ยาละลายลิ่มเลือด
-${_patient?.dateTimeController3.isNotEmpty == true ? _patient!.dateTimeController3 : 'ไม่ได้ระบุ'}
-
-ระยะเวลาที่ใช้
-ระยะเวลาเมื่อมีอาการมาโรงพยาบาล
-ใช้เวลา ${_patient?.timeDifference1?.toStringAsFixed(2) ?? 'ไม่ระบุ'} ชั่วโมง'
-ระยะเวลาเมื่อมาโรงพยาบาลเเล้วฉีดยา
-ใช้เวลา ${_patient?.timeDifference2?.toStringAsFixed(2) ?? 'ไม่ระบุ'} ชั่วโมง'
-      
-อาการ
-1. เวียนศรีษะ เดินเซ: ${CheckSymptom1(_patient?.symptomHead)}
-2. อาการตาดับทันทีทันใด: ${CheckSymptom1(_patient?.symptomEye)} 
-3. หน้าเบี้ยวฉียบพลัน: ${CheckSymptom2(_patient?.symptomFace ?? -1)}
-4. อ่อนแอแขน/ขาเฉียบพลัน: ${CheckSymptom2(_patient?.symptomArm ?? -1)}
-5. พูดลำบาก/พูดไม่ชัด: ${CheckSymptom1(_patient?.symptomSpeech)}
-6. การมองเห็น: ${CheckSymptom3(_patient?.symptomVisual ?? -1)}
-7. การเข้าใจภาษา: ${CheckSymptom4(_patient?.symptomAphasia ?? -1)}
-8. ไม่สนใจร่างกายหนึ่งด้าน: ${CheckSymptom1(_patient?.symptomNeglect ?? -1)}
-
-ระดับโรคหลอดเลือดสมอง
-NIHSS ${_patient?.totalScore} คะเเนน'
-'ระดับความรุนเเรง ${_patient?.nihssLevel}'
-      
-ข้อบ่งชี้
-1. มีอายุเท่ากับหรือมากกว่า 18 ปี:${checkIndication(_patient?.indications2)},
-2. มีอาการของหลอดเลือดสมองตีบ\nภายในระยะเวลา 4.5 ชั่วโมง:${checkIndication(_patient?.indications1)},
-3. ผล CT brain ไม่พบว่ามีเลือดออก\nในเนื้อสมองหรือชั้นใต้เยื่อหุ้มสมอง:${checkIndication(_patient?.indications3)},
-                      
-ข้อห้ามอย่างเด็ดขาด
-1. มีความดันโลหิตช่วงก่อนให้รักษาสูง(SBP > 185 mm/Hg)(DBP > 110 mm/Hg):${checkProhibited(_patient?.strictlyprohibited7)}
-2. มีประวัติเคยมีเลือดออกในสมองมาก่อน:${checkProhibited(_patient?.strictlyprohibited3)}
-4. มีอาการบาดเจ็บที่ศรีษะอย่างรุนเเรงหรือมีประวัติเป็นโรคหลอดเลือดสมองใน 3 เดือน:${checkProhibited(_patient?.strictlyprohibited1)}
-5. มีประวัติได้รับยาต้านการเเข็งตัวของเลือดโดยมีค่า PT > 15 วินาที หรือมีค่า INR > 1.7:${checkProhibited(_patient?.strictlyprohibited9)}
-6. มีความดันโลหิตสูงเเละไม่สามารถลดความดันโลหิตลงได้ก่อนให้ยาละลายลิ่มเลือด:${checkProhibited(_patient?.strictlyprohibited12)}
-7. ได้รับยา heparin ภายใน 48 ชั่วโมงเเละ\nมีค่า partial-thromboplastin time ผิดปกติ:${checkProhibited(_patient?.strictlyprohibited13)}
-8. มีปริมาณเกล็ดเลือดน้อยกว่า \n100,000 ต่อลูกบาศก์มิลลิเมตร:${checkProhibited(_patient?.strictlyprohibited14)}
-9. CT brain พบมีสมองขาดเลือดมากกว่าขนาด 1/3 ชอง cerebral hemisphere${checkProhibited(_patient?.strictlyprohibited11)}
-10. มีระดับน้ำตาลในเลือดเท่ากับหรือ\nน้อยกว่า 50 mg/dl:${checkProhibited(_patient?.strictlyprohibited10)}
-11. มีการได้รับการผ่าตัดกระโหลกศรีษะ \nหรือกระดูกสันหลังภายใน 3 เดือน:${checkProhibited(_patient?.strictlyprohibited6)}
-12. มีภาวะเลือดออกเเละอวัยวะภายใน\n(Active Internal Bleeding):${checkProhibited(_patient?.strictlyprohibited8)}
-13. มีภาวะสงสัยเลือดออกชั้นใต้เยื่อหุ้มสมอง\n(Subarachnoid Hemorrhage):${checkProhibited(_patient?.strictlyprohibited2)}
-14. มีการเเทงหลอกเลือดเเดงขนาดใหญ่ใน\nตำเเหน่งที่ไม่สามารถกดได้ภายใน 7 วัน:${checkProhibited(_patient?.strictlyprohibited5)}
-                        
-ข้อห้ามที่ไม่ถือว่าห้ามอย่างเด็ดขาด
-1. มีอาการทางประสาทดีขึ้นอย่างรวดเร็วจนเกือบเป็นปกติหรือมีอาการอย่างเดียวไม่รุนเเรง:${checkProhibited(_patient?.strictlynotprohibited1)}
-2. มีอาการชักตอนเริ่มต้นเเละภายหลัง\nจากชักยังมีอาการอ่อนเเรงอยู่:${checkProhibited(_patient?.strictlynotprohibited3)}
-3. เคยมีประวัติการผ่าตัดใหญ่หรือ\nมีอุบัติเหตุรุนเเรงภายใน 14 วัน:${checkProhibited(_patient?.strictlynotprohibited4)}
-4. มีเลือดออกในทางเดินอาหารหรือ\nทางเดินปัสสสาวะภายใน 21 วัน:${checkProhibited(_patient?.strictlynotprohibited5)}
-5. มีประวัติกล้ามเนื้อหัวใจขาดเลือด\nภายใน 3 เดือน:${checkProhibited(_patient?.strictlynotprohibited6)}
-6. มีการตั้งครรภ์:${checkProhibited(_patient?.strictlynotprohibited2)}
-7. เคยเป็นโรคหลอดเลือดสมองตีบหรือ\nหลอดเลือดสมองอุดตันภายใน 3 เดือน:${checkProhibited(_patient?.strictlynotprohibited2)}
-8. มีคะเเนน NIHSS มากกว่า 25 คะเเนน:${checkProhibited(_patient?.strictlynotprohibited1)}
-
-การให้ยาผู้ป่วย
-ปริมาณยาละลายลิ่มเลือด
-(rt-PA) ${_patient?.medic1.toStringAsFixed(2) ?? 'ไม่ระบุ'} มิลลิกรัม
-แบ่งให้ ${_patient?.medic2.toStringAsFixed(2) ?? 'ไม่ระบุ'} มิลลิกรัม
-ทางหลอดเลือดใน 1 นาที'
-'และ ${_patient?.medic3.toStringAsFixed(2) ?? 'ไม่ระบุ'} มิลลิกรัม
-หยดทางหลอดเลือดใน 60 นาที',
-
-ผลการรักษา
-ก่อนการรักษา
-${_patient?.beforecure ?? 'ไม่ระบุ'}
-หลังการรักษา
-${_patient?.aftercure ?? 'ไม่ระบุ'}
-      ''';
-
+      floatingActionButton: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          FloatingActionButton(
+            backgroundColor: const Color(0xFF82B1FF),
+            child: const Icon(Icons.send),
+            onPressed: () async {
 // สร้างไฟล์ใน directory ของแอป
-            final directory = await getApplicationDocumentsDirectory();
+              final directory = await getApplicationDocumentsDirectory();
 
 // ตั้งชื่อไฟล์ให้ชัดเจน
-            final fileName =
-                'Patient_Info_${_patient?.nameController ?? 'Unknown'}.txt';
-            final path = '${directory.path}/$fileName';
-            final file = File(path);
+              final fileName =
+                  'Patient_Info_${_patient?.nameController ?? 'Unknown'}.txt';
+              final path = '${directory.path}/$fileName';
+              final file = File(path);
 
 // เขียนข้อความลงในไฟล์
-            await file.writeAsString(patientDetails);
+              await file.writeAsString(patientDetails);
 
 // แชร์ไฟล์ที่มีชื่อที่ตั้งไว้โดยใช้ shareXFiles
-            await Share.shareXFiles(
-              [XFile(file.path)],
-              text: 'ดูข้อมูลผู้ป่วยที่นี่',
-              subject: 'ข้อมูลผู้ป่วย',
-            );
-            //   // สร้างไฟล์ใน directory ของแอป
-            //   final directory = await getApplicationDocumentsDirectory();
-            //   final path =
-            //       '${directory.path}/ข้อมูลผู้ป่วคุณ${_patient?.nameController ?? 'ไม่ระบุ'}.txt';
-            //   final file = File(path);
-
-            //   // เขียนข้อความลงในไฟล์
-            //   await file.writeAsString(patientDetails);
-
-            //   // แชร์ไฟล์
-            //   await Share.shareFiles([file.path], text: 'ดูข้อมูลผู้ป่วยที่นี่');
-            // } else {
-            //   await Share.share('ไม่มีข้อมูลผู้ป่วย');
-          }
-        },
+              await Share.shareXFiles(
+                [XFile(file.path)],
+                text: 'ดูข้อมูลผู้ป่วยที่นี่',
+                subject: 'ข้อมูลผู้ป่วย',
+              );
+            },
+          ),
+        ],
       ),
     );
   }

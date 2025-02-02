@@ -137,7 +137,7 @@ class _EditWarning2State extends State<EditWarning2> {
         strictlyProhibitedValid1 &&
         (strictlyNotProhibitedValid1)) {
       setState(() {
-        rtpa = 'ให้ยาไม่ได้';
+        rtpa = 'ให้ยาไม่ได้ มีข้อห้าม';
       });
     } else if (widget.indications1 == 1 &&
         widget.indications2 == 1 &&
@@ -186,7 +186,7 @@ class _EditWarning2State extends State<EditWarning2> {
         additionalprohibitions1 == 1 &&
         additionalprohibitions2 == 1) {
       setState(() {
-        rtpa = 'ให้ยาได้';
+        rtpa = 'ให้ยาได้ ไม่มีข้อห้าม';
       });
     } else if (widget.indications1 == -1 ||
         widget.indications2 == -1 ||
